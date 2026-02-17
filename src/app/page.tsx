@@ -12,6 +12,7 @@ import {
   Layout,
   BarChart3
 } from 'lucide-react'
+import Logo from '@/components/logo'
 
 export default async function Home() {
   const session = await verifySession()
@@ -21,12 +22,9 @@ export default async function Home() {
       {/* Header */}
       <header className="glass-header sticky top-0 z-50 h-[var(--header-height)] border-b border-border flex items-center px-8">
         <div className="container flex items-center w-full">
-          <div className="text-2xl font-black flex items-center gap-2 flex-1 tracking-tight">
-            <div className="w-9 h-9 bg-gradient-to-br from-primary to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-              <Calendar size={22} className="text-white" />
-            </div>
-            <span className="text-gradient">Schedly</span>
-          </div>
+          <Link href="/" className="no-underline flex-1">
+            <Logo size={36} />
+          </Link>
           <nav className="flex gap-10 items-center">
             <Link href="#features" className="text-sm font-semibold text-muted no-underline hover:text-primary transition-colors">Características</Link>
             <Link href="/pricing" className="text-sm font-semibold text-muted no-underline hover:text-primary transition-colors">Preços</Link>
@@ -262,12 +260,9 @@ export default async function Home() {
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-20 mb-20">
             <div className="md:col-span-2">
-              <div className="text-2xl font-black flex items-center gap-2 mb-8 tracking-tight">
-                <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-                  <Calendar size={18} className="text-white" />
-                </div>
-                <span className="text-gradient">Schedly</span>
-              </div>
+              <Link href="/" className="no-underline mb-8 block">
+                <Logo size={32} />
+              </Link>
               <p className="text-muted max-w-sm leading-relaxed font-medium">
                 A plataforma de agendamento mais completa e intuitiva para profissionais modernos em todos os setores.
               </p>

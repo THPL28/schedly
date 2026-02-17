@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { register } from '@/lib/actions'
 import Link from 'next/link'
 import { ShieldCheck, UserPlus } from 'lucide-react'
+import Logo from '@/components/logo'
 
 export default function RegisterPage() {
     const [error, setError] = useState('')
@@ -24,9 +25,8 @@ export default function RegisterPage() {
         <div className="min-h-screen bg-background flex items-center justify-center p-4">
             <div className="card w-full max-w-[440px] p-8 md:p-12">
                 <div className="text-center mb-10">
-                    <Link href="/" className="inline-flex items-center gap-2 mb-6 no-underline text-foreground">
-                        <div className="w-6 h-6 bg-primary rounded"></div>
-                        <span className="text-xl font-extrabold text-foreground">Schedly</span>
+                    <Link href="/" className="inline-flex items-center gap-2 mb-6 no-underline">
+                        <Logo size={28} />
                     </Link>
                     <h1 className="text-3xl font-extrabold m-0 mb-2">Crie sua conta</h1>
                     <p className="text-muted text-base m-0">Comece agora a gerenciar sua agenda de forma simples.</p>

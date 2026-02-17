@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { login } from '@/lib/actions'
 import Link from 'next/link'
 import { LogIn } from 'lucide-react'
+import Logo from '@/components/logo'
 
 export default function LoginPage() {
     const [error, setError] = useState('')
@@ -24,9 +25,8 @@ export default function LoginPage() {
         <div style={{ minHeight: '100vh', background: 'var(--background)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
             <div className="card" style={{ maxWidth: '440px', width: '100%', padding: '3rem 2.5rem' }}>
                 <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-                    <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', textDecoration: 'none' }}>
-                        <div style={{ width: 24, height: 24, background: 'var(--primary)', borderRadius: 4 }}></div>
-                        <span style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--foreground)' }}>Schedly</span>
+                    <Link href="/" className="inline-flex items-center gap-2 mb-6 no-underline">
+                        <Logo size={28} />
                     </Link>
                     <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: '0 0 0.5rem 0' }}>Benvindo de volta</h1>
                     <p style={{ color: 'var(--muted)', fontSize: '0.95rem' }}>Acesse sua conta para gerenciar sua agenda.</p>

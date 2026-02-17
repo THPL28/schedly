@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import SidebarNav from './sidebar-nav'
 import Link from 'next/link'
+import Logo from '@/components/logo'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
     const session = await verifySession()
@@ -47,11 +48,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div className="dashboard-layout">
             {/* Sidebar */}
             <aside className="sidebar">
-                <div style={{ padding: '2rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <div style={{ width: 32, height: 32, background: 'var(--primary)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Calendar size={20} color="white" />
-                    </div>
-                    <span style={{ fontSize: '1.25rem', fontWeight: 900, letterSpacing: '-0.02em', color: 'white' }}>Schedly</span>
+                <div style={{ padding: '2rem 1.5rem' }}>
+                    <Link href="/dashboard" className="no-underline">
+                        <Logo size={32} />
+                    </Link>
                 </div>
 
                 {/* Simplified Nav */}
