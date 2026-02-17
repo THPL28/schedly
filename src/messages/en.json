@@ -1,0 +1,12 @@
+{
+    "dashboard": "Dashboard",
+    "calendar": "Calendar",
+    "schedule": "Schedule",
+    "settings": "Settings",
+    "admin": "Admin Panel",
+    "signOut": "Sign Out",
+    "trial": "Free Trial",
+    "upgrade": "Upgrade Plan",
+    "expired": "Expired",
+    "renew": "Renew Now"
+}
