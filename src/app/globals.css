@@ -27,6 +27,9 @@
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --shadow-primary: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
 
   /* Layout */
   --radius-lg: 1rem;
@@ -252,8 +255,36 @@ body {
 }
 
 .hero-gradient {
-  background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.05), transparent),
-    radial-gradient(circle at bottom left, rgba(168, 85, 247, 0.05), transparent);
+  background:
+    radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.15), transparent 40%),
+    radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.15), transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.05), transparent 70%);
+  background-color: var(--background);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-gradient::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    radial-gradient(circle at 2px 2px, var(--border) 1px, transparent 0);
+  background-size: 40px 40px;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
 }
 
 @keyframes float {
