@@ -49,7 +49,7 @@ export default function BookingModal({ date, startTime, onClose }: any) {
                 </div>
 
                 {/* Modal Body */}
-                <form action={handleSubmit} style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <form action={handleSubmit} style={{ padding: '1.5rem sm:2rem', display: 'flex', flexDirection: 'column', gap: '1.25rem sm:1.5rem' }}>
                     <input type="hidden" name="date" value={date} />
 
                     <div>
@@ -59,18 +59,18 @@ export default function BookingModal({ date, startTime, onClose }: any) {
                         <input name="clientName" required className="input" placeholder="Ex: João Silva" style={{ height: '3rem' }} />
                     </div>
 
-                    <div style={{ display: 'flex', gap: '1.5rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column sm:flex-row', gap: '1rem sm:1.5rem' }}>
                         <div style={{ flex: 1 }}>
                             <label className="label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <Clock size={14} /> Início
                             </label>
-                            <input name="startTime" type="time" required className="input" defaultValue={startTime} style={{ height: '3rem' }} />
+                            <input name="startTime" type="time" required className="input" defaultValue={startTime} style={{ height: '2.75rem sm:3rem' }} />
                         </div>
                         <div style={{ flex: 1 }}>
                             <label className="label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <Clock size={14} /> Término
                             </label>
-                            <input name="endTime" type="time" required className="input" defaultValue={endTimeDefault} style={{ height: '3rem' }} />
+                            <input name="endTime" type="time" required className="input" defaultValue={endTimeDefault} style={{ height: '2.75rem sm:3rem' }} />
                         </div>
                     </div>
 
@@ -81,9 +81,9 @@ export default function BookingModal({ date, startTime, onClose }: any) {
                         </div>
                     )}
 
-                    <div style={{ display: 'flex', gap: '1rem' }}>
-                        <button type="button" onClick={onClose} className="btn btn-outline" style={{ flex: 1, height: '3rem' }}>Cancelar</button>
-                        <button type="submit" className="btn btn-primary" disabled={loading} style={{ flex: 2, height: '3rem', fontSize: '1rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column sm:flex-row', gap: '0.75rem sm:1rem' }}>
+                        <button type="button" onClick={onClose} className="btn btn-outline" style={{ flex: 1, height: '2.75rem sm:3rem', fontSize: '0.875rem sm:1rem' }}>Cancelar</button>
+                        <button type="submit" className="btn btn-primary" disabled={loading} style={{ flex: 2, height: '2.75rem sm:3rem', fontSize: '0.875rem sm:1rem' }}>
                             {loading ? 'Agendando...' : 'Confirmar Agendamento'}
                         </button>
                     </div>

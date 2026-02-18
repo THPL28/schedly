@@ -23,13 +23,13 @@ export default function LoginPage() {
 
     return (
         <div style={{ minHeight: '100vh', background: 'var(--background)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-            <div className="card" style={{ maxWidth: '440px', width: '100%', padding: '3rem 2.5rem' }}>
-                <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-                    <Link href="/" className="inline-flex items-center gap-2 mb-6 no-underline">
-                        <Logo size={28} />
+            <div className="card" style={{ maxWidth: '440px', width: '100%', padding: '2rem 1.5rem sm:3rem 2.5rem' }}>
+                <div style={{ textAlign: 'center', marginBottom: '2rem sm:2.5rem' }}>
+                    <Link href="/" className="inline-flex items-center gap-2 mb-4 sm:mb-6 no-underline">
+                        <Logo size={24} className="sm:!w-7 sm:!h-7" />
                     </Link>
-                    <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: '0 0 0.5rem 0' }}>Benvindo de volta</h1>
-                    <p style={{ color: 'var(--muted)', fontSize: '0.95rem' }}>Acesse sua conta para gerenciar sua agenda.</p>
+                    <h1 style={{ fontSize: '1.5rem sm:1.75rem', fontWeight: 800, margin: '0 0 0.5rem 0' }}>Benvindo de volta</h1>
+                    <p style={{ color: 'var(--muted)', fontSize: '0.875rem sm:0.95rem' }}>Acesse sua conta para gerenciar sua agenda.</p>
                 </div>
 
                 <form action={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>

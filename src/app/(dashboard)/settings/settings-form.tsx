@@ -104,16 +104,16 @@ export default function SettingsForm({ user }: { user: any }) {
     }
 
     return (
-        <form action={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+        <form action={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem md:2rem' }}>
             {/* Seção de Perfil */}
-            <div className="card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>Foto de Perfil</h3>
+            <div className="card" style={{ padding: '1.5rem md:2rem', display: 'flex', flexDirection: 'column', gap: '1rem md:1.5rem' }}>
+                <h3 style={{ fontSize: '1.125rem md:1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>Foto de Perfil</h3>
                 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem md:2rem', flexWrap: 'wrap' }}>
                     {/* Preview da Foto */}
                     <div style={{ position: 'relative' }}>
                         {avatarPreview ? (
-                            <div style={{ position: 'relative', width: 120, height: 120, borderRadius: '50%', overflow: 'hidden', border: '3px solid var(--primary)', background: '#f1f5f9' }}>
+                            <div style={{ position: 'relative', width: 100, height: 100, borderRadius: '50%', overflow: 'hidden', border: '3px solid var(--primary)', background: '#f1f5f9' }}>
                                 {avatarPreview.startsWith('data:') ? (
                                     // Base64 image
                                     <img
@@ -157,15 +157,15 @@ export default function SettingsForm({ user }: { user: any }) {
                             </div>
                         ) : (
                             <div style={{ 
-                                width: 120, 
-                                height: 120, 
+                                width: 100, 
+                                height: 100, 
                                 borderRadius: '50%', 
                                 background: 'linear-gradient(135deg, var(--primary), #8b5cf6)',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 color: 'white',
-                                fontSize: '2rem',
+                                fontSize: '1.5rem',
                                 fontWeight: 700,
                                 border: '3px solid var(--primary)'
                             }}>
@@ -175,7 +175,7 @@ export default function SettingsForm({ user }: { user: any }) {
                     </div>
 
                     {/* Upload Button */}
-                    <div style={{ flex: 1, minWidth: 200 }}>
+                    <div style={{ flex: 1, minWidth: 200, width: '100%' }}>
                         <input
                             ref={fileInputRef}
                             type="file"
@@ -218,8 +218,8 @@ export default function SettingsForm({ user }: { user: any }) {
             </div>
 
             {/* Informações do Perfil */}
-            <div className="card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>Informações Pessoais</h3>
+            <div className="card" style={{ padding: '1.5rem md:2rem', display: 'flex', flexDirection: 'column', gap: '1rem md:1.5rem' }}>
+                <h3 style={{ fontSize: '1.125rem md:1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>Informações Pessoais</h3>
                 
                 <div>
                     <label className="label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -270,8 +270,8 @@ export default function SettingsForm({ user }: { user: any }) {
             </div>
 
             {/* Configurações */}
-            <div className="card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>Configurações</h3>
+            <div className="card" style={{ padding: '1.5rem md:2rem', display: 'flex', flexDirection: 'column', gap: '1rem md:1.5rem' }}>
+                <h3 style={{ fontSize: '1.125rem md:1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>Configurações</h3>
                 
                 <div>
                     <label className="label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -326,7 +326,7 @@ export default function SettingsForm({ user }: { user: any }) {
                 </div>
             )}
 
-            <button type="submit" className="btn btn-primary" disabled={loading} style={{ alignSelf: 'flex-start', padding: '1rem 2rem', borderRadius: '0.75rem' }}>
+            <button type="submit" className="btn btn-primary" disabled={loading} style={{ alignSelf: 'flex-start', padding: '0.875rem 1.5rem md:1rem 2rem', borderRadius: '0.75rem', width: '100%', sm: 'auto' }}>
                 {loading ? 'Salvando...' : 'Salvar Alterações'}
             </button>
         </form>

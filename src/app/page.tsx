@@ -20,27 +20,39 @@ export default async function Home() {
   return (
     <div className="hero-gradient flex flex-col min-h-screen">
       {/* Header */}
-      <header className="glass-header sticky top-0 z-50 h-[var(--header-height)] border-b border-border flex items-center px-8">
+      <header className="glass-header sticky top-0 z-50 h-[var(--header-height)] border-b border-border flex items-center px-4 md:px-8">
         <div className="container flex items-center w-full">
           <Link href="/" className="no-underline flex-1">
-            <Logo size={36} />
+            <Logo size={32} className="md:!w-9 md:!h-9" />
           </Link>
-          <nav className="flex gap-10 items-center">
+          <nav className="hidden md:flex gap-6 lg:gap-10 items-center">
             <Link href="#features" className="text-sm font-semibold text-muted no-underline hover:text-primary transition-colors">Características</Link>
             <Link href="/pricing" className="text-sm font-semibold text-muted no-underline hover:text-primary transition-colors">Preços</Link>
             {session ? (
-              <Link href="/dashboard" className="btn btn-primary rounded-full px-7 py-2.5 shadow-lg shadow-primary/20 hover:scale-105 transition-all">
-                Painel <ArrowRight size={16} />
+              <Link href="/dashboard" className="btn btn-primary rounded-full px-5 md:px-7 py-2 md:py-2.5 shadow-lg shadow-primary/20 hover:scale-105 transition-all text-sm md:text-base">
+                <span className="hidden md:inline">Painel </span><ArrowRight size={16} />
               </Link>
             ) : (
               <>
                 <Link href="/login" className="text-sm font-semibold text-foreground no-underline hover:text-primary transition-colors">Entrar</Link>
-                <Link href="/register" className="btn btn-primary rounded-full px-7 py-2.5 shadow-lg shadow-primary/20 hover:scale-105 transition-all">
-                  Teste Grátis
+                <Link href="/register" className="btn btn-primary rounded-full px-5 md:px-7 py-2 md:py-2.5 shadow-lg shadow-primary/20 hover:scale-105 transition-all text-sm md:text-base">
+                  <span className="hidden md:inline">Teste Grátis</span>
+                  <span className="md:hidden">Teste</span>
                 </Link>
               </>
             )}
           </nav>
+          {/* Mobile Menu */}
+          {session ? (
+            <Link href="/dashboard" className="md:hidden btn btn-primary rounded-full px-4 py-2 shadow-lg shadow-primary/20">
+              <ArrowRight size={18} />
+            </Link>
+          ) : (
+            <div className="md:hidden flex gap-2">
+              <Link href="/login" className="btn btn-outline rounded-full px-4 py-2 text-sm">Entrar</Link>
+              <Link href="/register" className="btn btn-primary rounded-full px-4 py-2 text-sm">Teste</Link>
+            </div>
+          )}
         </div>
       </header>
 
@@ -53,27 +65,27 @@ export default async function Home() {
               <span>Versão 2.4 já disponível</span>
             </div>
 
-            <h1 className="text-6xl md:text-8xl font-black max-w-[1000px] mx-auto mb-8 leading-[1.05] tracking-tighter text-foreground filter drop-shadow-sm">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-black max-w-[1000px] mx-auto mb-6 md:mb-8 leading-[1.05] tracking-tighter text-foreground filter drop-shadow-sm px-4">
               Domine seu tempo com agendamento <span className="text-gradient">inteligente</span>.
             </h1>
 
-            <p className="text-xl md:text-2xl text-muted max-w-[700px] mx-auto mb-14 leading-relaxed font-medium">
+            <p className="text-lg sm:text-xl md:text-2xl text-muted max-w-[700px] mx-auto mb-10 md:mb-14 leading-relaxed font-medium px-4">
               O Schedly capacita profissionais a gerenciar calendários, automatizar reservas e escalar seus negócios sem dores de cabeça administrativas.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-5 justify-center items-center mb-24">
-              <Link href="/register" className="btn btn-primary px-12 py-5 text-xl rounded-full shadow-2xl shadow-primary/30 hover:scale-105 transition-all">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 justify-center items-center mb-16 md:mb-24 px-4">
+              <Link href="/register" className="btn btn-primary px-8 sm:px-12 py-4 sm:py-5 text-lg sm:text-xl rounded-full shadow-2xl shadow-primary/30 hover:scale-105 transition-all w-full sm:w-auto text-center">
                 Começar agora
               </Link>
-              <Link href="/pricing" className="btn btn-outline px-12 py-5 text-xl rounded-full bg-white/50 backdrop-blur-sm hover:bg-white transition-all">
+              <Link href="/pricing" className="btn btn-outline px-8 sm:px-12 py-4 sm:py-5 text-lg sm:text-xl rounded-full bg-white/50 backdrop-blur-sm hover:bg-white transition-all w-full sm:w-auto text-center">
                 Ver Planos
               </Link>
             </div>
 
             {/* Dashboard Preview */}
-            <div className="relative w-full max-w-[1200px] mx-auto group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary to-purple-600 rounded-[32px] blur opacity-20 group-hover:opacity-30 transition duration-1000"></div>
-              <div className="glass-card relative aspect-[16/10] overflow-hidden p-6 md:p-10 border-white/40">
+            <div className="relative w-full max-w-[1200px] mx-auto group px-4">
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary to-purple-600 rounded-[24px] md:rounded-[32px] blur opacity-20 group-hover:opacity-30 transition duration-1000"></div>
+              <div className="glass-card relative aspect-[16/10] overflow-hidden p-4 sm:p-6 md:p-10 border-white/40 rounded-[24px] md:rounded-[32px]">
                 <div className="flex h-full gap-6 md:gap-10">
                   <div className="w-48 md:w-64 bg-gray-50/50 rounded-2xl p-6 border border-gray-100/50 hidden md:block">
                     <div className="w-4/5 h-3 bg-gray-200/50 rounded mb-10"></div>
@@ -154,17 +166,17 @@ export default async function Home() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="py-32 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] -z-10"></div>
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-[100px] -z-10"></div>
+        <section id="features" className="py-16 sm:py-24 md:py-32 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-primary/5 rounded-full blur-[100px] -z-10"></div>
+          <div className="absolute bottom-0 left-0 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-purple-500/5 rounded-full blur-[100px] -z-10"></div>
 
           <div className="container">
-            <div className="text-center mb-24">
-              <h2 className="text-4xl md:text-6xl font-black tracking-tight mb-6">Tudo o que você precisa para <span className="text-gradient">vencer</span>.</h2>
-              <p className="text-muted text-xl max-w-[650px] mx-auto font-medium leading-relaxed">Recursos poderosos projetados para automatizar seu trabalho administrativo e focar no que importa.</p>
+            <div className="text-center mb-12 sm:mb-16 md:mb-24 px-4">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-4 md:mb-6">Tudo o que você precisa para <span className="text-gradient">vencer</span>.</h2>
+              <p className="text-muted text-lg sm:text-xl max-w-[650px] mx-auto font-medium leading-relaxed">Recursos poderosos projetados para automatizar seu trabalho administrativo e focar no que importa.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10 px-4">
               {[
                 {
                   icon: Layout,
@@ -198,16 +210,16 @@ export default async function Home() {
         </section>
 
         {/* Testimonial Section */}
-        <section className="py-32 bg-white/50 relative">
-          <div className="container">
-            <div className="card p-12 md:p-20 bg-slate-900 border-none text-white rounded-[40px] flex items-center gap-20 flex-wrap relative overflow-hidden shadow-2xl">
+        <section className="py-16 sm:py-24 md:py-32 bg-white/50 relative">
+          <div className="container px-4">
+            <div className="card p-8 sm:p-12 md:p-20 bg-slate-900 border-none text-white rounded-[24px] md:rounded-[40px] flex flex-col lg:flex-row items-center gap-8 md:gap-20 relative overflow-hidden shadow-2xl">
               <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[80px] -z-10"></div>
 
-              <div className="flex-1 min-w-[320px]">
-                <div className="flex gap-1.5 mb-10">
-                  {[1, 2, 3, 4, 5].map(i => <Star key={i} size={22} fill="#f59e0b" stroke="none" />)}
+              <div className="flex-1 min-w-0 w-full lg:min-w-[320px]">
+                <div className="flex gap-1.5 mb-6 md:mb-10">
+                  {[1, 2, 3, 4, 5].map(i => <Star key={i} size={18} className="md:w-[22px] md:h-[22px]" fill="#f59e0b" stroke="none" />)}
                 </div>
-                <p className="text-3xl md:text-5xl font-bold leading-[1.3] mb-12 tracking-tight">
+                <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.3] mb-8 md:mb-12 tracking-tight">
                   "O Schedly transformou completamente a forma como gerencio minha clínica. Tive uma redução de 30% nos cancelamentos desde que mudei."
                 </p>
                 <div className="flex items-center gap-5">
@@ -218,7 +230,7 @@ export default async function Home() {
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-8 flex-1 min-w-[320px]">
+              <div className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8 flex-1 min-w-0 w-full lg:min-w-[320px]">
                 {[
                   { val: '99%', label: 'Satisfação' },
                   { val: '5k+', label: 'Usuários' },
@@ -236,29 +248,29 @@ export default async function Home() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-32">
-          <div className="container text-center">
-            <div className="card p-16 md:p-28 bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-[56px] relative overflow-hidden shadow-2xl shadow-primary/20">
-              <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-white/10 rounded-full blur-[60px]"></div>
-              <div className="absolute bottom-[-20%] left-[-10%] w-[400px] h-[400px] bg-white/10 rounded-full blur-[60px]"></div>
+        <section className="py-16 sm:py-24 md:py-32">
+          <div className="container text-center px-4">
+            <div className="card p-8 sm:p-12 md:p-16 lg:p-28 bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-[32px] md:rounded-[56px] relative overflow-hidden shadow-2xl shadow-primary/20">
+              <div className="absolute top-[-20%] right-[-10%] w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-white/10 rounded-full blur-[60px]"></div>
+              <div className="absolute bottom-[-20%] left-[-10%] w-[250px] sm:w-[400px] h-[250px] sm:h-[400px] bg-white/10 rounded-full blur-[60px]"></div>
 
-              <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter">Pronto para escalar seu negócio?</h2>
-              <p className="text-xl md:text-2xl font-medium opacity-90 max-w-[700px] mx-auto mb-16 leading-relaxed">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-black mb-6 md:mb-8 tracking-tighter">Pronto para escalar seu negócio?</h2>
+              <p className="text-lg sm:text-xl md:text-2xl font-medium opacity-90 max-w-[700px] mx-auto mb-10 md:mb-16 leading-relaxed">
                 Junte-se a milhares de profissionais que melhoraram sua eficiência em 40% com o Schedly.
               </p>
-              <Link href="/register" className="btn bg-white text-indigo-600 px-14 py-6 text-2xl font-black rounded-full hover:scale-105 transition-all shadow-xl shadow-black/10">
+              <Link href="/register" className="btn bg-white text-indigo-600 px-8 sm:px-12 md:px-14 py-4 sm:py-5 md:py-6 text-lg sm:text-xl md:text-2xl font-black rounded-full hover:scale-105 transition-all shadow-xl shadow-black/10 w-full sm:w-auto inline-block">
                 Começar Teste Grátis
               </Link>
-              <p className="mt-8 text-sm font-bold opacity-60">Sem cartão de crédito necessário • Instalação em 2 minutos</p>
+              <p className="mt-6 md:mt-8 text-xs sm:text-sm font-bold opacity-60">Sem cartão de crédito necessário • Instalação em 2 minutos</p>
             </div>
           </div>
         </section>
       </main>
 
       {/* Footer */}
-      <footer className="py-24 bg-white border-t border-border/60">
-        <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-20 mb-20">
+      <footer className="py-12 sm:py-16 md:py-24 bg-white border-t border-border/60">
+        <div className="container px-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 sm:gap-12 md:gap-20 mb-12 md:mb-20">
             <div className="md:col-span-2">
               <Link href="/" className="no-underline mb-8 block">
                 <Logo size={32} />

@@ -10,8 +10,8 @@ export default async function SettingsPage() {
     const user = await prisma.user.findUnique({ where: { id: session.userId as string } })
 
     return (
-        <div className="card" style={{ maxWidth: '600px' }}>
-            <h2 style={{ marginBottom: '2rem' }}>Settings</h2>
+        <div className="card w-full" style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <h2 style={{ marginBottom: '1.5rem md:2rem', fontSize: '1.5rem md:2rem' }}>Configurações</h2>
             <SettingsForm user={user} />
         </div>
     )

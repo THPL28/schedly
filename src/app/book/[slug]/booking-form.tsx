@@ -106,10 +106,10 @@ export default function BookingForm({ providerId, initialDate, busyAppointments 
 
     return (
         <div className="bg-white min-h-[500px]">
-            <form onSubmit={handleSubmit} className="flex flex-row flex-wrap">
+            <form onSubmit={handleSubmit} className="flex flex-col lg:flex-row flex-wrap">
 
                 {/* Lateral Esquerda: Calendário */}
-                <div className="flex-auto p-6 border-r border-border min-w-[300px]">
+                <div className="flex-auto p-4 sm:p-6 border-b lg:border-b-0 lg:border-r border-border min-w-0 lg:min-w-[300px]">
                     <input type="hidden" name="date" value={initialDate} />
 
                     <div className="flex items-center justify-between mb-4">

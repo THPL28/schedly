@@ -31,18 +31,18 @@ export default async function PublicBookingPage({ params, searchParams }: { para
     })
 
     return (
-        <div className="min-h-screen bg-neutral-100 flex items-center justify-center p-5 font-sans">
+        <div className="min-h-screen bg-neutral-100 flex items-center justify-center p-4 sm:p-5 font-sans">
             <div className="w-full max-w-[850px] bg-white rounded-lg shadow-lg overflow-hidden">
                 {/* Header */}
-                <div className="flex items-center gap-4 p-4 border-b border-border">
-                    <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-bold text-lg">
+                <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border-b border-border">
+                    <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-bold text-base sm:text-lg flex-shrink-0">
                         {user.name?.[0]}
                     </div>
-                    <div className="flex-1">
-                        <h1 className="m-0 text-lg font-normal text-foreground">{user.name}</h1>
+                    <div className="flex-1 min-w-0">
+                        <h1 className="m-0 text-base sm:text-lg font-normal text-foreground truncate">{user.name}</h1>
                         <p className="m-0 text-xs text-muted">Agendar Novo Evento</p>
                     </div>
-                    <div className="flex items-center gap-2 text-muted text-xs">
+                    <div className="hidden sm:flex items-center gap-2 text-muted text-xs flex-shrink-0">
                         <ShieldCheck size={16} />
                         <span>Verificado</span>
                     </div>
@@ -59,7 +59,7 @@ export default async function PublicBookingPage({ params, searchParams }: { para
                 </div>
             </div>
 
-            <div className="fixed bottom-4 right-6 text-[11px] text-muted">
+            <div className="fixed bottom-4 right-4 sm:right-6 text-[10px] sm:text-[11px] text-muted">
                 Plataforma Schedly
             </div>
         </div>
