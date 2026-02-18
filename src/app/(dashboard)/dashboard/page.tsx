@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { verifySession } from '@/lib/auth'
+import { redirect } from 'next/navigation'
 import {
     Clock,
     Users,
@@ -11,10 +12,14 @@ import Timeline from '../schedule/timeline'
 
 export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ date?: string }> }) {
     const session = await verifySession()
-    if (!session) return null
+    if (!session) redirect('/login')
 
     const resolvedParams = await searchParams
     const user = await prisma.user.findUnique({ where: { id: session.userId as string } })
+    
+    if (!user) {
+        redirect('/login')
+    }
 
     const dateStr = resolvedParams.date || new Date().toISOString().split('T')[0]
     const targetDate = new Date(dateStr + 'T00:00:00.000Z')
