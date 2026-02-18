@@ -213,10 +213,9 @@ export default function MobileSidebar({ isOpen, onClose, slug, user, onLogout }:
               <p style={{ fontSize: '0.7rem', color: '#9ca3af', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.email}</p>
             </div>
           </Link>
-          <form action="/api/logout" method="POST">
+          <form action="/api/logout" method="POST" onSubmit={onClose}>
             <button
               type="submit"
-              onClick={onClose}
               style={{
                 display: 'flex',
                 alignItems: 'center',
