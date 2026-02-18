@@ -8,11 +8,14 @@ import {
     Calendar,
     Bell,
     LogOut,
+    Menu,
 } from 'lucide-react'
 import SidebarNav from './sidebar-nav'
 import Link from 'next/link'
 import Logo from '@/components/logo'
 import Image from 'next/image'
+import MobileSidebar from '@/components/mobile-sidebar'
+import DashboardClient from './dashboard-client'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
     const session = await verifySession()
@@ -46,9 +49,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
     })
 
     return (
-        <div className="dashboard-layout">
-            {/* Sidebar */}
-            <aside className="sidebar">
+        <DashboardClient
+            user={user}
+            slug={user.slug}
+            todayStr={todayStr}
+            initials={initials}
+        >
+            {/* Desktop Sidebar */}
+            <aside className="sidebar desktop-sidebar">
                 <div style={{ padding: '2rem 1.5rem' }}>
                     <Link href="/dashboard" className="no-underline">
                         <Logo size={32} />
@@ -112,12 +120,32 @@ export default async function DashboardLayout({ children }: { children: React.Re
             {/* Main Content */}
             <main className="main-content">
                 <header className="top-nav">
-                    <div>
+                    {/* Mobile Menu Button */}
+                    <button
+                        className="mobile-menu-btn"
+                        style={{
+                            display: 'none',
+                            background: '#f8fafc',
+                            border: '1px solid #e2e8f0',
+                            borderRadius: '0.5rem',
+                            padding: '0.5rem',
+                            cursor: 'pointer',
+                            color: '#64748b',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}
+                        aria-label="Abrir menu"
+                    >
+                        <Menu size={24} />
+                    </button>
+                    
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
                         <h1 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>Gerenciamento Diário</h1>
                     </div>
+                    
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                        <p style={{ fontSize: '0.875rem', fontWeight: 600, color: '#64748b', textTransform: 'capitalize' }}>{todayStr}</p>
-                        <div style={{ height: 32, width: 1, background: '#e2e8f0' }}></div>
+                        <p className="top-nav-date" style={{ fontSize: '0.875rem', fontWeight: 600, color: '#64748b', textTransform: 'capitalize' }}>{todayStr}</p>
+                        <div className="top-nav-divider" style={{ height: 32, width: 1, background: '#e2e8f0' }}></div>
                         <button style={{ position: 'relative', background: '#f8fafc', border: 'none', padding: '0.5rem', borderRadius: '50%', cursor: 'pointer', color: '#94a3b8' }}>
                             <Bell size={22} />
                         </button>
@@ -128,6 +156,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
                     {children}
                 </div>
             </main>
-        </div>
+        </DashboardClient>
     )
 }
