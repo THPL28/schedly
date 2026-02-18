@@ -215,6 +215,10 @@ export async function updateSettings(formData: FormData) {
     const name = formData.get('name') as string
     const slug = formData.get('slug') as string
     const language = formData.get('language') as string || 'pt-BR'
+    const avatarUrl = formData.get('avatarUrl') as string
+    const phone = formData.get('phone') as string
+    const bio = formData.get('bio') as string
+    const website = formData.get('website') as string
 
     try {
         await prisma.user.update({
@@ -222,7 +226,11 @@ export async function updateSettings(formData: FormData) {
             data: {
                 name,
                 language,
-                slug: slug?.toLowerCase()?.trim()?.replace(/[^a-z0-9]+/g, '-') || null
+                slug: slug?.toLowerCase()?.trim()?.replace(/[^a-z0-9]+/g, '-') || null,
+                avatarUrl: avatarUrl || null,
+                phone: phone || null,
+                bio: bio || null,
+                website: website || null
             }
         })
     } catch (e) {
@@ -236,5 +244,6 @@ export async function updateSettings(formData: FormData) {
     logEvent('SETTINGS_UPDATED', { userId: session.userId, language, slug })
     revalidatePath('/settings')
     revalidatePath('/', 'layout')
+    revalidatePath('/dashboard', 'layout')
     return { success: true }
 }

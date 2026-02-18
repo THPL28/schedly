@@ -23,6 +23,12 @@ model User {
   // Settings
   language      String    @default("pt-BR") // pt-BR, en
   slug          String?   @unique
+  
+  // Profile
+  avatarUrl     String?
+  phone         String?
+  bio           String?
+  website       String?
 }
 
 model Plan {

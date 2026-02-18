@@ -12,6 +12,7 @@ import {
 import SidebarNav from './sidebar-nav'
 import Link from 'next/link'
 import Logo from '@/components/logo'
+import Image from 'next/image'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
     const session = await verifySession()
@@ -59,17 +60,40 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
                 {/* User Profile Footer */}
                 <div style={{ marginTop: 'auto', borderTop: '1px solid #1f2937', padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', overflow: 'hidden' }}>
-                        <div style={{ width: 36, height: 36, background: '#374151', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: 'var(--primary)', fontSize: '0.8rem' }}>
-                            {initials}
-                        </div>
-                        <div style={{ overflow: 'hidden' }}>
-                            <p style={{ fontSize: '0.875rem', fontWeight: 600, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'white' }}>{user.name}</p>
+                    <Link href="/settings" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', overflow: 'hidden', textDecoration: 'none', flex: 1, minWidth: 0 }}>
+                        {user.avatarUrl ? (
+                            <div style={{ position: 'relative', width: 36, height: 36, borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--primary)', flexShrink: 0 }}>
+                                <Image
+                                    src={user.avatarUrl}
+                                    alt={user.name || 'Perfil'}
+                                    fill
+                                    style={{ objectFit: 'cover' }}
+                                />
+                            </div>
+                        ) : (
+                            <div style={{ 
+                                width: 36, 
+                                height: 36, 
+                                background: 'linear-gradient(135deg, var(--primary), #8b5cf6)', 
+                                borderRadius: '50%', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center', 
+                                fontWeight: 700, 
+                                color: 'white', 
+                                fontSize: '0.8rem',
+                                flexShrink: 0
+                            }}>
+                                {initials}
+                            </div>
+                        )}
+                        <div style={{ overflow: 'hidden', minWidth: 0 }}>
+                            <p style={{ fontSize: '0.875rem', fontWeight: 600, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'white' }}>{user.name || 'Usuário'}</p>
                             <p style={{ fontSize: '0.7rem', color: '#9ca3af', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.email}</p>
                         </div>
-                    </div>
+                    </Link>
                     <form action={logout}>
-                        <button type="submit" style={{ background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer', display: 'flex' }} title="Sair">
+                        <button type="submit" style={{ background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer', display: 'flex', flexShrink: 0 }} title="Sair">
                             <LogOut size={18} />
                         </button>
                     </form>
