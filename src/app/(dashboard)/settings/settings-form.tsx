@@ -114,12 +114,23 @@ export default function SettingsForm({ user }: { user: any }) {
                     <div style={{ position: 'relative' }}>
                         {avatarPreview ? (
                             <div style={{ position: 'relative', width: 120, height: 120, borderRadius: '50%', overflow: 'hidden', border: '3px solid var(--primary)', background: '#f1f5f9' }}>
-                                <Image
-                                    src={avatarPreview}
-                                    alt="Foto de perfil"
-                                    fill
-                                    style={{ objectFit: 'cover' }}
-                                />
+                                {avatarPreview.startsWith('data:') ? (
+                                    // Base64 image
+                                    <img
+                                        src={avatarPreview}
+                                        alt="Foto de perfil"
+                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                    />
+                                ) : (
+                                    // Regular image URL
+                                    <Image
+                                        src={avatarPreview}
+                                        alt="Foto de perfil"
+                                        fill
+                                        style={{ objectFit: 'cover' }}
+                                        unoptimized={avatarPreview.startsWith('/uploads/')}
+                                    />
+                                )}
                                 <button
                                     type="button"
                                     onClick={handleRemoveAvatar}

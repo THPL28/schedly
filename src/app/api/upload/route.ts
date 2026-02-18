@@ -1,8 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifySession } from '@/lib/auth'
-import { writeFile, mkdir } from 'fs/promises'
-import { join } from 'path'
-import { existsSync } from 'fs'
+
+// Função para salvar arquivo localmente (desenvolvimento)
+async function saveFileLocal(buffer: Buffer, filename: string): Promise<string> {
+  const { writeFile, mkdir } = await import('fs/promises')
+  const { join } = await import('path')
+  const { existsSync } = await import('fs')
+
+  const uploadDir = join(process.cwd(), 'public', 'uploads', 'avatars')
+  if (!existsSync(uploadDir)) {
+    await mkdir(uploadDir, { recursive: true })
+  }
+
+  const filepath = join(uploadDir, filename)
+  await writeFile(filepath, buffer)
+  return `/uploads/avatars/${filename}`
+}
+
+// Função para converter imagem em base64 (fallback para produção)
+async function convertToBase64(buffer: Buffer, mimeType: string): Promise<string> {
+  const base64 = buffer.toString('base64')
+  return `data:${mimeType};base64,${base64}`
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,24 +52,24 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
 
-    // Criar diretório se não existir
-    const uploadDir = join(process.cwd(), 'public', 'uploads', 'avatars')
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true })
-    }
-
     // Gerar nome único para o arquivo
     const timestamp = Date.now()
     const randomStr = Math.random().toString(36).substring(2, 15)
     const extension = file.name.split('.').pop()
     const filename = `${session.userId}-${timestamp}-${randomStr}.${extension}`
-    const filepath = join(uploadDir, filename)
 
-    // Salvar arquivo
-    await writeFile(filepath, buffer)
+    let url: string
 
-    // Retornar URL relativa
-    const url = `/uploads/avatars/${filename}`
+    // Em produção na Vercel, o sistema de arquivos é read-only
+    // Usar base64 como fallback ou implementar Vercel Blob Storage
+    if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+      // Em produção, usar base64 (temporário) ou implementar Vercel Blob
+      // Para uma solução melhor, considere usar @vercel/blob ou outro serviço de storage
+      url = await convertToBase64(buffer, file.type)
+    } else {
+      // Em desenvolvimento, salvar localmente
+      url = await saveFileLocal(buffer, filename)
+    }
 
     return NextResponse.json({ url, success: true })
   } catch (error) {

@@ -63,12 +63,21 @@ export default async function DashboardLayout({ children }: { children: React.Re
                     <Link href="/settings" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', overflow: 'hidden', textDecoration: 'none', flex: 1, minWidth: 0 }}>
                         {user.avatarUrl ? (
                             <div style={{ position: 'relative', width: 36, height: 36, borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--primary)', flexShrink: 0 }}>
-                                <Image
-                                    src={user.avatarUrl}
-                                    alt={user.name || 'Perfil'}
-                                    fill
-                                    style={{ objectFit: 'cover' }}
-                                />
+                                {user.avatarUrl.startsWith('data:') ? (
+                                    <img
+                                        src={user.avatarUrl}
+                                        alt={user.name || 'Perfil'}
+                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                    />
+                                ) : (
+                                    <Image
+                                        src={user.avatarUrl}
+                                        alt={user.name || 'Perfil'}
+                                        fill
+                                        style={{ objectFit: 'cover' }}
+                                        unoptimized={user.avatarUrl.startsWith('/uploads/')}
+                                    />
+                                )}
                             </div>
                         ) : (
                             <div style={{ 
