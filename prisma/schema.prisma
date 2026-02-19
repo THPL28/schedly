@@ -19,6 +19,7 @@ model User {
   
   subscription  Subscription?
   appointments  Appointment[]
+  pushSubscriptions PushSubscription[]
   
   // Settings
   language      String    @default("pt-BR") // pt-BR, en
@@ -75,7 +76,7 @@ model Appointment {
 
 model PushSubscription {
   id        String   @id @default(cuid())
-  userId    String?  @db.String
+  userId    String?
   endpoint  String   @unique
   p256dh    String
   auth      String
