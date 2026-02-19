@@ -68,6 +68,11 @@ model Appointment {
   endTime    String   
   status     String   @default("SCHEDULED") // SCHEDULED, CANCELED
   notes      String?
+
+  // Reminder support (single per appointment)
+  reminderMinutesBefore Int?    // minutes before startTime to send email reminder
+  reminderSentAt         DateTime?
+
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 

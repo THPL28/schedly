@@ -109,7 +109,7 @@ export async function createAppointment(formData: FormData) {
     }
 
     const appt = await prisma.appointment.create({
-        data: { userId: session.userId as string, date: targetDate, startTime, endTime, clientName }
+        data: { userId: session.userId as string, date: targetDate, startTime, endTime, clientName, reminderMinutesBefore: 60 }
     })
 
     // notify user (push) — best-effort
@@ -146,7 +146,7 @@ export async function bookAppointmentPublic(formData: FormData) {
     }
 
     const appt = await prisma.appointment.create({
-        data: { userId: providerId, date: targetDate, startTime, endTime, clientName }
+        data: { userId: providerId, date: targetDate, startTime, endTime, clientName, reminderMinutesBefore: 60 }
     })
 
     // notify provider (push) — best-effort
