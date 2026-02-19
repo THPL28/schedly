@@ -104,12 +104,12 @@ export default function SettingsForm({ user }: { user: any }) {
     }
 
     return (
-        <form action={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem md:2rem' }}>
+        <form action={handleSubmit} className="flex flex-col gap-6 md:gap-8">
             {/* Seção de Perfil */}
-            <div className="card" style={{ padding: '1.5rem md:2rem', display: 'flex', flexDirection: 'column', gap: '1rem md:1.5rem' }}>
-                <h3 style={{ fontSize: '1.125rem md:1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>Foto de Perfil</h3>
+            <div className="card p-6 md:p-8 flex flex-col gap-4 md:gap-6">
+                <h3 className="text-lg md:text-xl font-bold mb-2">Foto de Perfil</h3>
                 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem md:2rem', flexWrap: 'wrap' }}>
+                <div className="flex items-center gap-4 md:gap-8 flex-wrap">
                     {/* Preview da Foto */}
                     <div style={{ position: 'relative' }}>
                         {avatarPreview ? (
@@ -175,7 +175,7 @@ export default function SettingsForm({ user }: { user: any }) {
                     </div>
 
                     {/* Upload Button */}
-                    <div style={{ flex: 1, minWidth: 200, width: '100%' }}>
+                    <div className="flex-1 min-w-[200px] w-full">
                         <input
                             ref={fileInputRef}
                             type="file"
@@ -186,20 +186,8 @@ export default function SettingsForm({ user }: { user: any }) {
                         />
                         <label
                             htmlFor="avatar-upload"
-                            style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '0.5rem',
-                                padding: '0.75rem 1.5rem',
-                                background: 'var(--primary)',
-                                color: 'white',
-                                borderRadius: '0.75rem',
-                                cursor: uploading ? 'wait' : 'pointer',
-                                fontWeight: 600,
-                                fontSize: '0.875rem',
-                                opacity: uploading ? 0.7 : 1,
-                                transition: 'all 0.2s'
-                            }}
+                            className="inline-flex items-center gap-2 px-4 py-3 bg-primary text-white rounded-xl cursor-pointer font-semibold text-sm transition-opacity"
+                            style={{ opacity: uploading ? 0.7 : 1 }}
                         >
                             {uploading ? (
                                 <>Carregando...</>
@@ -218,11 +206,11 @@ export default function SettingsForm({ user }: { user: any }) {
             </div>
 
             {/* Informações do Perfil */}
-            <div className="card" style={{ padding: '1.5rem md:2rem', display: 'flex', flexDirection: 'column', gap: '1rem md:1.5rem' }}>
-                <h3 style={{ fontSize: '1.125rem md:1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>Informações Pessoais</h3>
+            <div className="card p-6 md:p-8 flex flex-col gap-4 md:gap-6">
+                <h3 className="text-lg md:text-xl font-bold mb-2">Informações Pessoais</h3>
                 
                 <div>
-                    <label className="label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <label className="label flex items-center gap-2">
                         <User size={14} /> Nome Profissional
                     </label>
                     <input name="name" defaultValue={user?.name || ''} className="input" placeholder="Seu nome ou nome do negócio" />
@@ -256,7 +244,7 @@ export default function SettingsForm({ user }: { user: any }) {
                 </div>
 
                 <div>
-                    <label className="label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <label className="label flex items-center gap-2">
                         <GlobeIcon size={14} /> Website
                     </label>
                     <input 
@@ -277,21 +265,12 @@ export default function SettingsForm({ user }: { user: any }) {
                     <label className="label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <Link2 size={14} /> Link Público de Agendamento
                     </label>
-                    <div style={{ display: 'flex', alignItems: 'center', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '0.75rem', padding: '0 1rem' }}>
-                        <span style={{ color: '#94a3b8', fontSize: '0.875rem', whiteSpace: 'nowrap' }}>schedly.com/book/</span>
+                    <div className="flex items-center bg-[#f8fafc] border border-[#e2e8f0] rounded-lg px-4">
+                        <span className="text-sm text-slate-400 whitespace-nowrap">schedly.com/book/</span>
                         <input
                             name="slug"
                             defaultValue={user?.slug || ''}
-                            style={{
-                                border: 'none',
-                                background: 'transparent',
-                                padding: '0.75rem 0.5rem',
-                                flex: 1,
-                                outline: 'none',
-                                color: 'var(--primary)',
-                                fontWeight: 600,
-                                fontSize: '0.875rem'
-                            }}
+                            className="flex-1 bg-transparent border-none outline-none px-3 text-primary font-semibold text-sm"
                             placeholder="ex: barbearia-do-joao"
                         />
                     </div>
@@ -326,7 +305,7 @@ export default function SettingsForm({ user }: { user: any }) {
                 </div>
             )}
 
-            <button type="submit" className="btn btn-primary" disabled={loading} style={{ alignSelf: 'flex-start', padding: '0.875rem 1.5rem md:1rem 2rem', borderRadius: '0.75rem', width: '100%', sm: 'auto' }}>
+            <button type="submit" className="btn btn-primary self-start px-6 py-3 rounded-xl w-full sm:w-auto" disabled={loading}>
                 {loading ? 'Salvando...' : 'Salvar Alterações'}
             </button>
         </form>

@@ -32,10 +32,10 @@ export default function BookingModal({ date, startTime, onClose }: any) {
     })
 
     return (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: '1rem' }}>
-            <div className="card" style={{ width: '100%', maxWidth: '440px', padding: 0, overflow: 'hidden', border: 'none', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}>
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center z-50 p-4">
+            <div className="card w-full max-w-[440px] p-0 overflow-hidden border-none shadow-2xl">
                 {/* Modal Header */}
-                <div style={{ background: 'var(--primary)', padding: '2rem', color: 'white', position: 'relative' }}>
+                <div className="bg-primary text-white p-8 relative">
                     <button onClick={onClose} style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', cursor: 'pointer', padding: '0.4rem', borderRadius: '50%', display: 'flex' }}>
                         <X size={20} />
                     </button>
@@ -49,28 +49,28 @@ export default function BookingModal({ date, startTime, onClose }: any) {
                 </div>
 
                 {/* Modal Body */}
-                <form action={handleSubmit} style={{ padding: '1.5rem sm:2rem', display: 'flex', flexDirection: 'column', gap: '1.25rem sm:1.5rem' }}>
+                <form action={handleSubmit} className="p-6 sm:p-8 flex flex-col gap-5 sm:gap-6">
                     <input type="hidden" name="date" value={date} />
 
                     <div>
                         <label className="label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                             <User size={14} /> Nome do Cliente
                         </label>
-                        <input name="clientName" required className="input" placeholder="Ex: João Silva" style={{ height: '3rem' }} />
+                        <input name="clientName" required className="input h-12" placeholder="Ex: João Silva" />
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column sm:flex-row', gap: '1rem sm:1.5rem' }}>
+                    <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
                         <div style={{ flex: 1 }}>
                             <label className="label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <Clock size={14} /> Início
                             </label>
-                            <input name="startTime" type="time" required className="input" defaultValue={startTime} style={{ height: '2.75rem sm:3rem' }} />
+                            <input name="startTime" type="time" required className="input h-11 sm:h-12" defaultValue={startTime} />
                         </div>
                         <div style={{ flex: 1 }}>
                             <label className="label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <Clock size={14} /> Término
                             </label>
-                            <input name="endTime" type="time" required className="input" defaultValue={endTimeDefault} style={{ height: '2.75rem sm:3rem' }} />
+                            <input name="endTime" type="time" required className="input h-11 sm:h-12" defaultValue={endTimeDefault} />
                         </div>
                     </div>
 
@@ -81,9 +81,9 @@ export default function BookingModal({ date, startTime, onClose }: any) {
                         </div>
                     )}
 
-                    <div style={{ display: 'flex', flexDirection: 'column sm:flex-row', gap: '0.75rem sm:1rem' }}>
-                        <button type="button" onClick={onClose} className="btn btn-outline" style={{ flex: 1, height: '2.75rem sm:3rem', fontSize: '0.875rem sm:1rem' }}>Cancelar</button>
-                        <button type="submit" className="btn btn-primary" disabled={loading} style={{ flex: 2, height: '2.75rem sm:3rem', fontSize: '0.875rem sm:1rem' }}>
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                        <button type="button" onClick={onClose} className="btn btn-outline flex-1 h-11 sm:h-12 text-sm sm:text-base">Cancelar</button>
+                        <button type="submit" className="btn btn-primary flex-2 h-11 sm:h-12 text-sm sm:text-base" disabled={loading}>
                             {loading ? 'Agendando...' : 'Confirmar Agendamento'}
                         </button>
                     </div>

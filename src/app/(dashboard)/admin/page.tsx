@@ -38,53 +38,48 @@ export default async function AdminPage() {
 
     return (
         <div className="p-4 sm:p-6">
-            <h1 style={{ marginBottom: '1.5rem sm:2rem', fontSize: '1.5rem sm:2rem' }}>Admin Dashboard</h1>
+            <h1 className="mb-6 sm:mb-8 text-xl sm:text-2xl font-bold">Admin Dashboard</h1>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem sm:2rem', marginBottom: '1.5rem sm:2rem' }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mb-6 sm:mb-8">
                 <div className="card p-4 sm:p-6">
-                    <div className="label" style={{ fontSize: '0.7rem sm:0.75rem' }}>Total Users</div>
-                    <div style={{ fontSize: '1.5rem sm:2rem', fontWeight: 700 }}>{totalUsers}</div>
+                    <div className="label text-xs sm:text-sm">Total Users</div>
+                    <div className="text-2xl sm:text-3xl font-extrabold">{totalUsers}</div>
                 </div>
                 <div className="card p-4 sm:p-6">
-                    <div className="label" style={{ fontSize: '0.7rem sm:0.75rem' }}>Total Appointments</div>
-                    <div style={{ fontSize: '1.5rem sm:2rem', fontWeight: 700 }}>{totalAppointments}</div>
+                    <div className="label text-xs sm:text-sm">Total Appointments</div>
+                    <div className="text-2xl sm:text-3xl font-extrabold">{totalAppointments}</div>
                 </div>
             </div>
 
-            <div className="card" style={{ overflowX: 'auto', padding: 0 }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.75rem sm:0.875rem', minWidth: '600px' }}>
+            <div className="card overflow-x-auto p-0">
+                <table className="w-full border-collapse text-xs sm:text-sm min-w-[600px]">
                     <thead>
-                        <tr style={{ background: 'var(--muted-light)', textAlign: 'left' }}>
-                            <th style={{ padding: '0.75rem sm:1rem', borderBottom: '1px solid var(--border)', fontSize: '0.7rem sm:0.75rem' }}>User</th>
-                            <th style={{ padding: '0.75rem sm:1rem', borderBottom: '1px solid var(--border)', fontSize: '0.7rem sm:0.75rem' }}>Plan Status</th>
-                            <th style={{ padding: '0.75rem sm:1rem', borderBottom: '1px solid var(--border)', fontSize: '0.7rem sm:0.75rem' }}>Trial Ends</th>
-                            <th style={{ padding: '0.75rem sm:1rem', borderBottom: '1px solid var(--border)', fontSize: '0.7rem sm:0.75rem' }}>Appts</th>
-                            <th style={{ padding: '0.75rem sm:1rem', borderBottom: '1px solid var(--border)', fontSize: '0.7rem sm:0.75rem' }}>Actions</th>
+                        <tr className="bg-muted-light text-left">
+                            <th className="py-3 px-4 border-b border-border text-xs sm:text-sm">User</th>
+                            <th className="py-3 px-4 border-b border-border text-xs sm:text-sm">Plan Status</th>
+                            <th className="py-3 px-4 border-b border-border text-xs sm:text-sm">Trial Ends</th>
+                            <th className="py-3 px-4 border-b border-border text-xs sm:text-sm">Appts</th>
+                            <th className="py-3 px-4 border-b border-border text-xs sm:text-sm">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {users.map(u => (
-                            <tr key={u.id} style={{ borderBottom: '1px solid var(--border)' }}>
-                                <td style={{ padding: '0.75rem sm:1rem' }}>
-                                    <div style={{ fontWeight: 600, fontSize: '0.875rem sm:1rem' }}>{u.name}</div>
-                                    <div style={{ color: 'var(--muted)', fontSize: '0.7rem sm:0.75rem' }}>{u.email}</div>
-                                    <div style={{ color: 'var(--muted)', fontSize: '0.65rem sm:0.7rem' }}>Since {new Date(u.createdAt).toLocaleDateString()}</div>
+                            <tr key={u.id} className="border-b border-border">
+                                <td className="py-3 px-4">
+                                    <div className="font-semibold text-sm sm:text-base">{u.name}</div>
+                                    <div className="text-xs sm:text-sm text-muted">{u.email}</div>
+                                    <div className="text-[0.65rem] sm:text-[0.7rem] text-muted">Since {new Date(u.createdAt).toLocaleDateString()}</div>
                                 </td>
-                                <td style={{ padding: '0.75rem sm:1rem' }}>
-                                    <span style={{
-                                        background: u.subscription?.status === 'ACTIVE' ? 'var(--success)' :
-                                            u.subscription?.status === 'TRIAL' ? 'var(--secondary)' :
-                                                u.subscription?.status === 'EXPIRED' ? 'var(--danger)' : 'var(--muted)',
-                                        color: 'white', padding: '2px 6px sm:8px', borderRadius: '12px', fontSize: '0.7rem sm:0.75rem'
-                                    }}>
+                                <td className="py-3 px-4">
+                                    <span className={"inline-block rounded-full px-2 py-0.5 text-xs sm:text-sm font-semibold " + (u.subscription?.status === 'ACTIVE' ? 'bg-success text-white' : u.subscription?.status === 'TRIAL' ? 'bg-secondary text-white' : u.subscription?.status === 'EXPIRED' ? 'bg-danger text-white' : 'bg-muted text-white')}>
                                         {u.subscription?.status || 'NONE'}
                                     </span>
                                 </td>
-                                <td style={{ padding: '0.75rem sm:1rem', fontSize: '0.75rem sm:0.875rem' }}>
+                                <td className="py-3 px-4 text-xs sm:text-sm">
                                     {u.subscription?.trialEndDate ? new Date(u.subscription.trialEndDate).toLocaleDateString() : '-'}
                                 </td>
-                                <td style={{ padding: '0.75rem sm:1rem', fontSize: '0.875rem sm:1rem' }}>{u._count.appointments}</td>
-                                <td style={{ padding: '0.75rem sm:1rem' }}>
+                                <td className="py-3 px-4 text-sm sm:text-base">{u._count.appointments}</td>
+                                <td className="py-3 px-4">
                                     <AdminActions userId={u.id} currentStatus={u.subscription?.status} />
                                 </td>
                             </tr>

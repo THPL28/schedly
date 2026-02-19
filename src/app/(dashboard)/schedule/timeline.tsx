@@ -49,44 +49,44 @@ export default function Timeline({ date, appointments }: { date: string, appoint
     const hours = Array.from({ length: 14 }, (_, i) => i + 7) // 7 to 20
 
     return (
-        <div style={{ paddingBottom: '1rem sm:2rem' }}>
-            <div style={{ display: 'flex', flexDirection: 'column sm:flex-row', justifyContent: 'space-between', alignItems: 'flex-start sm:items-center', gap: '1rem sm:0', marginBottom: '1.5rem sm:2rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem sm:1rem' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <span style={{ fontSize: '0.65rem sm:0.7rem', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 2 }}>Visualizando</span>
-                        <h3 style={{ fontSize: '1.125rem sm:1.25rem', fontWeight: 800, margin: 0 }}>{displayDay}</h3>
+        <div className="pb-4 sm:pb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 mb-6 sm:mb-8">
+                <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="flex flex-col">
+                        <span className="text-[11px] sm:text-xs font-extrabold text-muted uppercase mb-0">Visualizando</span>
+                        <h3 className="text-base sm:text-lg font-extrabold m-0">{displayDay}</h3>
                     </div>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column sm:flex-row', alignItems: 'flex-start sm:items-center', gap: '0.75rem sm:0.5rem', width: '100% sm:auto' }}>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-2 w-full sm:w-auto">
                     {/* Month Navigator */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0 sm:0.5rem' }}>
-                        <button onClick={() => handleMonthChange(-1)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem', fontSize: '0.65rem' }}>Mês ant.</button>
-                        <span style={{ fontSize: '0.75rem sm:0.8rem', fontWeight: 700, color: '#475569', textTransform: 'capitalize' }}>{displayMonth}</span>
-                        <button onClick={() => handleMonthChange(1)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem', fontSize: '0.65rem' }}>Próx. mês</button>
+                    <div className="flex items-center gap-2 mb-0 sm:mb-2">
+                        <button onClick={() => handleMonthChange(-1)} className="btn btn-outline px-2 py-1 text-[11px]">Mês ant.</button>
+                        <span className="text-sm font-bold text-slate-600 capitalize">{displayMonth}</span>
+                        <button onClick={() => handleMonthChange(1)} className="btn btn-outline px-2 py-1 text-[11px]">Próx. mês</button>
                     </div>
 
                     {/* Day Navigator */}
-                    <div style={{ display: 'flex', alignItems: 'center', background: 'white', border: '1px solid #e2e8f0', borderRadius: '0.75rem', overflow: 'hidden', flex: '1 sm:0' }}>
-                        <button onClick={handlePrev} style={{ padding: '0.5rem sm:0.6rem 0.75rem sm:1rem', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }} className="hover-item">
+                    <div className="flex items-center bg-white border border-border rounded-[12px] overflow-hidden flex-1 sm:flex-none">
+                        <button onClick={handlePrev} className="hover-item p-2 text-muted border-none bg-transparent cursor-pointer">
                             <ChevronLeft size={16} className="sm:w-[18px] sm:h-[18px]" />
                         </button>
-                        <div style={{ padding: '0.4rem 0.75rem sm:1rem', borderLeft: '1px solid #f1f5f9', borderRight: '1px solid #f1f5f9', minWidth: '100px sm:140px', textAlign: 'center', flex: 1 }}>
-                            <span style={{ fontSize: '0.75rem sm:0.875rem', fontWeight: 800, color: '#1e293b' }}>Mudar Dia</span>
+                        <div className="px-3 sm:px-4 border-l border-r border-[#f1f5f9] min-w-[100px] sm:min-w-[140px] text-center flex-1">
+                            <span className="text-xs sm:text-sm font-extrabold text-slate-800">Mudar Dia</span>
                         </div>
-                        <button onClick={handleNext} style={{ padding: '0.5rem sm:0.6rem 0.75rem sm:1rem', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }} className="hover-item">
+                        <button onClick={handleNext} className="hover-item p-2 text-muted border-none bg-transparent cursor-pointer">
                             <ChevronRight size={16} className="sm:w-[18px] sm:h-[18px]" />
                         </button>
                     </div>
                 </div>
 
-                <button onClick={() => setIsModalOpen(true)} className="btn btn-primary w-full sm:w-auto" style={{ padding: '0.625rem sm:0.75rem 1rem sm:1.25rem', borderRadius: '0.75rem', fontSize: '0.875rem sm:1rem' }}>
+                <button onClick={() => setIsModalOpen(true)} className="btn btn-primary w-full sm:w-auto py-3 sm:py-4 px-4 sm:px-5 rounded-md text-sm sm:text-base">
                     <Plus size={16} className="sm:w-[18px] sm:h-[18px]" />
                     <span>Agendar</span>
                 </button>
             </div>
 
-            <section style={{ background: '#f8fafc', borderRadius: '1.25rem', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
+            <section className="bg-[#f8fafc] rounded-[1.25rem] border border-[#e2e8f0] overflow-hidden">
                 {hours.map((h, i) => {
                     const timeStr = `${h.toString().padStart(2, '0')}:00`
                     const isLunch = h === 12
@@ -96,41 +96,27 @@ export default function Timeline({ date, appointments }: { date: string, appoint
                     })
 
                     return (
-                        <div key={h} className="timeline-row" style={{ display: 'flex', minHeight: '80px', borderBottom: i < hours.length - 1 ? '1px solid #f1f5f9' : 'none', position: 'relative' }}>
-                            <div style={{ width: '60px sm:80px', display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: '0.75rem sm:1rem', borderRight: '1px solid #f1f5f9', background: '#f8fafc', fontSize: '0.75rem sm:0.875rem' }}>
-                                <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#94a3b8' }}>{timeStr}</span>
+                        <div key={h} className="timeline-row flex min-h-[80px] border-b last:border-b-0 relative">
+                            <div className="w-[60px] sm:w-[80px] flex items-start justify-center pt-3 sm:pt-4 border-r border-[#f1f5f9] bg-[#f8fafc] text-xs sm:text-sm">
+                                <span className="text-xs font-extrabold text-muted">{timeStr}</span>
                             </div>
 
-                            <div style={{ flex: 1, padding: '0.5rem', position: 'relative', display: 'flex', alignItems: 'center' }}>
+                            <div className="flex-1 p-2 relative flex items-center">
                                 {isLunch && apptsInSlot.length === 0 ? (
-                                    <div style={{ width: '100%', textAlign: 'center', color: '#cbd5e1', fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', fontStyle: 'italic' }}>Intervalo</div>
+                                    <div className="w-full text-center text-[0.7rem] font-semibold uppercase italic text-slate-300">Intervalo</div>
                                 ) : apptsInSlot.length > 0 ? (
-                                    <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                                    <div className="w-full flex flex-col gap-1">
                                         {apptsInSlot.map(a => (
-                                            <div key={a.id} style={{
-                                                background: 'white',
-                                                border: '1px solid #e2e8f0',
-                                                borderRadius: '0.75rem',
-                                                padding: '0.625rem sm:0.75rem 0.75rem sm:1rem',
-                                                display: 'flex',
-                                                justifyContent: 'space-between',
-                                                alignItems: 'center',
-                                                boxShadow: '0 2px 4px rgba(0,0,0,0.02)',
-                                                gap: '0.5rem',
-                                                minWidth: 0
-                                            }}>
+                                            <div key={a.id} className="bg-white border border-border rounded-xl p-2.5 sm:p-3 flex justify-between items-center shadow-sm gap-2 min-w-0">
                                                 <div style={{ flex: 1, minWidth: 0 }}>
-                                                    <h4 style={{ margin: 0, fontSize: '0.875rem sm:0.9rem', fontWeight: 800, color: '#1e293b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.clientName}</h4>
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.2rem', color: '#64748b', fontSize: '0.7rem sm:0.75rem' }}>
+                                                    <h4 className="m-0 text-sm sm:text-[0.9rem] font-extrabold text-slate-900 truncate">{a.clientName}</h4>
+                                                    <div className="flex items-center gap-1 mt-1 text-[0.7rem] sm:text-[0.75rem] text-slate-500">
                                                         <Clock size={11} className="sm:w-3 sm:h-3" />
                                                         <span>{a.startTime} — {a.endTime}</span>
                                                     </div>
                                                 </div>
 
-                                                <button
-                                                    onClick={async () => { if (confirm('Cancelar?')) await cancelAppointment(a.id); }}
-                                                    style={{ background: '#fee2e2', border: 'none', color: '#ef4444', padding: '0.375rem sm:0.4rem', borderRadius: '0.5rem', cursor: 'pointer', flexShrink: 0 }}
-                                                >
+                                                <button onClick={async () => { if (confirm('Cancelar?')) await cancelAppointment(a.id); }} className="bg-red-50 text-red-600 px-2 py-1 rounded-md cursor-pointer flex-shrink-0 border-none">
                                                     <X size={12} className="sm:w-[14px] sm:h-[14px]" />
                                                 </button>
                                             </div>
@@ -139,19 +125,7 @@ export default function Timeline({ date, appointments }: { date: string, appoint
                                 ) : (
                                     <button
                                         onClick={() => handleSlotClick(h)}
-                                        className="add-btn"
-                                        style={{
-                                            width: '100%',
-                                            height: '40px',
-                                            border: '1px dashed #e2e8f0',
-                                            borderRadius: '0.5rem',
-                                            background: 'none',
-                                            color: '#94a3b8',
-                                            fontSize: '0.7rem',
-                                            fontWeight: 700,
-                                            textTransform: 'uppercase',
-                                            cursor: 'pointer'
-                                        }}
+                                        className="w-full h-10 border-dashed border border-border rounded-md bg-transparent text-muted text-xs font-bold uppercase cursor-pointer"
                                     >
                                         + Disponível
                                     </button>

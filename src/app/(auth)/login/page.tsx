@@ -22,17 +22,17 @@ export default function LoginPage() {
     }
 
     return (
-        <div style={{ minHeight: '100vh', background: 'var(--background)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-            <div className="card" style={{ maxWidth: '440px', width: '100%', padding: '2rem 1.5rem sm:3rem 2.5rem' }}>
-                <div style={{ textAlign: 'center', marginBottom: '2rem sm:2.5rem' }}>
+        <div className="min-h-screen bg-background flex items-center justify-center p-4">
+            <div className="card max-w-[440px] w-full p-6 sm:p-8">
+                <div className="text-center mb-8 sm:mb-10">
                     <Link href="/" className="inline-flex items-center gap-2 mb-4 sm:mb-6 no-underline">
                         <Logo size={24} className="sm:!w-7 sm:!h-7" />
                     </Link>
-                    <h1 style={{ fontSize: '1.5rem sm:1.75rem', fontWeight: 800, margin: '0 0 0.5rem 0' }}>Benvindo de volta</h1>
-                    <p style={{ color: 'var(--muted)', fontSize: '0.875rem sm:0.95rem' }}>Acesse sua conta para gerenciar sua agenda.</p>
+                    <h1 className="text-xl sm:text-2xl font-extrabold mb-1">Benvindo de volta</h1>
+                    <p className="text-sm sm:text-base text-muted">Acesse sua conta para gerenciar sua agenda.</p>
                 </div>
 
-                <form action={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <form action={handleSubmit} className="flex flex-col gap-5">
                     <div>
                         <label className="label" htmlFor="email">E-mail</label>
                         <input id="email" name="email" type="email" required className="input" placeholder="seu@email.com" />
@@ -47,13 +47,13 @@ export default function LoginPage() {
 
                     {error && <div style={{ color: 'var(--accent)', fontSize: '0.875rem', fontWeight: 600 }}>{error}</div>}
 
-                    <button type="submit" className="btn btn-primary" disabled={loading} style={{ height: '3rem', fontSize: '1rem' }}>
+                    <button type="submit" className="btn btn-primary h-12 text-base" disabled={loading}>
                         {loading ? 'Entrando...' : 'Entrar'}
                     </button>
                 </form>
 
-                <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.9rem', color: 'var(--muted)' }}>
-                    Não tem uma conta? <Link href="/register" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'none' }}>Criar conta grátis</Link>
+                <div className="mt-8 text-center text-sm text-muted">
+                    Não tem uma conta? <Link href="/register" className="text-primary font-bold no-underline">Criar conta grátis</Link>
                 </div>
             </div>
         </div>

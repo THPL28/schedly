@@ -168,7 +168,7 @@ export default function BookingForm({ providerId, initialDate, busyAppointments 
                 </div>
 
                 {/* Coluna Direita: Seleção de Horário */}
-                <div className="flex-none w-[260px] bg-white p-6 border-l border-border flex flex-col">
+                <div className="w-full lg:w-[260px] flex-none bg-white p-6 border-l border-border flex flex-col">
                     <div className="flex items-center gap-2 mb-4 text-muted">
                         <Clock size={18} />
                         <span className="text-xs font-medium uppercase tracking-wider">Horários</span>

@@ -33,10 +33,8 @@ export const metadata: Metadata = {
       { url: "/icon-152x152.png", sizes: "152x152", type: "image/png" },
     ],
   },
-};
-
-export const viewport: Viewport = {
   themeColor: "#6366f1",
+  viewport: { width: "device-width", initialScale: 1 },
 };
 
 export default async function RootLayout({
