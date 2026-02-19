@@ -112,6 +112,9 @@ export async function createAppointment(formData: FormData) {
         data: { userId: session.userId as string, date: targetDate, startTime, endTime, clientName }
     })
 
+    // notify user (push) — best-effort
+    try { const { notifyUserById } = await import('./push'); await notifyUserById(session.userId as string, { title: 'Novo agendamento', body: `${clientName} — ${startTime}`, data: { url: '/dashboard' } }) } catch (e) { /* ignore */ }
+
     logEvent('APPOINTMENT_CREATED', { userId: session.userId, appointmentId: appt.id, client: clientName, date })
     revalidatePath('/schedule')
     revalidatePath('/calendar')
@@ -145,6 +148,9 @@ export async function bookAppointmentPublic(formData: FormData) {
     const appt = await prisma.appointment.create({
         data: { userId: providerId, date: targetDate, startTime, endTime, clientName }
     })
+
+    // notify provider (push) — best-effort
+    try { const { notifyUserById } = await import('./push'); await notifyUserById(providerId, { title: 'Novo agendamento público', body: `${clientName} — ${startTime}`, data: { url: '/dashboard' } }) } catch (e) { /* ignore */ }
 
     logEvent('PUBLIC_BOOKING', { providerId, client: clientName, date, time: startTime })
     revalidatePath('/schedule')

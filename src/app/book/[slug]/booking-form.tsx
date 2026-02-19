@@ -73,6 +73,28 @@ export default function BookingForm({ providerId, initialDate, busyAppointments 
         const [h] = selectedTime.split(':').map(Number)
         formData.append('endTime', `${(h).toString().padStart(2, '0')}:30`)
 
+        // If offline, queue the public booking in the service worker and return optimistic success
+        if (typeof navigator !== 'undefined' && !navigator.onLine && 'serviceWorker' in navigator) {
+            try {
+                const payload = Object.fromEntries(formData as any as Iterable<[string, string]>)
+                payload.type = 'public'
+                const reg = await navigator.serviceWorker.ready
+                reg.active?.postMessage({ type: 'QUEUE_APPOINTMENT', payload })
+                try { await reg.sync.register('sync-appointments') } catch (e) { /* ignore */ }
+
+                setLoading(false)
+                setFeedback('success')
+                setSelectedTime(null)
+                return
+            } catch (err) {
+                setLoading(false)
+                setError('Falha ao enfileirar agendamento offline')
+                setFeedback('error')
+                setTimeout(() => setFeedback(null), 3000)
+                return
+            }
+        }
+
         const res = await bookAppointmentPublic(formData)
         if (res?.error) {
             setError(res.error)
@@ -82,6 +104,7 @@ export default function BookingForm({ providerId, initialDate, busyAppointments 
         } else {
             setFeedback('success')
             setLoading(false)
+            setSelectedTime(null)
         }
     }
 
