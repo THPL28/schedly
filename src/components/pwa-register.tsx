@@ -57,6 +57,10 @@ export default function PWARegister() {
       if (msg.type === 'SW_CONTROLLER_CHANGE') {
         window.dispatchEvent(new Event('pwa:sw-updated'))
       }
+      if (msg.type === 'SW_EVAL_ERROR') {
+        console.error('[SW] evaluation error:', msg.message)
+        window.dispatchEvent(new CustomEvent('pwa:sw-eval-error', { detail: { message: msg.message } }))
+      }
     })
 
     const handleOnline = () => window.dispatchEvent(new Event('pwa:online'))
