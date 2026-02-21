@@ -80,7 +80,7 @@ export default function BookingForm({ providerId, initialDate, busyAppointments 
                 payload.type = 'public'
                 const reg = await navigator.serviceWorker.ready
                 reg.active?.postMessage({ type: 'QUEUE_APPOINTMENT', payload })
-                try { await reg.sync.register('sync-appointments') } catch (e) { /* ignore */ }
+                try { await (reg as any).sync.register('sync-appointments') } catch (e) { /* ignore */ }
 
                 setLoading(false)
                 setFeedback('success')

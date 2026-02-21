@@ -19,11 +19,10 @@ export default function BookingModal({ date, startTime, onClose }: any) {
                 const reg = await navigator.serviceWorker.ready
                 reg.active?.postMessage({ type: 'QUEUE_APPOINTMENT', payload })
                 // try to register a sync (best-effort)
-                try { await reg.sync.register('sync-appointments') } catch (e) { /* ignore */ }
+                try { await (reg as any).sync.register('sync-appointments') } catch (e) { /* ignore */ }
 
                 setLoading(false)
                 onClose()
-                return { success: true, offline: true }
             } catch (err) {
                 setLoading(false)
                 setError('Falha ao enfileirar agendamento offline')
