@@ -7,6 +7,7 @@ import OfflineBanner from '@/components/offline-banner'
 import PWAInstallCTA from '@/components/pwa-install-cta'
 import PWAUpdateToast from '@/components/pwa-update-toast'
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -62,6 +63,7 @@ export default async function RootLayout({
         <PWAUpdateToast />
 
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
