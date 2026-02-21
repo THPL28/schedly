@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { cookies } from "next/headers";
 import PWARegister from "@/components/pwa-register";
+import OfflineBanner from '@/components/offline-banner'
+import PWAInstallCTA from '@/components/pwa-install-cta'
+import PWAUpdateToast from '@/components/pwa-update-toast'
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
@@ -50,6 +53,14 @@ export default async function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <PWARegister />
         {children}
+
+        {/* PWA UX helpers */}
+        <script defer />
+        <div id="pwa-ui-root" />
+        <OfflineBanner />
+        <PWAInstallCTA />
+        <PWAUpdateToast />
+
         <SpeedInsights />
       </body>
     </html>

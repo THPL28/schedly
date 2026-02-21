@@ -11,6 +11,26 @@ export default function BookingModal({ date, startTime, onClose }: any) {
         setLoading(true)
         setError('')
 
+        // If offline, queue the appointment in the SW and return optimistic success
+        if (typeof navigator !== 'undefined' && !navigator.onLine && 'serviceWorker' in navigator) {
+            try {
+                const payload = Object.fromEntries(formData as any as Iterable<[string, string]>)
+                payload.type = 'private'
+                const reg = await navigator.serviceWorker.ready
+                reg.active?.postMessage({ type: 'QUEUE_APPOINTMENT', payload })
+                // try to register a sync (best-effort)
+                try { await reg.sync.register('sync-appointments') } catch (e) { /* ignore */ }
+
+                setLoading(false)
+                onClose()
+                return { success: true, offline: true }
+            } catch (err) {
+                setLoading(false)
+                setError('Falha ao enfileirar agendamento offline')
+                return
+            }
+        }
+
         const res = await createAppointment(formData)
         if (res?.error) {
             setError(res.error)
