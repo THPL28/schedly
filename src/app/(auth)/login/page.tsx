@@ -28,7 +28,7 @@ export default function LoginPage() {
                     <Link href="/" className="inline-flex items-center gap-2 mb-4 sm:mb-6 no-underline">
                         <Logo size={24} className="sm:!w-7 sm:!h-7" />
                     </Link>
-                    <h1 className="text-xl sm:text-2xl font-extrabold mb-1">Benvindo de volta</h1>
+                    <h1 className="text-xl sm:text-2xl font-extrabold mb-1">Bem-vindo de volta</h1>
                     <p className="text-sm sm:text-base text-muted">Acesse sua conta para gerenciar sua agenda.</p>
                 </div>
 
