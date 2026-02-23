@@ -33,9 +33,12 @@ export default function BillingPage() {
             const data = await res.json();
             if (data.url) {
                 window.location.href = data.url;
+            } else if (data.error) {
+                window.alert(`Erro: ${data.error}`);
             }
         } catch (error) {
             console.error('Checkout error:', error);
+            window.alert('Erro ao processar checkout. Tente novamente.');
         } finally {
             setLoading(null);
         }
@@ -48,9 +51,12 @@ export default function BillingPage() {
             const data = await res.json();
             if (data.url) {
                 window.location.href = data.url;
+            } else if (data.error) {
+                window.alert(`Erro: ${data.error}`);
             }
         } catch (error) {
             console.error('Portal error:', error);
+            window.alert('Erro ao abrir portal. Verifique se você já possui uma assinatura ativa.');
         } finally {
             setLoading(null);
         }

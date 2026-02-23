@@ -4,17 +4,18 @@ import { prisma } from '@/lib/prisma';
 import { cookies } from 'next/headers';
 import { jwtVerify } from 'jose';
 
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'fallback_secret');
+const SESSION_SECRET = process.env.SESSION_SECRET || 'schedly-super-secret-key-change-me-in-prod';
+const key = new TextEncoder().encode(SESSION_SECRET);
 
 async function getAuthUser() {
     const cookieStore = await cookies();
-    const token = cookieStore.get('auth-token')?.value;
+    const token = cookieStore.get('session')?.value;
 
     if (!token) return null;
 
     try {
-        const { payload } = await jwtVerify(token, JWT_SECRET);
-        return payload as { id: string; email: string };
+        const { payload } = await jwtVerify(token, key);
+        return payload as { userId: string };
     } catch (error) {
         return null;
     }
@@ -22,8 +23,8 @@ async function getAuthUser() {
 
 export async function POST(req: Request) {
     try {
-        const user = await getAuthUser();
-        if (!user) {
+        const sessionPayload = await getAuthUser();
+        if (!sessionPayload) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -33,7 +34,7 @@ export async function POST(req: Request) {
         }
 
         const dbUser = (await prisma.user.findUnique({
-            where: { id: user.id },
+            where: { id: sessionPayload.userId },
             include: { subscription: true }
         })) as any;
 
@@ -41,12 +42,32 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 });
         }
 
-        const session = await stripe.checkout.sessions.create({
+        let actualPriceId = priceId;
+
+        // If it's a product ID instead of a price ID, fetch the default price
+        if (priceId.startsWith('prod_')) {
+            const product = await stripe.products.retrieve(priceId);
+            if (typeof product.default_price === 'string') {
+                actualPriceId = product.default_price;
+            } else if (product.default_price) {
+                actualPriceId = (product.default_price as any).id;
+            } else {
+                // If no default price, look for the first active price
+                const prices = await stripe.prices.list({ product: priceId, active: true, limit: 1 });
+                if (prices.data.length > 0) {
+                    actualPriceId = prices.data[0].id;
+                } else {
+                    return NextResponse.json({ error: 'This product has no active prices.' }, { status: 400 });
+                }
+            }
+        }
+
+        const stripeSession = await stripe.checkout.sessions.create({
             customer: dbUser.stripeCustomerId || undefined,
             customer_email: dbUser.stripeCustomerId ? undefined : dbUser.email,
             line_items: [
                 {
-                    price: priceId,
+                    price: actualPriceId,
                     quantity: 1,
                 },
             ],
@@ -54,11 +75,11 @@ export async function POST(req: Request) {
             success_url: `${process.env.NEXT_PUBLIC_APP_URL}/calendar?success=true`,
             cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/billing?canceled=true`,
             metadata: {
-                userId: user.id,
+                userId: sessionPayload.userId,
             },
         });
 
-        return NextResponse.json({ url: session.url });
+        return NextResponse.json({ url: stripeSession.url });
     } catch (err: any) {
         console.error('Checkout error:', err);
         return NextResponse.json({ error: err.message }, { status: 500 });

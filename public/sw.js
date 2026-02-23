@@ -159,7 +159,7 @@ try {
     const url = event.notification?.data?.url || '/dashboard';
     event.waitUntil(
       self.clients.matchAll({ type: 'window' }).then((clientsArr) => {
-        const hadWindow = clientsArr.some((c) => c.url === url && 'focus' in c && (c as WindowClient).focus());
+        const hadWindow = clientsArr.some((c) => c.url === url && 'focus' in c && c.focus());
         if (!hadWindow && self.clients.openWindow) self.clients.openWindow(url);
       })
     );
