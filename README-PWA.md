@@ -112,3 +112,4 @@ Os ícones serão gerados na pasta `public/` com os tamanhos:
 - Use um navegador compatível (Chrome, Edge, Safari)
 - Verifique se o manifest.json está acessível
 
+

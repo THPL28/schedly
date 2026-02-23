@@ -9,27 +9,30 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  passwordHash  String
-  name          String?
-  role          String    @default("USER") // USER, ADMIN
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                String    @id @default(cuid())
+  email             String    @unique
+  passwordHash      String
+  name              String?
+  role              String    @default("USER") // USER, ADMIN
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
   
-  subscription  Subscription?
-  appointments  Appointment[]
+  subscription      Subscription?
+  appointments      Appointment[]
   pushSubscriptions PushSubscription[]
   
+  // Stripe integration
+  stripeCustomerId  String?   @unique
+
   // Settings
-  language      String    @default("pt-BR") // pt-BR, en
-  slug          String?   @unique
+  language          String    @default("pt-BR") // pt-BR, en
+  slug              String?   @unique
   
   // Profile
-  avatarUrl     String?
-  phone         String?
-  bio           String?
-  website       String?
+  avatarUrl         String?
+  phone             String?
+  bio               String?
+  website           String?
 }
 
 model Plan {
@@ -45,17 +48,21 @@ model Plan {
 }
 
 model Subscription {
-  id                String    @id @default(cuid())
-  userId            String    @unique
-  planId            String?
-  status            String    // TRIAL, ACTIVE, EXPIRED, CANCELED
-  startDate         DateTime  @default(now())
-  trialEndDate      DateTime?
-  currentPeriodEnd  DateTime? 
-  cancelAtPeriodEnd Boolean   @default(false)
-  updatedAt         DateTime  @updatedAt
+  id                   String    @id @default(cuid())
+  userId               String    @unique
+  planId               String?
+  status               String    // TRIAL, ACTIVE, EXPIRED, CANCELED
+  startDate            DateTime  @default(now())
+  trialEndDate         DateTime?
+  currentPeriodEnd     DateTime? 
+  cancelAtPeriodEnd    Boolean   @default(false)
+  updatedAt            DateTime  @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Stripe integration
+  stripeSubscriptionId String?   @unique
+  stripePriceId        String?
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
   plan Plan? @relation(fields: [planId], references: [id])
 }
 

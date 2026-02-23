@@ -5,7 +5,8 @@ import { usePathname } from 'next/navigation'
 import {
     LayoutDashboard,
     Settings,
-    ExternalLink
+    ExternalLink,
+    CreditCard
 } from 'lucide-react'
 
 export default function SidebarNav({ slug }: { slug?: string | null }) {
@@ -13,6 +14,7 @@ export default function SidebarNav({ slug }: { slug?: string | null }) {
 
     const navItems = [
         { href: '/dashboard', label: 'Painel Diário', icon: LayoutDashboard },
+        { href: '/billing', label: 'Assinatura', icon: CreditCard },
         { href: '/settings', label: 'Configurações', icon: Settings },
     ]
 
