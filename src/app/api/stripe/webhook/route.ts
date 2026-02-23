@@ -38,6 +38,7 @@ export async function POST(req: Request) {
             }
 
             const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+            const planName = (subscription as any).plan?.nickname || 'Premium';
 
             await (prisma.subscription as any).upsert({
                 where: { userId },
@@ -60,6 +61,13 @@ export async function POST(req: Request) {
                 where: { id: userId },
                 data: { stripeCustomerId: customerId },
             });
+
+            // Fetch user for email
+            const dbUser = await prisma.user.findUnique({ where: { id: userId } });
+            if (dbUser) {
+                const { sendSubscriptionSuccessEmail } = await import('@/lib/email-resend');
+                await sendSubscriptionSuccessEmail(dbUser.email, dbUser.name || 'Usuário', planName);
+            }
 
             break;
         }

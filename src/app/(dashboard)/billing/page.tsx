@@ -5,7 +5,7 @@ import { useState } from 'react';
 const PLANS = [
     {
         name: 'Basic',
-        priceId: 'prod_U1ADHKfh6Bxw9h', // Note: This is an ID provided by the user, but checkout usually needs the Price ID (price_...) or Product ID if it has a default price.
+        priceId: 'prod_U1ADHKfh6Bxw9h',
         price: 'R$ 29,90',
         description: 'Ideal para profissionais independentes.',
         features: ['Calendário Ilimitado', 'Notificações Push', '100 agendamentos/mês'],
@@ -44,24 +44,6 @@ export default function BillingPage() {
         }
     };
 
-    const handlePortal = async () => {
-        setLoading('portal');
-        try {
-            const res = await fetch('/api/stripe/portal', { method: 'POST' });
-            const data = await res.json();
-            if (data.url) {
-                window.location.href = data.url;
-            } else if (data.error) {
-                window.alert(`Erro: ${data.error}`);
-            }
-        } catch (error) {
-            console.error('Portal error:', error);
-            window.alert('Erro ao abrir portal. Verifique se você já possui uma assinatura ativa.');
-        } finally {
-            setLoading(null);
-        }
-    };
-
     return (
         <div className="p-8">
             <h1 className="text-3xl font-bold mb-8">Assinatura</h1>
@@ -91,20 +73,6 @@ export default function BillingPage() {
                         </button>
                     </div>
                 ))}
-            </div>
-
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                <h3 className="text-lg font-semibold mb-4">Gerenciar Conta</h3>
-                <p className="text-slate-400 mb-6">
-                    Acesse o portal do cliente para gerenciar suas formas de pagamento, ver faturas ou cancelar sua assinatura.
-                </p>
-                <button
-                    onClick={handlePortal}
-                    disabled={loading !== null}
-                    className="px-6 py-2 border border-slate-700 hover:bg-slate-800 rounded-lg text-slate-300 transition disabled:opacity-50"
-                >
-                    {loading === 'portal' ? 'Abrindo...' : 'Abrir Portal do Cliente'}
-                </button>
             </div>
         </div>
     );

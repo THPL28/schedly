@@ -5,6 +5,7 @@ import { createSession, verifyPassword, hashPassword, deleteSession, verifySessi
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
+import { sendWelcomeEmail } from './email-resend'
 
 // Logger helper
 function logEvent(event: string, details: any) {
@@ -69,6 +70,10 @@ export async function register(formData: FormData) {
     })
 
     await createSession(user.id)
+
+    // Send welcome email
+    await sendWelcomeEmail(user.email, user.name || 'Usuário')
+
     logEvent('USER_REGISTERED', { userId: user.id, email: user.email, slug })
     redirect('/dashboard')
 }
