@@ -31,8 +31,10 @@ export async function POST(req: Request) {
         const body = await req.json().catch(() => ({}));
         const planId = body.planId || body.priceId;
 
+        console.log('--- Checkout Request ---');
+        console.log('Received planId/priceId:', planId);
+
         if (!planId) {
-            console.error('Missing planId/priceId in request body:', body);
             return NextResponse.json({ error: 'Plan ID is required' }, { status: 400 });
         }
 
@@ -47,17 +49,40 @@ export async function POST(req: Request) {
 
         let actualPriceId = '';
 
-        if (planId === 'BASIC') {
+        if (planId === 'BASIC' || planId === 'prod_U1ADHKfh6Bxw9h') {
             actualPriceId = process.env.STRIPE_PRICE_BASIC || '';
-        } else if (planId === 'PRO') {
+        } else if (planId === 'PRO' || planId === 'prod_U1AE1hdAt9j5jx') {
             actualPriceId = process.env.STRIPE_PRICE_PRO || '';
         } else {
-            // Fallback for direct IDs if needed
             actualPriceId = planId;
         }
 
+        console.log('Resolved initial priceId:', actualPriceId);
+
+        // If it's a product ID (starts with prod_), resolve it to its default price
+        if (actualPriceId.startsWith('prod_')) {
+            console.log('Resolving product ID:', actualPriceId);
+            try {
+                const product = await stripe.products.retrieve(actualPriceId);
+                if (typeof product.default_price === 'string') {
+                    actualPriceId = product.default_price;
+                } else if (product.default_price) {
+                    actualPriceId = (product.default_price as any).id;
+                } else {
+                    const prices = await stripe.prices.list({ product: actualPriceId, active: true, limit: 1 });
+                    if (prices.data.length > 0) {
+                        actualPriceId = prices.data[0].id;
+                    }
+                }
+            } catch (e) {
+                console.error('Error resolving product ID:', e);
+            }
+        }
+
+        console.log('Final priceId for Stripe:', actualPriceId);
+
         if (!actualPriceId) {
-            return NextResponse.json({ error: 'Invalid plan selected.' }, { status: 400 });
+            return NextResponse.json({ error: 'Invalid plan selected or Price ID missing.' }, { status: 400 });
         }
 
         const stripeSession = await stripe.checkout.sessions.create({

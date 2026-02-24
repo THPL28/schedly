@@ -11,7 +11,7 @@ module.exports = {
           hover: '#4f46e5',
         },
         sidebar: {
-          bg: '#111827',
+          bg: '#ffffff',
         },
         background: '#f8fafc',
         foreground: '#1e293b',

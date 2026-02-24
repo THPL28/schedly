@@ -8,9 +8,10 @@
   /* Indigo-500 */
   --primary-hover: #4f46e5;
   --sidebar-bg: #ffffff;
-  --sidebar-item-active: rgba(99, 102, 241, 0.1);
-  --sidebar-text: #64748b;
-  --sidebar-border: #e2e8f0;
+  --sidebar-item-active: rgba(99, 102, 241, 0.08);
+  --sidebar-text: #475569;
+  /* Slightly darker for better readability */
+  --sidebar-border: #f1f5f9;
   --background: #f8fafc;
   /* Slate-50 */
   --surface: #ffffff;
@@ -163,7 +164,7 @@ body {
 .sidebar {
   width: 280px;
   background: var(--sidebar-bg);
-  color: white;
+  color: var(--foreground);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -289,21 +290,23 @@ body {
   gap: 0.75rem;
   padding: 0.875rem 1rem;
   color: var(--sidebar-text);
-  border-radius: var(--radius-md);
+  border-radius: 0.75rem;
   text-decoration: none;
-  font-weight: 500;
-  transition: all 0.2s;
-  margin: 0.25rem 1rem;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  margin: 0.125rem 0.75rem;
 }
 
 .nav-link:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: white;
+  background: rgba(99, 102, 241, 0.08);
+  color: var(--primary);
+  transform: translateX(4px);
 }
 
 .nav-link.active {
   background: var(--sidebar-item-active);
-  color: white;
+  color: var(--primary);
+  font-weight: 700;
 }
 
 /* Stats Grid */
@@ -330,7 +333,8 @@ body {
 }
 
 .hover-item:hover {
-  background: var(--background) !important;
+  background: rgba(99, 102, 241, 0.12) !important;
+  border-color: var(--primary) !important;
 }
 
 /* Landing Page Utilities */

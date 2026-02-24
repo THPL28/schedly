@@ -3,10 +3,11 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import ServiceBookingFlow from './booking-flow';
 import { ChevronLeft, Clock, Tag, Globe, User } from 'lucide-react';
+import { Suspense } from 'react';
 
 export const dynamic = 'force-dynamic';
 
-export default async function ServicePage({ params }: { params: Promise<{ slug: string, service_slug: string }> }) {
+export default async function BookingServicePage({ params }: { params: Promise<{ slug: string, service_slug: string }> }) {
     const { slug, service_slug } = await params;
 
     const user = await prisma.user.findUnique({
@@ -99,10 +100,12 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
                 {/* Main Booking Flow Area */}
                 <div className="flex-1 overflow-auto bg-white">
-                    <ServiceBookingFlow
-                        user={user}
-                        eventType={eventType}
-                    />
+                    <Suspense fallback={<div className="p-10 text-center">Carregando...</div>}>
+                        <ServiceBookingFlow
+                            user={user}
+                            eventType={eventType}
+                        />
+                    </Suspense>
                 </div>
             </div>
         </div>

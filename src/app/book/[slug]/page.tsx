@@ -7,6 +7,8 @@ export const dynamic = 'force-dynamic';
 
 export default async function PublicPage({ params }: { params: Promise<{ slug: string }> }) {
     const resolvedParams = await params;
+    console.log('[DEBUG] Booking Page - Slug received:', resolvedParams.slug);
+
     const user = await prisma.user.findUnique({
         where: { slug: resolvedParams.slug },
         include: {
@@ -19,6 +21,8 @@ export default async function PublicPage({ params }: { params: Promise<{ slug: s
             }
         }
     });
+
+    console.log('[DEBUG] Booking Page - User found:', user ? user.name : 'NOT FOUND');
 
     if (!user) notFound();
 
