@@ -28,9 +28,9 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { priceId } = await req.json();
-        if (!priceId) {
-            return NextResponse.json({ error: 'Price ID is required' }, { status: 400 });
+        const { planId } = await req.json();
+        if (!planId) {
+            return NextResponse.json({ error: 'Plan ID is required' }, { status: 400 });
         }
 
         const dbUser = (await prisma.user.findUnique({
@@ -42,24 +42,19 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 });
         }
 
-        let actualPriceId = priceId;
+        let actualPriceId = '';
 
-        // If it's a product ID instead of a price ID, fetch the default price
-        if (priceId.startsWith('prod_')) {
-            const product = await stripe.products.retrieve(priceId);
-            if (typeof product.default_price === 'string') {
-                actualPriceId = product.default_price;
-            } else if (product.default_price) {
-                actualPriceId = (product.default_price as any).id;
-            } else {
-                // If no default price, look for the first active price
-                const prices = await stripe.prices.list({ product: priceId, active: true, limit: 1 });
-                if (prices.data.length > 0) {
-                    actualPriceId = prices.data[0].id;
-                } else {
-                    return NextResponse.json({ error: 'This product has no active prices.' }, { status: 400 });
-                }
-            }
+        if (planId === 'BASIC') {
+            actualPriceId = process.env.STRIPE_PRICE_BASIC || '';
+        } else if (planId === 'PRO') {
+            actualPriceId = process.env.STRIPE_PRICE_PRO || '';
+        } else {
+            // Fallback for direct IDs if needed
+            actualPriceId = planId;
+        }
+
+        if (!actualPriceId) {
+            return NextResponse.json({ error: 'Invalid plan selected.' }, { status: 400 });
         }
 
         const stripeSession = await stripe.checkout.sessions.create({

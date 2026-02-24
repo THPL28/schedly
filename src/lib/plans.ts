@@ -36,9 +36,16 @@ export const PLANS: Record<PlanType, PlanDetails> = {
     }
 };
 
-export function getPlanLimit(status: string | null | undefined, planName: string | null | undefined): PlanDetails {
+export function getPlanLimit(status: string | null | undefined, priceIdOrName: string | null | undefined): PlanDetails {
     if (status === 'TRIAL') return PLANS.FREE;
-    if (planName === 'Pro') return PLANS.PRO;
-    if (planName === 'Basic') return PLANS.BASIC;
+
+    // Check against Price IDs from environment
+    if (priceIdOrName === process.env.STRIPE_PRICE_PRO || priceIdOrName === 'Pro' || priceIdOrName === 'PRO') {
+        return PLANS.PRO;
+    }
+    if (priceIdOrName === process.env.STRIPE_PRICE_BASIC || priceIdOrName === 'Basic' || priceIdOrName === 'BASIC') {
+        return PLANS.BASIC;
+    }
+
     return PLANS.FREE;
 }

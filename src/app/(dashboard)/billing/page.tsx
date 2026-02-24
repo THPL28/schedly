@@ -6,7 +6,7 @@ import { Check, ShieldCheck, Zap, Star } from 'lucide-react';
 const PLANS = [
     {
         name: 'Basic',
-        priceId: 'prod_U1ADHKfh6Bxw9h',
+        planId: 'BASIC',
         price: 'R$ 29,90',
         description: 'Ideal para profissionais independentes começando.',
         features: ['100 agendamentos por mês', 'Múltiplos serviços (Event Types)', 'Buffer Time automático', 'Página profissional básica', 'Notificações Push'],
@@ -15,7 +15,7 @@ const PLANS = [
     },
     {
         name: 'Pro',
-        priceId: 'prod_U1AE1hdAt9j5jx',
+        planId: 'PRO',
         price: 'R$ 49,90',
         description: 'Completo para quem busca excelência e escala.',
         features: ['Agendamentos ILIMITADOS', 'Lembretes por E-mail (24h/1h)', 'Página pública premium', 'Suporte prioritário', 'Custom Branding'],
@@ -27,13 +27,13 @@ const PLANS = [
 export default function BillingPage() {
     const [loading, setLoading] = useState<string | null>(null);
 
-    const handleCheckout = async (priceId: string) => {
-        setLoading(priceId);
+    const handleCheckout = async (planId: string) => {
+        setLoading(planId);
         try {
             const res = await fetch('/api/stripe/checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ priceId }),
+                body: JSON.stringify({ planId }),
             });
             const data = await res.json();
             if (data.url) {
@@ -97,11 +97,11 @@ export default function BillingPage() {
                         </div>
 
                         <button
-                            onClick={() => handleCheckout(plan.priceId)}
+                            onClick={() => handleCheckout(plan.planId)}
                             disabled={loading !== null}
                             className={`btn h-16 text-lg font-black transition-all ${plan.recommended ? 'btn-primary shadow-2xl shadow-primary/30' : 'bg-slate-900 text-white hover:bg-slate-800'}`}
                         >
-                            {loading === plan.priceId ? 'Processando...' : `Ativar Plano ${plan.name}`}
+                            {loading === plan.planId ? 'Processando...' : `Ativar Plano ${plan.name}`}
                         </button>
                     </div>
                 ))}

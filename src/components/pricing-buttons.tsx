@@ -6,7 +6,7 @@ import { CheckCircle2 } from 'lucide-react';
 
 interface Plan {
     name: string;
-    priceId: string;
+    planId: string;
     price: string;
     description: string;
     features: string[];
@@ -16,14 +16,14 @@ interface Plan {
 const PLANS: Plan[] = [
     {
         name: 'Basic',
-        priceId: 'prod_U1ADHKfh6Bxw9h',
+        planId: 'BASIC',
         price: 'R$ 29,90',
         description: 'Ideal para profissionais individuais em início de carreira.',
         features: ['Agendamentos ilimitados', 'Lembretes por e-mail', 'Relatórios básicos'],
     },
     {
         name: 'Pro',
-        priceId: 'prod_U1AE1hdAt9j5jx',
+        planId: 'PRO',
         price: 'R$ 49,90',
         description: 'Para profissionais em crescimento que buscam o melhor.',
         features: ['Tudo do Basic', 'Relatórios avançados', 'Branding personalizado', 'Suporte prioritário'],
@@ -41,12 +41,12 @@ export default function PricingButtons({ session, isExpired }: { session: any, i
             return;
         }
 
-        setLoading(plan.priceId);
+        setLoading(plan.planId);
         try {
             const res = await fetch('/api/stripe/checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ priceId: plan.priceId }),
+                body: JSON.stringify({ planId: plan.planId }),
             });
             const data = await res.json();
             if (data.url) {
@@ -91,7 +91,7 @@ export default function PricingButtons({ session, isExpired }: { session: any, i
                         disabled={loading !== null}
                         className={`btn ${plan.popular ? 'btn-primary' : 'btn-outline'} w-full h-12 text-base`}
                     >
-                        {loading === plan.priceId ? 'Processando...' :
+                        {loading === plan.planId ? 'Processando...' :
                             session ? (plan.name === 'Basic' ? 'Assinar Basic' : 'Assinar Pro') : 'Iniciar Teste Grátis'}
                     </button>
 

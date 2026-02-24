@@ -117,7 +117,10 @@ export async function createAppointment(formData: FormData) {
     })
 
     if (user?.subscription) {
-        const plan = getPlanLimit(user.subscription.status, (user.subscription as any).planId)
+        const plan = getPlanLimit(
+            user.subscription.status,
+            user.subscription.stripePriceId || (user.subscription as any).planId
+        )
         const startOfMonth = new Date()
         startOfMonth.setDate(1)
         startOfMonth.setHours(0, 0, 0, 0)
@@ -199,7 +202,10 @@ export async function bookAppointmentPublic(formData: FormData) {
     if (!provider || !eventType) return { error: 'Prestador ou serviço não encontrado' }
 
     if (provider.subscription) {
-        const plan = getPlanLimit(provider.subscription.status, (provider.subscription as any).planId)
+        const plan = getPlanLimit(
+            provider.subscription.status,
+            provider.subscription.stripePriceId || (provider.subscription as any).planId
+        )
         const startOfMonth = new Date()
         startOfMonth.setDate(1)
         startOfMonth.setHours(0, 0, 0, 0)
@@ -390,7 +396,10 @@ export async function createEventType(formData: FormData) {
     })
 
     if (user?.subscription) {
-        const plan = getPlanLimit(user.subscription.status, (user.subscription as any).planId)
+        const plan = getPlanLimit(
+            user.subscription.status,
+            user.subscription.stripePriceId || (user.subscription as any).planId
+        )
         if (!plan.multipleEventTypes && user._count.eventTypes >= 1) {
             return { error: `Seu plano (${plan.name}) permite apenas 1 tipo de serviço. Faça o upgrade para criar mais.` }
         }
