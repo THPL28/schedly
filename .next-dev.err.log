@@ -1,0 +1,62 @@
+⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+
+<--- Last few GCs --->
+
+[15348:0000014045905000]  1578327 ms: Scavenge 64.5 (73.5) -> 58.2 (74.8) MB, pooled: 0 MB, 9.69 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[15348:0000014045905000]  1578655 ms: Mark-Compact 63.4 (75.3) -> 53.9 (75.5) MB, pooled: 0 MB, 8.94 / 0.00 ms  (+ 21.8 ms in 57 steps since start of marking, biggest step 12.7 ms, walltime since start of marking 278 ms) (average mu = 1.000, current mu = 
+FATAL ERROR: Zone Allocation failed - process out of memory
+----- Native stack trace -----
+
+ 1: 00007FF7A111AA39 
+ 2: 00007FF7A1D5CD07 
+ 3: 00007FF7A16D7CC6 
+ 4: 00007FF7A15D0357 
+ 5: 00007FF7A16D987E 
+ 6: 00007FF7A16DA1C6 
+ 7: 00007FF7A16DA291 
+ 8: 00007FF7A157C143 
+ 9: 00007FF7A152A134 
+10: 00007FF7A1562F5A 
+11: 00007FF7A1538C1B 
+12: 00007FF7A15B0D86 
+13: 00007FF7A15AFAA0 
+14: 00007FF7A15AD89A 
+15: 00007FF7A1CD098F 
+16: 00007FF7A15AF37B 
+17: 00007FF7A252C29F 
+18: 00007FF7A106EB4E 
+19: 00007FF7A1DB2056 
+20: 00007FF7A2FF0373 
+21: 00007FFF532A259D 
+22: 00007FFF5528AF78 
+
+-----
+[1m[31mFATAL[39m[0m: An unexpected Turbopack error occurred. A panic log has been written to C:\Users\THPL\AppData\Local\Temp\next-panic-ad5435489b1249babd66f7b0ed19912b.log.
+
+To help make Turbopack better, report this error by clicking here: https://github.com/vercel/next.js/discussions/new?category=turbopack-error-report&title=Turbopack%20Error%3A%20failed%20to%20receive%20message&body=Turbopack%20version%3A%20%6023c46498%60%0ANext.js%20version%3A%20%600.0.0%60%0A%0AError%20message%3A%0A%60%60%60%0ATurbopack%20Error%3A%20failed%20to%20receive%20message%0A%60%60%60&labels=Turbopack,Turbopack%20Panic%20Backtrace
+-----
+
+
+-----
+[1m[31mFATAL[39m[0m: An unexpected Turbopack error occurred. A panic log has been written to C:\Users\THPL\AppData\Local\Temp\next-panic-ad5435489b1249babd66f7b0ed19912b.log.
+
+To help make Turbopack better, report this error by clicking here: https://github.com/vercel/next.js/discussions/new?category=turbopack-error-report&title=Turbopack%20Error%3A%20failed%20to%20receive%20message&body=Turbopack%20version%3A%20%6023c46498%60%0ANext.js%20version%3A%20%600.0.0%60%0A%0AError%20message%3A%0A%60%60%60%0ATurbopack%20Error%3A%20failed%20to%20receive%20message%0A%60%60%60&labels=Turbopack,Turbopack%20Panic%20Backtrace
+-----
+
+
+-----
+[1m[31mFATAL[39m[0m: An unexpected Turbopack error occurred. A panic log has been written to C:\Users\THPL\AppData\Local\Temp\next-panic-ad5435489b1249babd66f7b0ed19912b.log.
+
+To help make Turbopack better, report this error by clicking here: https://github.com/vercel/next.js/discussions/new?category=turbopack-error-report&title=Turbopack%20Error%3A%20failed%20to%20receive%20message&body=Turbopack%20version%3A%20%6023c46498%60%0ANext.js%20version%3A%20%600.0.0%60%0A%0AError%20message%3A%0A%60%60%60%0ATurbopack%20Error%3A%20failed%20to%20receive%20message%0A%60%60%60&labels=Turbopack,Turbopack%20Panic%20Backtrace
+-----
+
+
+-----
+[1m[31mFATAL[39m[0m: An unexpected Turbopack error occurred. A panic log has been written to C:\Users\THPL\AppData\Local\Temp\next-panic-ad5435489b1249babd66f7b0ed19912b.log.
+
+To help make Turbopack better, report this error by clicking here: https://github.com/vercel/next.js/discussions/new?category=turbopack-error-report&title=Turbopack%20Error%3A%20failed%20to%20receive%20message&body=Turbopack%20version%3A%20%6023c46498%60%0ANext.js%20version%3A%20%600.0.0%60%0A%0AError%20message%3A%0A%60%60%60%0ATurbopack%20Error%3A%20failed%20to%20receive%20message%0A%60%60%60&labels=Turbopack,Turbopack%20Panic%20Backtrace
+-----
+

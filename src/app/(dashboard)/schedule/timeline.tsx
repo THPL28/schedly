@@ -110,6 +110,9 @@ export default function Timeline({ date, appointments }: { date: string, appoint
                                             <div key={a.id} className="bg-white border border-border rounded-xl p-2.5 sm:p-3 flex justify-between items-center shadow-sm gap-2 min-w-0">
                                                 <div style={{ flex: 1, minWidth: 0 }}>
                                                     <h4 className="m-0 text-sm sm:text-[0.9rem] font-extrabold text-slate-900 truncate">{a.clientName}</h4>
+                                                    {a.eventType && (
+                                                        <div className="text-[10px] text-primary font-bold uppercase mt-0.5">{a.eventType.name}</div>
+                                                    )}
                                                     <div className="flex items-center gap-1 mt-1 text-[0.7rem] sm:text-[0.75rem] text-slate-500">
                                                         <Clock size={11} className="sm:w-3 sm:h-3" />
                                                         <span>{a.startTime} — {a.endTime}</span>

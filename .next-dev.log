@@ -1,0 +1,32 @@
+
+> schedlyfy@0.1.0 dev
+> next dev --hostname 127.0.0.1 --port 3000
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://127.0.0.1:3000
+- Network:       http://127.0.0.1:3000
+- Environments: .env
+
+✓ Starting...
+✓ Ready in 3.3s
+○ Compiling / ...
+ GET / 200 in 10.2s (compile: 8.9s, render: 1347ms)
+✓ Compiled in 478ms
+ GET / 200 in 621ms (compile: 239ms, render: 382ms)
+ GET /book/tiago-looze 200 in 2.5s
+ GET / 200 in 5.5s (compile: 27ms, render: 5.4s)
+ GET / 200 in 1835ms (compile: 142ms, render: 1692ms)
+○ Compiling /offline ...
+ GET /offline 200 in 6.5s (compile: 5.6s, render: 942ms)
+○ Compiling /dashboard ...
+○ Compiling /_error ...
+ GET /dashboard 500 in 35.2s (compile: 30.1s, render: 5.0s)
+ GET /dashboard 500 in 532ms (compile: 187ms, render: 345ms)
+ GET /dashboard 500 in 1207ms (compile: 286ms, render: 922ms)
+ GET /dashboard 500 in 1561ms (compile: 1522ms, render: 40ms)
+Persisting failed: Unable to commit operations
+
+Caused by:
+    0: Unable to write SST file 00000407.sst
+    1: Key dictionary creation failed
+    2: Allocation error : not enough memory

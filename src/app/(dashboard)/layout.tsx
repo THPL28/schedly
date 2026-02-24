@@ -16,6 +16,7 @@ import Logo from '@/components/logo'
 import Image from 'next/image'
 import MobileSidebar from '@/components/mobile-sidebar'
 import DashboardClient from './dashboard-client'
+import CurrentDate from '@/components/current-date'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
     const session = await verifySession()
@@ -32,6 +33,18 @@ export default async function DashboardLayout({ children }: { children: React.Re
         redirect('/login')
     }
 
+    // Check subscription expiration
+    if (user.subscription) {
+        const isExpired = user.subscription.status === 'EXPIRED' ||
+            (user.subscription.status === 'TRIAL' &&
+                user.subscription.trialEndDate &&
+                new Date(user.subscription.trialEndDate) < new Date())
+
+        if (isExpired) {
+            redirect('/pricing?expired=true')
+        }
+    }
+
     // i18n
     const cookieStore = await cookies()
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'pt'
@@ -42,21 +55,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
         ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
         : 'U'
 
-    const todayStr = new Date().toLocaleDateString('pt-BR', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long'
-    })
-
     return (
         <DashboardClient
             user={user}
             slug={user.slug}
-            todayStr={todayStr}
             initials={initials}
         >
             {/* Desktop Sidebar */}
-            <aside className="sidebar desktop-sidebar">
+            <aside className="sidebar desktop-sidebar" style={{ borderRight: '1px solid var(--sidebar-border)' }}>
                 <div style={{ padding: '2rem 1.5rem' }}>
                     <Link href="/dashboard" className="no-underline">
                         <Logo size={32} />
@@ -67,7 +73,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
                 <SidebarNav slug={user.slug} />
 
                 {/* User Profile Footer */}
-                <div style={{ marginTop: 'auto', borderTop: '1px solid #1f2937', padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ marginTop: 'auto', borderTop: '1px solid var(--sidebar-border)', padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <Link href="/settings" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', overflow: 'hidden', textDecoration: 'none', flex: 1, minWidth: 0 }}>
                         {user.avatarUrl ? (
                             <div style={{ position: 'relative', width: 36, height: 36, borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--primary)', flexShrink: 0 }}>
@@ -88,16 +94,16 @@ export default async function DashboardLayout({ children }: { children: React.Re
                                 )}
                             </div>
                         ) : (
-                            <div style={{ 
-                                width: 36, 
-                                height: 36, 
-                                background: 'linear-gradient(135deg, var(--primary), #8b5cf6)', 
-                                borderRadius: '50%', 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                justifyContent: 'center', 
-                                fontWeight: 700, 
-                                color: 'white', 
+                            <div style={{
+                                width: 36,
+                                height: 36,
+                                background: 'linear-gradient(135deg, var(--primary), #8b5cf6)',
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontWeight: 700,
+                                color: 'white',
                                 fontSize: '0.8rem',
                                 flexShrink: 0
                             }}>
@@ -105,12 +111,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
                             </div>
                         )}
                         <div style={{ overflow: 'hidden', minWidth: 0 }}>
-                            <p style={{ fontSize: '0.875rem', fontWeight: 600, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'white' }}>{user.name || 'Usuário'}</p>
-                            <p style={{ fontSize: '0.7rem', color: '#9ca3af', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.email}</p>
+                            <p style={{ fontSize: '0.875rem', fontWeight: 600, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--foreground)' }}>{user.name || 'Usuário'}</p>
+                            <p style={{ fontSize: '0.7rem', color: 'var(--muted)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.email}</p>
                         </div>
                     </Link>
                     <form action={logout}>
-                        <button type="submit" style={{ background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer', display: 'flex', flexShrink: 0 }} title="Sair">
+                        <button type="submit" style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', display: 'flex', flexShrink: 0 }} title="Sair">
                             <LogOut size={18} />
                         </button>
                     </form>
@@ -138,13 +144,13 @@ export default async function DashboardLayout({ children }: { children: React.Re
                     >
                         <Menu size={24} />
                     </button>
-                    
+
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
                         <h1 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>Gerenciamento Diário</h1>
                     </div>
-                    
+
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                        <p className="top-nav-date" style={{ fontSize: '0.875rem', fontWeight: 600, color: '#64748b', textTransform: 'capitalize' }}>{todayStr}</p>
+                        <CurrentDate />
                         <div className="top-nav-divider" style={{ height: 32, width: 1, background: '#e2e8f0' }}></div>
                         <button style={{ position: 'relative', background: '#f8fafc', border: 'none', padding: '0.5rem', borderRadius: '50%', cursor: 'pointer', color: '#94a3b8' }}>
                             <Bell size={22} />

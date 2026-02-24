@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
     if (!body || !body.endpoint) return NextResponse.json({ error: 'Invalid subscription' }, { status: 400 })
 
     const session = await verifySession()
-    const userId = session?.userId || null
+    const userId = typeof session?.userId === 'string' ? session.userId : null
     await saveSubscriptionToDb(body, userId)
     return NextResponse.json({ success: true })
   } catch (err) {

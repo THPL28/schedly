@@ -11,11 +11,10 @@ interface DashboardClientProps {
     avatarUrl?: string | null
   }
   slug?: string | null
-  todayStr: string
   initials: string
 }
 
-export default function DashboardClient({ children, user, slug, todayStr, initials }: DashboardClientProps) {
+export default function DashboardClient({ children, user, slug, initials }: DashboardClientProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
 
@@ -37,7 +36,7 @@ export default function DashboardClient({ children, user, slug, todayStr, initia
         slug={slug}
         user={user}
       />
-      
+
       <div className="dashboard-layout">
         {children}
       </div>

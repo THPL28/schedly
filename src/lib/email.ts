@@ -54,7 +54,6 @@ export async function sendMail(opts: MailOptions) {
   const info = await transporter.sendMail({ from, to: opts.to, subject: opts.subject, text: opts.text, html: opts.html })
 
   // In development with Ethereal provide preview URL
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const preview = (nodemailer as any).getTestMessageUrl ? (nodemailer as any).getTestMessageUrl(info) : null
   return { info, preview }
 }

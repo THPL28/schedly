@@ -7,10 +7,10 @@
   --primary: #6366f1;
   /* Indigo-500 */
   --primary-hover: #4f46e5;
-  --sidebar-bg: #111827;
-  /* Gray-900 */
-  --sidebar-item-active: rgba(255, 255, 255, 0.1);
-  --sidebar-text: #9ca3af;
+  --sidebar-bg: #ffffff;
+  --sidebar-item-active: rgba(99, 102, 241, 0.1);
+  --sidebar-text: #64748b;
+  --sidebar-border: #e2e8f0;
   --background: #f8fafc;
   /* Slate-50 */
   --surface: #ffffff;
@@ -232,7 +232,7 @@ body {
   }
 
   /* Dashboard Pages */
-  .dashboard-layout .scroll-area > div {
+  .dashboard-layout .scroll-area>div {
     padding: 0 !important;
   }
 

@@ -8,11 +8,28 @@ export default async function SettingsPage() {
     const session = await verifySession()
     if (!session) redirect('/login')
 
-    const user = await prisma.user.findUnique({ where: { id: session.userId as string } })
+    const user = await prisma.user.findUnique({
+        where: { id: session.userId as string },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            avatarUrl: true,
+            phone: true,
+            bio: true,
+            website: true,
+            slug: true,
+            language: true
+        }
+    })
+
+    if (!user) {
+        redirect('/login')
+    }
 
     return (
         <div className="card w-full" style={{ maxWidth: '600px', margin: '0 auto' }}>
-            <h2 style={{ marginBottom: '1.5rem md:2rem', fontSize: '1.5rem md:2rem' }}>Configurações</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8">Configurações</h2>
             <SettingsForm user={user} />
             <div className="mt-6">
                 <PushSubscribe />

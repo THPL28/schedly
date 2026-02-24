@@ -113,3 +113,4 @@ Os ícones serão gerados na pasta `public/` com os tamanhos:
 - Verifique se o manifest.json está acessível
 
 
+

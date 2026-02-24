@@ -6,14 +6,25 @@ import {
     LayoutDashboard,
     Settings,
     ExternalLink,
-    CreditCard
+    CreditCard,
+    Calendar,
+    Clock
 } from 'lucide-react'
 
+import { useState, useEffect } from 'react'
+
 export default function SidebarNav({ slug }: { slug?: string | null }) {
+    const [mounted, setMounted] = useState(false)
     const pathname = usePathname()
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
     const navItems = [
         { href: '/dashboard', label: 'Painel Diário', icon: LayoutDashboard },
+        { href: '/settings/event-types', label: 'Serviços', icon: Calendar },
+        { href: '/settings/availability', label: 'Disponibilidade', icon: Clock },
         { href: '/billing', label: 'Assinatura', icon: CreditCard },
         { href: '/settings', label: 'Configurações', icon: Settings },
     ]
@@ -21,24 +32,12 @@ export default function SidebarNav({ slug }: { slug?: string | null }) {
     return (
         <nav style={{ flex: 1, padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             {navItems.map((item) => {
-                const isActive = pathname === item.href
+                const isActive = mounted && pathname === item.href
                 return (
                     <Link
                         key={item.href}
                         href={item.href}
-                        className={`hover-item ${isActive ? 'sidebar-active' : ''}`}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.75rem',
-                            padding: '0.875rem 1.25rem',
-                            borderRadius: '1rem',
-                            textDecoration: 'none',
-                            color: isActive ? 'white' : '#94a3b8',
-                            background: isActive ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
-                            transition: 'all 0.2s',
-                            fontWeight: isActive ? 700 : 500
-                        }}
+                        className={`nav-link ${isActive ? 'active' : ''}`}
                     >
                         <item.icon size={20} style={{ color: isActive ? 'var(--primary)' : 'inherit' }} />
                         <span>{item.label}</span>

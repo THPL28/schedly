@@ -55,3 +55,29 @@ export async function sendSubscriptionSuccessEmail(to: string, name: string, pla
         console.error('Error sending subscription success email:', error);
     }
 }
+
+export async function sendAppointmentConfirmationEmail(to: string, clientName: string, providerName: string, serviceName: string, date: string, time: string, token: string) {
+    try {
+        await resend.emails.send({
+            from: 'Schedlyfy <onboarding@resend.dev>',
+            to,
+            subject: `Confirmado: ${serviceName} com ${providerName}`,
+            html: `
+        <h1>Olá, ${clientName}!</h1>
+        <p>Seu agendamento foi confirmado com sucesso.</p>
+        <div style="background: #f8fafc; padding: 20px; border-radius: 10px; border: 1px solid #e2e8f0; margin: 20px 0;">
+          <p style="margin: 0 0 10px 0;"><strong>Serviço:</strong> ${serviceName}</p>
+          <p style="margin: 0 0 10px 0;"><strong>Profissional:</strong> ${providerName}</p>
+          <p style="margin: 0 0 10px 0;"><strong>Data:</strong> ${date}</p>
+          <p style="margin: 0;"><strong>Horário:</strong> ${time}</p>
+        </div>
+        <p>Caso precise reagendar ou cancelar, clique no link abaixo:</p>
+        <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/appointment/${token}">Gerenciar meu agendamento</a></p>
+        <br>
+        <p>Atenciosamente,<br>Equipe Schedlyfy</p>
+      `,
+        });
+    } catch (error) {
+        console.error('Error sending appointment confirmation email:', error);
+    }
+}

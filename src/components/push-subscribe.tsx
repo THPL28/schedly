@@ -12,12 +12,13 @@ function urlBase64ToUint8Array(base64String: string) {
 }
 
 export default function PushSubscribe() {
-  const [supported, setSupported] = useState(false)
+  const supported = typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window
   const [subscribed, setSubscribed] = useState(false)
   const [publicKey, setPublicKey] = useState<string | null>(null)
 
   useEffect(() => {
-    setSupported(!!('serviceWorker' in navigator && 'PushManager' in window))
+    if (!supported) return
+
     // fetch vapid key
     fetch('/api/push/publicKey').then((r) => r.json()).then((j) => {
       if (j?.publicKey) setPublicKey(j.publicKey)
@@ -25,7 +26,7 @@ export default function PushSubscribe() {
 
     // check existing subscription
     navigator.serviceWorker.ready.then((reg) => reg.pushManager.getSubscription().then((s) => setSubscribed(!!s)))
-  }, [])
+  }, [supported])
 
   async function subscribe() {
     if (!publicKey) return alert('VAPID public key not configured on server')

@@ -19,6 +19,9 @@ model User {
   
   subscription      Subscription?
   appointments      Appointment[]
+  eventTypes        EventType[]
+  availability      Availability[]
+  overrides         AvailabilityOverride[]
   pushSubscriptions PushSubscription[]
   
   // Stripe integration
@@ -33,6 +36,10 @@ model User {
   phone             String?
   bio               String?
   website           String?
+
+  // Settings - Availability
+  minLeadTime       Int       @default(2) // hours
+  maxFutureDays     Int       @default(30) // days
 }
 
 model Plan {
@@ -66,24 +73,70 @@ model Subscription {
   plan Plan? @relation(fields: [planId], references: [id])
 }
 
-model Appointment {
-  id         String   @id @default(cuid())
-  userId     String
-  clientName String
-  date       DateTime 
-  startTime  String   
-  endTime    String   
-  status     String   @default("SCHEDULED") // SCHEDULED, CANCELED
-  notes      String?
+model EventType {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  slug        String
+  description String?
+  duration    Int      // in minutes
+  price       Decimal?
+  bufferTime  Int      @default(0) // in minutes
+  color       String   @default("#3b82f6")
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  // Reminder support (single per appointment)
-  reminderMinutesBefore Int?    // minutes before startTime to send email reminder
-  reminderSentAt         DateTime?
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
+
+  @@unique([userId, slug])
+}
+
+model Availability {
+  id        String @id @default(cuid())
+  userId    String
+  dayOfWeek Int    // 0-6 (Sunday-Saturday)
+  startTime String // HH:mm
+  endTime   String // HH:mm
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AvailabilityOverride {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime
+  startTime String?  // HH:mm (if null, unavailable)
+  endTime   String?  // HH:mm
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Appointment {
+  id          String   @id @default(cuid())
+  userId      String
+  eventTypeId String?
+  clientName  String
+  clientEmail String
+  clientPhone String?
+  date        DateTime 
+  startTime   String   
+  endTime     String   
+  status      String   @default("SCHEDULED") // SCHEDULED, CANCELED, RESCHEDULED
+  notes       String?
+  
+  cancelToken String   @unique @default(uuid())
+
+  // Reminder support
+  reminder24hSent Boolean @default(false)
+  reminder1hSent  Boolean @default(false)
 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventType EventType? @relation(fields: [eventTypeId], references: [id])
 }
 
 model PushSubscription {

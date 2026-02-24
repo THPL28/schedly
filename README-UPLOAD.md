@@ -60,3 +60,4 @@ Para melhor performance e escalabilidade, recomendo usar Vercel Blob Storage:
 A implementação atual funciona em desenvolvimento (salva localmente) e em produção (usa base64 como fallback). Para produção em escala, considere migrar para uma das soluções acima.
 
 
+

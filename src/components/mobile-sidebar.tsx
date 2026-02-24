@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { X, LayoutDashboard, Settings, ExternalLink, LogOut } from 'lucide-react'
+import { X, LayoutDashboard, Settings, ExternalLink, LogOut, Calendar, Clock, CreditCard } from 'lucide-react'
 import Logo from './logo'
 import Image from 'next/image'
 
@@ -20,7 +20,12 @@ interface MobileSidebarProps {
 }
 
 export default function MobileSidebar({ isOpen, onClose, slug, user, onLogout }: MobileSidebarProps) {
+  const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Fechar ao navegar
   useEffect(() => {
@@ -43,6 +48,9 @@ export default function MobileSidebar({ isOpen, onClose, slug, user, onLogout }:
 
   const navItems = [
     { href: '/dashboard', label: 'Painel Diário', icon: LayoutDashboard },
+    { href: '/settings/event-types', label: 'Serviços', icon: Calendar },
+    { href: '/settings/availability', label: 'Disponibilidade', icon: Clock },
+    { href: '/billing', label: 'Assinatura', icon: CreditCard },
     { href: '/settings', label: 'Configurações', icon: Settings },
   ]
 
@@ -82,29 +90,30 @@ export default function MobileSidebar({ isOpen, onClose, slug, user, onLogout }:
           width: '280px',
           maxWidth: '85vw',
           background: 'var(--sidebar-bg)',
-          color: 'white',
+          color: 'var(--foreground)',
           zIndex: 999,
           display: 'flex',
           flexDirection: 'column',
           transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
           transition: 'transform 0.3s ease-in-out',
-          boxShadow: isOpen ? '2px 0 10px rgba(0, 0, 0, 0.3)' : 'none'
+          boxShadow: isOpen ? 'var(--shadow-lg)' : 'none',
+          borderRight: '1px solid var(--sidebar-border)'
         }}
       >
         {/* Header */}
-        <div style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #1f2937' }}>
+        <div style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--sidebar-border)' }}>
           <Link href="/dashboard" className="no-underline" onClick={onClose}>
             <Logo size={28} />
           </Link>
           <button
             onClick={onClose}
             style={{
-              background: 'rgba(255, 255, 255, 0.1)',
+              background: 'var(--muted-light)',
               border: 'none',
               borderRadius: '0.5rem',
               padding: '0.5rem',
               cursor: 'pointer',
-              color: 'white',
+              color: 'var(--muted)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
@@ -117,24 +126,13 @@ export default function MobileSidebar({ isOpen, onClose, slug, user, onLogout }:
         {/* Navigation */}
         <nav style={{ flex: 1, padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', overflowY: 'auto' }}>
           {navItems.map((item) => {
-            const isActive = pathname === item.href
+            const isActive = mounted && pathname === item.href
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={onClose}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  padding: '0.875rem 1.25rem',
-                  borderRadius: '1rem',
-                  textDecoration: 'none',
-                  color: isActive ? 'white' : '#94a3b8',
-                  background: isActive ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
-                  transition: 'all 0.2s',
-                  fontWeight: isActive ? 700 : 500
-                }}
+                className={`nav-link ${isActive ? 'active' : ''}`}
               >
                 <item.icon size={20} style={{ color: isActive ? 'var(--primary)' : 'inherit' }} />
                 <span>{item.label}</span>
@@ -171,7 +169,7 @@ export default function MobileSidebar({ isOpen, onClose, slug, user, onLogout }:
         </nav>
 
         {/* User Profile Footer */}
-        <div style={{ borderTop: '1px solid #1f2937', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div style={{ borderTop: '1px solid var(--sidebar-border)', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <Link href="/settings" onClick={onClose} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}>
             {user?.avatarUrl ? (
               <div style={{ position: 'relative', width: 40, height: 40, borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--primary)', flexShrink: 0 }}>
@@ -209,8 +207,8 @@ export default function MobileSidebar({ isOpen, onClose, slug, user, onLogout }:
               </div>
             )}
             <div style={{ overflow: 'hidden', minWidth: 0, flex: 1 }}>
-              <p style={{ fontSize: '0.875rem', fontWeight: 600, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'white' }}>{user?.name || 'Usuário'}</p>
-              <p style={{ fontSize: '0.7rem', color: '#9ca3af', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.email}</p>
+              <p style={{ fontSize: '0.875rem', fontWeight: 600, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--foreground)' }}>{user?.name || 'Usuário'}</p>
+              <p style={{ fontSize: '0.7rem', color: 'var(--muted)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.email}</p>
             </div>
           </Link>
           <form action="/api/logout" method="POST" onSubmit={onClose}>

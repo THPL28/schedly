@@ -7,6 +7,7 @@ import OfflineBanner from '@/components/offline-banner'
 import PWAInstallCTA from '@/components/pwa-install-cta'
 import PWAUpdateToast from '@/components/pwa-update-toast'
 import { SpeedInsights } from "@vercel/speed-insights/next";
+// import { Analytics } from "@vercel/analytics/react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,8 +37,12 @@ export const metadata: Metadata = {
       { url: "/icon-152x152.png", sizes: "152x152", type: "image/png" },
     ],
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
   themeColor: "#6366f1",
-  viewport: { width: "device-width", initialScale: 1 },
 };
 
 export default async function RootLayout({
@@ -62,6 +67,7 @@ export default async function RootLayout({
         <PWAUpdateToast />
 
         <SpeedInsights />
+        {/* <Analytics /> */}
       </body>
     </html>
   );

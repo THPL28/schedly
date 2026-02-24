@@ -16,6 +16,10 @@ export default function LoginPage() {
 
         const r = await login(formData)
         if (r?.error) {
+            if ((r as any).expired) {
+                window.location.href = '/pricing?expired=true'
+                return
+            }
             setError(r.error)
             setLoading(false)
         }

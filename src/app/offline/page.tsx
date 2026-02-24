@@ -26,13 +26,13 @@ export default function OfflinePage() {
         </div>
 
         <div className="flex flex-col gap-4">
-          <button
-            onClick={() => window.location.reload()}
+          <a
+            href="/offline"
             className="btn btn-primary px-8 py-4 rounded-full flex items-center justify-center gap-2 shadow-lg hover:scale-105 transition-all"
           >
             <RefreshCw size={20} />
             Tentar Novamente
-          </button>
+          </a>
           
           <Link
             href="/"
@@ -55,5 +55,6 @@ export default function OfflinePage() {
     </div>
   )
 }
+
 
 

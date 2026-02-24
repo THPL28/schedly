@@ -14,6 +14,7 @@ export async function POST(request: NextRequest) {
     const startTime = payload?.startTime
     const endTime = payload?.endTime
     const clientName = payload?.clientName
+    const clientEmail = payload?.clientEmail
 
     if (!date || !startTime || !endTime || !clientName) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
@@ -34,7 +35,16 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Time not available' }, { status: 409 })
       }
 
-      await prisma.appointment.create({ data: { userId: session.userId as string, date: targetDate, startTime, endTime, clientName } })
+      await prisma.appointment.create({
+        data: {
+          userId: session.userId as string,
+          date: targetDate,
+          startTime,
+          endTime,
+          clientName,
+          clientEmail: clientEmail || 'internal@schedlyfy.com',
+        },
+      })
       // notify owner (self)
       try { await notifyUserById(session.userId as string, { title: 'Agendamento criado (offline)', body: `${clientName} — ${startTime}`, data: { url: '/dashboard' } }) } catch { /* ignore */ }
       return NextResponse.json({ success: true })
@@ -43,13 +53,24 @@ export async function POST(request: NextRequest) {
     // public booking (providerId required)
     const providerId = payload?.providerId
     if (!providerId) return NextResponse.json({ error: 'providerId required for public booking' }, { status: 400 })
+    const provider = await prisma.user.findUnique({ where: { id: providerId }, select: { id: true } })
+    if (!provider) return NextResponse.json({ error: 'Provider not found' }, { status: 404 })
 
     const existing = await prisma.appointment.findMany({ where: { userId: providerId, date: targetDate, status: 'SCHEDULED' } })
     if (existing.some(a => startMins < toMins(a.endTime) && toMins(a.startTime) < endMins)) {
       return NextResponse.json({ error: 'Time not available' }, { status: 409 })
     }
 
-    await prisma.appointment.create({ data: { userId: providerId, date: targetDate, startTime, endTime, clientName } })
+    await prisma.appointment.create({
+      data: {
+        userId: provider.id,
+        date: targetDate,
+        startTime,
+        endTime,
+        clientName,
+        clientEmail: clientEmail || 'offline@schedlyfy.com',
+      },
+    })
     // notify provider
     try { await notifyUserById(providerId, { title: 'Novo agendamento', body: `${clientName} — ${startTime}`, data: { url: '/dashboard' } }) } catch { /* ignore */ }
 

@@ -45,3 +45,4 @@ Depois execute o SQL no console do banco.
 Após aplicar, o erro deve desaparecer e o dashboard deve funcionar normalmente.
 
 
+

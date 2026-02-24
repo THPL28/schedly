@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // small push helper (uses web-push)
 import webpush from 'web-push'
 import { prisma } from './prisma'
