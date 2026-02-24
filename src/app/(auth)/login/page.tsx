@@ -28,12 +28,12 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen bg-background flex items-center justify-center p-4">
             <div className="card max-w-[440px] w-full p-6 sm:p-8">
-                <div className="text-center mb-8 sm:mb-10">
+                <div className="text-center mb-10">
                     <Link href="/" className="inline-flex items-center gap-2 mb-6 no-underline">
                         <Logo size={28} />
                     </Link>
-                    <h1 className="text-xl sm:text-2xl font-extrabold mb-1">Bem-vindo de volta</h1>
-                    <p className="text-sm sm:text-base text-muted">Acesse sua conta para gerenciar sua agenda.</p>
+                    <h1 className="text-3xl font-extrabold m-0 mb-2">Bem-vindo de volta</h1>
+                    <p className="text-muted text-base m-0">Acesse sua conta para gerenciar sua agenda.</p>
                 </div>
 
                 <form action={handleSubmit} className="flex flex-col gap-5">

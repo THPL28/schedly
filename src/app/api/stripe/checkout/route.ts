@@ -28,8 +28,11 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { planId } = await req.json();
+        const body = await req.json().catch(() => ({}));
+        const planId = body.planId || body.priceId;
+
         if (!planId) {
+            console.error('Missing planId/priceId in request body:', body);
             return NextResponse.json({ error: 'Plan ID is required' }, { status: 400 });
         }
 
