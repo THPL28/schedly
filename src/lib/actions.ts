@@ -499,7 +499,10 @@ export async function deleteEventType(id: string) {
 export async function cancelAppointmentForm(formData: FormData) {
     const token = formData.get('token') as string
     if (!token) return { error: 'Token missing' }
+    return cancelAppointmentPublic(token)
+}
 
+export async function cancelAppointmentPublic(token: string) {
     await prisma.appointment.update({
         where: { cancelToken: token },
         data: { status: 'CANCELED' }
