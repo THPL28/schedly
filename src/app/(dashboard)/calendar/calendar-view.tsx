@@ -9,7 +9,7 @@ export default function CalendarView({ year, month, counts, appointmentsToday, s
     year: number,
     month: number,
     counts: Record<string, number>,
-    appointmentsToday: Appointment[],
+    appointmentsToday: any[],
     selectedDate: string
 }) {
     const router = useRouter()
