@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 
 export async function DELETE(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const { reasonType, reasonText } = await req.json();
@@ -13,7 +13,7 @@ export async function DELETE(
             return NextResponse.json({ error: 'Motivo do cancelamento é obrigatório' }, { status: 400 });
         }
 
-        const { id: appointmentId } = params;
+        const { id: appointmentId } = await params;
 
         // In a real SaaS, we would verify ownership via the token
         const cookieStore = await cookies();
