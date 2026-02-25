@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useParams } from 'next/navigation'
-import { Logo } from '@/components/logo'
+import Logo from '@/components/logo'
 
 export default function PortalLogin() {
     const { slug } = useParams()
