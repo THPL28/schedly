@@ -27,6 +27,26 @@ export default async function BookingServicePage({ params }: { params: Promise<{
 
     if (!eventType) notFound();
 
+    const serializedUser = {
+        ...user,
+        createdAt: user.createdAt.toISOString(),
+        updatedAt: user.updatedAt.toISOString(),
+        subscription: user.subscription ? {
+            ...user.subscription,
+            startDate: user.subscription.startDate.toISOString(),
+            trialEndDate: user.subscription.trialEndDate?.toISOString(),
+            currentPeriodEnd: user.subscription.currentPeriodEnd?.toISOString(),
+            updatedAt: user.subscription.updatedAt.toISOString(),
+        } : null
+    };
+
+    const serializedEventType = {
+        ...eventType,
+        price: eventType.price ? Number(eventType.price) : null,
+        createdAt: eventType.createdAt.toISOString(),
+        updatedAt: eventType.updatedAt.toISOString(),
+    };
+
     return (
         <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-4 py-8 md:py-20 font-sans">
             <div className="w-full max-w-[1020px] bg-white rounded-[2.5rem] shadow-[0_25px_70px_rgba(0,0,0,0.06)] overflow-hidden border border-slate-100 flex flex-col md:flex-row min-h-[640px]">
@@ -102,8 +122,8 @@ export default async function BookingServicePage({ params }: { params: Promise<{
                 <div className="flex-1 overflow-auto bg-white">
                     <Suspense fallback={<div className="p-10 text-center">Carregando...</div>}>
                         <ServiceBookingFlow
-                            user={user}
-                            eventType={eventType}
+                            user={serializedUser as any}
+                            eventType={serializedEventType as any}
                         />
                     </Suspense>
                 </div>

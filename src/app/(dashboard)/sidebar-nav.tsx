@@ -8,7 +8,9 @@ import {
     ExternalLink,
     CreditCard,
     Calendar,
-    Clock
+    Clock,
+    Users,
+    BarChart3
 } from 'lucide-react'
 
 import { useState, useEffect } from 'react'
@@ -23,8 +25,10 @@ export default function SidebarNav({ slug }: { slug?: string | null }) {
 
     const navItems = [
         { href: '/dashboard', label: 'Painel Diário', icon: LayoutDashboard },
+        { href: '/clients', label: 'Clientes', icon: Users },
         { href: '/settings/event-types', label: 'Serviços', icon: Calendar },
         { href: '/settings/availability', label: 'Disponibilidade', icon: Clock },
+        { href: '/reports', label: 'Relatórios', icon: BarChart3 },
         { href: '/billing', label: 'Assinatura', icon: CreditCard },
         { href: '/settings', label: 'Configurações', icon: Settings },
     ]

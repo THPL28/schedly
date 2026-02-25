@@ -58,7 +58,12 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
                 year={year}
                 month={month}
                 counts={counts}
-                appointmentsToday={appointmentsToday}
+                appointmentsToday={appointmentsToday.map(a => ({
+                    ...a,
+                    date: a.date.toISOString(),
+                    createdAt: a.createdAt.toISOString(),
+                    updatedAt: a.updatedAt.toISOString(),
+                }))}
                 selectedDate={selectedDate}
             />
         </div>

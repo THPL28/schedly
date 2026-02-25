@@ -57,6 +57,19 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
     const isToday = dateStr === new Date().toISOString().split('T')[0]
 
+    const serializedAppts = todayAppts.map(app => ({
+        ...app,
+        date: app.date.toISOString(),
+        createdAt: app.createdAt.toISOString(),
+        updatedAt: app.updatedAt.toISOString(),
+        eventType: app.eventType ? {
+            ...app.eventType,
+            price: app.eventType.price ? Number(app.eventType.price) : null,
+            createdAt: app.eventType.createdAt.toISOString(),
+            updatedAt: app.eventType.updatedAt.toISOString(),
+        } : null
+    }));
+
     const kpis = [
         { label: isToday ? 'Hoje' : 'Neste Dia', value: todayAppts.length, icon: Clock, color: 'var(--primary)', bg: 'rgba(99, 102, 241, 0.1)' },
         { label: 'Total Ativos', value: totalCount, icon: CalendarCheck, color: 'var(--success)', bg: 'rgba(16, 185, 129, 0.1)' },
@@ -121,7 +134,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                     <Link href="/calendar" className="text-xs font-bold py-2 px-4 rounded-lg bg-primary/5 text-primary hover:bg-primary/10 transition-colors" style={{ textDecoration: 'none' }}>Ver Calendário Completo</Link>
                 </div>
 
-                <Timeline date={dateStr} appointments={todayAppts} />
+                <Timeline date={dateStr} appointments={serializedAppts} />
             </div>
         </div>
     )

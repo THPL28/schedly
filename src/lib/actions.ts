@@ -14,6 +14,21 @@ function logEvent(event: string, details: any) {
     console.log(`[LOG] ${timestamp} | EVENT: ${event} | DETAILS: ${JSON.stringify(details)}`)
 }
 
+async function getOrCreateClient(name: string, email: string, phone?: string) {
+    let client = await prisma.client.findUnique({ where: { email } });
+    if (!client) {
+        client = await prisma.client.create({
+            data: { name, email, phone }
+        });
+    } else if (phone && phone !== client.phone) {
+        client = await prisma.client.update({
+            where: { email },
+            data: { phone }
+        });
+    }
+    return client;
+}
+
 export async function login(formData: FormData) {
     const email = formData.get('email') as string
     const password = formData.get('password') as string
@@ -155,6 +170,9 @@ export async function createAppointment(formData: FormData) {
         return { error: 'Time not available' }
     }
 
+    const clientEmail = (session as any).email || 'internal@schedlyfy.com';
+    const client = await getOrCreateClient(clientName, clientEmail);
+
     const appt = await prisma.appointment.create({
         data: {
             userId: session.userId as string,
@@ -162,7 +180,8 @@ export async function createAppointment(formData: FormData) {
             startTime,
             endTime,
             clientName,
-            clientEmail: (session as any).email || 'internal@schedlyfy.com',
+            clientEmail,
+            clientId: client.id,
             reminder24hSent: false,
             reminder1hSent: false
         }
@@ -234,6 +253,8 @@ export async function bookAppointmentPublic(formData: FormData) {
         return { error: 'Este horário acabou de ser ocupado. Por favor, escolha outro.' }
     }
 
+    const client = await getOrCreateClient(clientName, clientEmail, clientPhone);
+
     const appt = await prisma.appointment.create({
         data: {
             userId: providerId,
@@ -244,6 +265,7 @@ export async function bookAppointmentPublic(formData: FormData) {
             clientName,
             clientEmail,
             clientPhone,
+            clientId: client.id,
             notes,
             reminder24hSent: false,
             reminder1hSent: false
@@ -300,7 +322,19 @@ export async function cancelAppointment(appointmentId: string) {
         return { error: 'Unauthorized' }
     }
 
-    await prisma.appointment.update({ where: { id: appointmentId }, data: { status: 'CANCELED' } })
+    const reasonType = 'DESISTIU' // Default for provider quick cancel
+
+    await prisma.$transaction([
+        prisma.appointment.update({ where: { id: appointmentId }, data: { status: 'CANCELED' } }),
+        prisma.appointmentCancellation.create({
+            data: {
+                appointmentId,
+                cancelledBy: 'PROVIDER',
+                reasonType,
+                reasonText: 'Cancelado pelo prestador via painel.'
+            }
+        })
+    ])
     logEvent('APPOINTMENT_CANCELED', { userId: session.userId, appointmentId })
 
     revalidatePath('/schedule')
