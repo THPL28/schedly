@@ -33,8 +33,16 @@ export default async function DashboardLayout({ children }: { children: React.Re
         redirect('/login')
     }
 
+    // Whitelisted emails (No limitations, no payments)
+    const WHITELIST_EMAILS = [
+        'tiago.looze28@gmail.com',
+        'thpldevweb@gmail.com',
+        'flahwagner19@gmail.com'
+    ]
+    const isWhitelisted = WHITELIST_EMAILS.includes(user.email)
+
     // Check subscription expiration
-    if (user.subscription) {
+    if (user.subscription && !isWhitelisted) {
         const isExpired = user.subscription.status === 'EXPIRED' ||
             (user.subscription.status === 'TRIAL' &&
                 user.subscription.trialEndDate &&

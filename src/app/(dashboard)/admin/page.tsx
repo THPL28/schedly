@@ -56,6 +56,7 @@ export default async function AdminPage() {
                     <thead>
                         <tr className="bg-muted-light text-left">
                             <th className="py-3 px-4 border-b border-border text-xs sm:text-sm">User</th>
+                            <th className="py-3 px-4 border-b border-border text-xs sm:text-sm">Role</th>
                             <th className="py-3 px-4 border-b border-border text-xs sm:text-sm">Plan Status</th>
                             <th className="py-3 px-4 border-b border-border text-xs sm:text-sm">Trial Ends</th>
                             <th className="py-3 px-4 border-b border-border text-xs sm:text-sm">Appts</th>
@@ -71,6 +72,11 @@ export default async function AdminPage() {
                                     <div className="text-[0.65rem] sm:text-[0.7rem] text-muted">Since {new Date(u.createdAt).toLocaleDateString()}</div>
                                 </td>
                                 <td className="py-3 px-4">
+                                    <span className={"inline-block rounded-full px-2 py-0.5 text-xs sm:text-sm font-semibold " + (u.role === 'ADMIN' ? 'bg-primary text-white' : 'bg-muted text-white')}>
+                                        {u.role}
+                                    </span>
+                                </td>
+                                <td className="py-3 px-4">
                                     <span className={"inline-block rounded-full px-2 py-0.5 text-xs sm:text-sm font-semibold " + (u.subscription?.status === 'ACTIVE' ? 'bg-success text-white' : u.subscription?.status === 'TRIAL' ? 'bg-secondary text-white' : u.subscription?.status === 'EXPIRED' ? 'bg-danger text-white' : 'bg-muted text-white')}>
                                         {u.subscription?.status || 'NONE'}
                                     </span>
@@ -80,7 +86,7 @@ export default async function AdminPage() {
                                 </td>
                                 <td className="py-3 px-4 text-sm sm:text-base">{u._count.appointments}</td>
                                 <td className="py-3 px-4">
-                                    <AdminActions userId={u.id} currentStatus={u.subscription?.status} />
+                                    <AdminActions userId={u.id} currentStatus={u.subscription?.status} userRole={u.role} />
                                 </td>
                             </tr>
                         ))}

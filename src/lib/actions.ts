@@ -45,8 +45,15 @@ export async function login(formData: FormData) {
         return { error: 'Invalid credentials' }
     }
 
+    const WHITELIST_EMAILS = [
+        'tiago.looze28@gmail.com',
+        'thpldevweb@gmail.com',
+        'flahwagner19@gmail.com'
+    ]
+    const isWhitelisted = WHITELIST_EMAILS.includes(user.email)
+
     // Check subscription
-    if (user.subscription) {
+    if (user.subscription && !isWhitelisted) {
         const isExpired = user.subscription.status === 'EXPIRED' ||
             (user.subscription.status === 'TRIAL' &&
                 user.subscription.trialEndDate &&
@@ -373,6 +380,51 @@ export async function expireSubscription(targetUserId: string) {
         data: { status: 'EXPIRED' }
     })
     logEvent('SUBSCRIPTION_STATUS_CHANGE', { targetUserId, newStatus: 'EXPIRED', adminId: session.userId })
+    revalidatePath('/admin')
+}
+
+export async function extendTrial(targetUserId: string, days: number = 30) {
+    const session = await verifySession()
+    if (!session || !session.userId) return { error: 'Unauthorized' }
+    const admin = await prisma.user.findUnique({ where: { id: session.userId as string } })
+    if (admin?.role !== 'ADMIN') {
+        logEvent('ACCESS_DENIED', { attempt: 'extendTrial', userId: session.userId })
+        return { error: 'Forbidden' }
+    }
+
+    const currentSub = await prisma.subscription.findUnique({ where: { userId: targetUserId } })
+    const baseDate = currentSub?.trialEndDate && new Date(currentSub.trialEndDate) > new Date()
+        ? new Date(currentSub.trialEndDate)
+        : new Date()
+
+    const newTrialEnd = new Date(baseDate)
+    newTrialEnd.setDate(newTrialEnd.getDate() + days)
+
+    await prisma.subscription.update({
+        where: { userId: targetUserId },
+        data: {
+            status: 'TRIAL',
+            trialEndDate: newTrialEnd
+        }
+    })
+    logEvent('TRIAL_EXTENDED', { targetUserId, newTrialEnd, adminId: session.userId })
+    revalidatePath('/admin')
+}
+
+export async function setUserRole(targetUserId: string, role: string) {
+    const session = await verifySession()
+    if (!session || !session.userId) return { error: 'Unauthorized' }
+    const admin = await prisma.user.findUnique({ where: { id: session.userId as string } })
+    if (admin?.role !== 'ADMIN') {
+        logEvent('ACCESS_DENIED', { attempt: 'setUserRole', userId: session.userId })
+        return { error: 'Forbidden' }
+    }
+
+    await prisma.user.update({
+        where: { id: targetUserId },
+        data: { role }
+    })
+    logEvent('ROLE_CHANGED', { targetUserId, newRole: role, adminId: session.userId })
     revalidatePath('/admin')
 }
 
