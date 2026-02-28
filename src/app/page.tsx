@@ -151,19 +151,6 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Brand Bar */}
-        <section className="py-20 border-y border-border/50 bg-white/30 backdrop-blur-sm">
-          <div className="container text-center">
-            <p className="text-[0.75rem] font-black text-muted/60 uppercase tracking-[0.3em] mb-12">
-              Confiado por mais de 5.000 profissionais modernos
-            </p>
-            <div className="flex justify-between items-center opacity-30 grayscale hover:grayscale-0 transition-all duration-500 flex-wrap gap-12 px-8">
-              {['FORBES', 'TECHCRUNCH', 'WIRED', 'THE VERGE', 'NY TIMES'].map(logo => (
-                <span key={logo} className="text-2xl font-black tracking-[0.2em]">{logo}</span>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* Features Section */}
         <section id="features" className="py-16 sm:py-24 md:py-32 relative overflow-hidden">
