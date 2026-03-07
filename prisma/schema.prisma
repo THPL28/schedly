@@ -1,0 +1,166 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id                String                 @id @default(cuid())
+  email             String                 @unique
+  passwordHash      String
+  name              String?
+  role              String                 @default("USER")
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  stripeCustomerId  String?                @unique
+  language          String                 @default("pt-BR")
+  slug              String?                @unique
+  avatarUrl         String?
+  phone             String?
+  bio               String?
+  website           String?
+  minLeadTime       Int                    @default(2)
+  maxFutureDays     Int                    @default(30)
+  appointments      Appointment[]
+  availability      Availability[]
+  overrides         AvailabilityOverride[]
+  clientNotes       ClientNote[]
+  eventTypes        EventType[]
+  pushSubscriptions PushSubscription[]
+  subscription      Subscription?
+}
+
+model Plan {
+  id            String         @id @default(cuid())
+  name          String         @unique
+  price         Decimal
+  currency      String         @default("BRL")
+  billingCycle  String         @default("MONTHLY")
+  features      String
+  isActive      Boolean        @default(true)
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id                   String    @id @default(cuid())
+  userId               String    @unique
+  planId               String?
+  status               String
+  startDate            DateTime  @default(now())
+  trialEndDate         DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean   @default(false)
+  updatedAt            DateTime  @updatedAt
+  stripeSubscriptionId String?   @unique
+  stripePriceId        String?
+  plan                 Plan?     @relation(fields: [planId], references: [id])
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model EventType {
+  id           String        @id @default(cuid())
+  userId       String
+  name         String
+  slug         String
+  description  String?
+  duration     Int
+  price        Decimal?
+  bufferTime   Int           @default(0)
+  color        String        @default("#3b82f6")
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  appointments Appointment[]
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, slug])
+}
+
+model Availability {
+  id        String @id @default(cuid())
+  userId    String
+  dayOfWeek Int
+  startTime String
+  endTime   String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AvailabilityOverride {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime
+  startTime String?
+  endTime   String?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Client {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  name         String
+  phone        String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  appointments Appointment[]
+  notes        ClientNote[]
+}
+
+model ClientNote {
+  id        String   @id @default(cuid())
+  clientId  String
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AppointmentCancellation {
+  id            String      @id @default(cuid())
+  appointmentId String      @unique
+  cancelledBy   String
+  reasonType    String
+  reasonText    String?
+  createdAt     DateTime    @default(now())
+  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+}
+
+model Appointment {
+  id              String                   @id @default(cuid())
+  userId          String
+  eventTypeId     String?
+  clientName      String
+  clientEmail     String
+  clientPhone     String?
+  date            DateTime
+  startTime       String
+  endTime         String
+  status          String                   @default("SCHEDULED")
+  notes           String?
+  cancelToken     String                   @unique @default(uuid())
+  reminder24hSent Boolean                  @default(false)
+  reminder1hSent  Boolean                  @default(false)
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @updatedAt
+  attended        Boolean                  @default(false)
+  clientId        String?
+  client          Client?                  @relation(fields: [clientId], references: [id])
+  eventType       EventType?               @relation(fields: [eventTypeId], references: [id])
+  user            User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cancellation    AppointmentCancellation?
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String?
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

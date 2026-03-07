@@ -1,0 +1,38 @@
+⨯ ./src/components/landing/benefits.tsx
+Error: 
+
+Caused by:
+    0: Failed to read source code from C:\Users\THPL\Desktop\Desenvolvimento\schedlyfy\src\components\landing\benefits.tsx
+    1: O sistema não pode encontrar o arquivo especificado. (os error 2)
+
+Import trace for requested module:
+./src/components/landing/benefits.tsx
+./src/app/page.tsx
+⨯ ./src/components/landing/benefits.tsx
+Error: 
+
+Caused by:
+    0: Failed to read source code from C:\Users\THPL\Desktop\Desenvolvimento\schedlyfy\src\components\landing\benefits.tsx
+    1: O sistema não pode encontrar o arquivo especificado. (os error 2)
+
+Import trace for requested module:
+./src/components/landing/benefits.tsx
+./src/app/page.tsx
+⨯ ./src/components/landing/cta-section.tsx
+Error: 
+
+Caused by:
+    0: Failed to read source code from C:\Users\THPL\Desktop\Desenvolvimento\schedlyfy\src\components\landing\cta-section.tsx
+    1: O sistema não pode encontrar o arquivo especificado. (os error 2)
+
+Import trace for requested module:
+./src/components/landing/cta-section.tsx
+./src/app/page.tsx
+⨯ ./src/components/landing/landing.module.css
+Module not found: Can't resolve 'C:\Users\THPL\Desktop\Desenvolvimento\schedlyfy\src\components\landing\landing.module.css'
+
+https://nextjs.org/docs/messages/module-not-found
+<w> [webpack.cache.PackFileCacheStrategy] Skipped not serializable cache item 'Compilation/modules|javascript/auto|C:\Users\THPL\Desktop\Desenvolvimento\schedlyfy\node_modules\next\dist\build\webpack\loaders\next-flight-css-loader.js??ruleSet[1].rules[15].oneOf[5].use[0]!C:\Users\THPL\Desktop\Desenvolvimento\schedlyfy\node_modules\next\dist\compiled\mini-css-extract-plugin\loader.js??ruleSet[1].rules[15].oneOf[5].use[1]!C:\Users\THPL\Desktop\Desenvolvimento\schedlyfy\node_modules\next\dist\build\webpack\loaders\css-loader\src\index.js??ruleSet[1].rules[15].oneOf[5].use[2]!C:\Users\THPL\Desktop\Desenvolvimento\schedlyfy\node_modules\next\dist\build\webpack\loaders\postcss-loader\src\index.js??ruleSet[1].rules[15].oneOf[5].use[3]!C:\Users\THPL\Desktop\Desenvolvimento\schedlyfy\src\components\landing\landing.module.css|app-pages-browser': No serializer registered for ModuleNotFoundError
+<w> while serializing webpack/lib/cache/PackFileCacheStrategy.PackContentItems -> webpack/lib/NormalModule -> webpack/lib/ModuleBuildError -> ModuleNotFoundError
+⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+^C

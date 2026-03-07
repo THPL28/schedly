@@ -1,0 +1,40 @@
+
+> schedlyfy@0.1.0 dev
+> next dev --webpack --hostname 127.0.0.1 --port 3000
+
+▲ Next.js 16.1.6 (webpack)
+- Local:         http://127.0.0.1:3000
+- Network:       http://127.0.0.1:3000
+- Environments: .env.local, .env
+
+✓ Starting...
+✓ Ready in 21.5s
+○ Compiling / ...
+ GET / 200 in 28.6s (compile: 26.3s, render: 2.3s)
+ GET / 200 in 482ms (compile: 39ms, render: 443ms)
+○ Compiling /offline ...
+ GET /offline 200 in 6.3s (compile: 5.0s, render: 1238ms)
+ GET / 200 in 365ms (compile: 65ms, render: 300ms)
+○ Compiling /register ...
+ GET /register 200 in 12.4s (compile: 11.7s, render: 757ms)
+ GET / 200 in 6.0s (compile: 5.2s, render: 828ms)
+ GET /login 200 in 4.8s (compile: 4.2s, render: 551ms)
+○ Compiling /_error ...
+ GET / 500 in 12.1s (compile: 11.7s, render: 480ms)
+ GET / 500 in 47ms (compile: 12ms, render: 34ms)
+ GET / 500 in 32ms (compile: 11ms, render: 21ms)
+ GET / 200 in 1329ms (compile: 1006ms, render: 324ms)
+ GET / 200 in 2.1s (compile: 637ms, render: 1466ms)
+ GET / 200 in 2.1s (compile: 592ms, render: 1503ms)
+ GET / 200 in 1874ms (compile: 12ms, render: 1861ms)
+○ Compiling /offline ...
+ GET /offline 200 in 6.1s (compile: 4.8s, render: 1263ms)
+ GET / 200 in 759ms (compile: 119ms, render: 640ms)
+ GET /register 200 in 76ms (compile: 29ms, render: 47ms)
+ GET / 200 in 262ms (compile: 8ms, render: 253ms)
+○ Compiling /pricing ...
+ GET /pricing 200 in 9.6s (compile: 9.1s, render: 478ms)
+ GET /login 200 in 133ms (compile: 64ms, render: 69ms)
+ GET / 200 in 1178ms (compile: 38ms, render: 1139ms)
+ GET / 200 in 959ms (compile: 9ms, render: 950ms)
+ GET / 200 in 1013ms (compile: 9ms, render: 1005ms)
