@@ -4,14 +4,20 @@ import Link from 'next/link';
 import ServiceBookingFlow from './booking-flow';
 import { ChevronLeft, Clock, Tag, Globe, User } from 'lucide-react';
 import { Suspense } from 'react';
+import { getPlanLimit } from '@/lib/plans';
 
 export const dynamic = 'force-dynamic';
 
 export default async function BookingServicePage({ params }: { params: Promise<{ slug: string, service_slug: string }> }) {
     const { slug, service_slug } = await params;
 
-    const user = await prisma.user.findUnique({
-        where: { slug },
+    const user = await prisma.user.findFirst({
+        where: {
+            slug: {
+                equals: slug,
+                mode: 'insensitive'
+            }
+        },
         include: {
             subscription: {
                 include: { plan: true }
@@ -62,7 +68,14 @@ export default async function BookingServicePage({ params }: { params: Promise<{
                     <div className="space-y-6">
                         <div className="flex items-center gap-3">
                             {(() => {
-                                const canShowLogo = user.subscription?.status === 'TRIAL' || user.subscription?.plan?.name === 'Pro';
+                                const whitelist = [
+                                    'tiago.looze28@gmail.com',
+                                    'thpldevweb@gmail.com',
+                                    'flahwagner19@gmail.com'
+                                ]
+                                const isWhitelisted = whitelist.includes(user.email) || user.role === 'ADMIN'
+                                const plan = getPlanLimit(user.subscription);
+                                const canShowLogo = isWhitelisted || plan.customBranding;
 
                                 return (
                                     <div className="w-10 h-10 rounded-2xl bg-white shadow-sm flex items-center justify-center text-primary border border-slate-50 overflow-hidden">

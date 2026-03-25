@@ -10,7 +10,9 @@ export default function RegisterPage() {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
 
-    async function handleSubmit(formData: FormData) {
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault()
+        const formData = new FormData(e.currentTarget)
         setLoading(true)
         setError('')
 
@@ -25,14 +27,14 @@ export default function RegisterPage() {
         <div className="min-h-screen bg-background flex items-center justify-center p-4">
             <div className="card w-full max-w-[440px] p-8 md:p-12">
                 <div className="text-center mb-10">
-                    <Link href="/" className="inline-flex items-center gap-2 mb-6 no-underline">
-                        <Logo size={28} />
+                    <Link href="/" className="inline-flex items-center gap-2 mb-6 no-underline transition-all hover:scale-110">
+                        <Logo size={40} />
                     </Link>
-                    <h1 className="text-3xl font-extrabold m-0 mb-2">Crie sua conta</h1>
-                    <p className="text-muted text-base m-0">Comece agora a gerenciar sua agenda de forma simples.</p>
+                    <h1 className="text-3xl font-extrabold m-0 mb-2 tracking-tighter">Crie sua conta VIP</h1>
+                    <p className="text-muted text-base m-0 px-4">Comece hoje sua jornada rumo à produtividade máxima.</p>
                 </div>
 
-                <form action={handleSubmit} className="flex flex-col gap-5">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                     <div className="flex flex-col gap-1">
                         <label className="label" htmlFor="name">Nome Completo</label>
                         <input id="name" name="name" type="text" required className="input" placeholder="Seu nome" />

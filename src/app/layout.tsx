@@ -60,7 +60,6 @@ export default async function RootLayout({
         {children}
 
         {/* PWA UX helpers */}
-        <script defer />
         <div id="pwa-ui-root" />
         <OfflineBanner />
         <PWAInstallCTA />

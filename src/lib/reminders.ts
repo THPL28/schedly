@@ -8,17 +8,34 @@ const MINUTES_IN_24H = 24 * MINUTES_IN_HOUR
 
 export async function processDueReminders() {
   const now = new Date()
+  const { getPlanLimit } = await import('./plans')
+
   const appts = await prisma.appointment.findMany({
     where: {
       status: 'SCHEDULED',
       OR: [{ reminder24hSent: false }, { reminder1hSent: false }],
     },
-    include: { user: true },
+    include: { user: { include: { subscription: true } } },
   })
 
   const results: ReminderResult[] = []
 
   for (const appt of appts) {
+    if (!appt.user) continue;
+
+    // Check Plan Permission
+    const WHITELIST_EMAILS = [
+      'tiago.looze28@gmail.com',
+      'thpldevweb@gmail.com',
+      'flahwagner19@gmail.com'
+    ]
+    const isWhitelisted = WHITELIST_EMAILS.includes(appt.user.email) || appt.user.role === 'ADMIN'
+
+    const plan = getPlanLimit(appt.user.subscription)
+    if (!plan.emailReminders && !isWhitelisted) {
+      continue
+    }
+
     try {
       const [hh, mm] = appt.startTime.split(':').map((s) => Number(s))
       const dateOnly = new Date(appt.date)

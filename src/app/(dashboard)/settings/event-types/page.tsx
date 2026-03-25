@@ -13,7 +13,7 @@ export default async function EventTypesPage() {
         }),
         prisma.user.findUnique({
             where: { id: session.userId as string },
-            select: { slug: true }
+            select: { slug: true, googleCalendarEnabled: true }
         })
     ]);
 
@@ -23,5 +23,11 @@ export default async function EventTypesPage() {
         price: type.price ? Number(type.price) : null
     }));
 
-    return <EventTypesClient initialEventTypes={serializedEventTypes} userSlug={user?.slug || 'usuario'} />;
+    return (
+        <EventTypesClient 
+            initialEventTypes={serializedEventTypes} 
+            userSlug={user?.slug || 'usuario'} 
+            googleCalendarEnabled={user?.googleCalendarEnabled || false} 
+        />
+    );
 }

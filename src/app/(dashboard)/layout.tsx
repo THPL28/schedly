@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { logout } from '@/lib/actions'
 import { cookies } from 'next/headers'
 import { getDictionary } from '@/lib/dictionaries'
+import { Suspense } from 'react'
 import {
     Calendar,
     Bell,
@@ -15,7 +16,8 @@ import Link from 'next/link'
 import Logo from '@/components/logo'
 import Image from 'next/image'
 import MobileSidebar from '@/components/mobile-sidebar'
-import DashboardClient from './dashboard-client'
+import DashboardLayoutClient from './dashboard-layout-client'
+import HeaderTabs from '@/components/dashboard/header-tabs'
 import CurrentDate from '@/components/current-date'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -39,7 +41,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         'thpldevweb@gmail.com',
         'flahwagner19@gmail.com'
     ]
-    const isWhitelisted = WHITELIST_EMAILS.includes(user.email)
+    const isWhitelisted = WHITELIST_EMAILS.includes(user.email) || user.role === 'ADMIN'
 
     // Check subscription expiration
     if (user.subscription && !isWhitelisted) {
@@ -64,7 +66,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         : 'U'
 
     return (
-        <DashboardClient
+        <DashboardLayoutClient
             user={user}
             slug={user.slug}
             initials={initials}
@@ -153,8 +155,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
                         <Menu size={24} />
                     </button>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
-                        <h1 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>Gerenciamento Diário</h1>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                        <Suspense fallback={<div className="h-16 w-full" />}>
+                            <HeaderTabs userSlug={user.slug} />
+                        </Suspense>
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
@@ -170,6 +174,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
                     {children}
                 </div>
             </main>
-        </DashboardClient>
+        </DashboardLayoutClient>
     )
 }

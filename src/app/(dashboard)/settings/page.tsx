@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import SettingsForm from './settings-form'
 import PushSubscribe from '@/components/push-subscribe'
+import { Suspense } from 'react'
 
 export default async function SettingsPage() {
     const session = await verifySession()
@@ -19,7 +20,9 @@ export default async function SettingsPage() {
             bio: true,
             website: true,
             slug: true,
-            language: true
+            language: true,
+            googleCalendarEnabled: true,
+            googleAccessToken: true
         }
     })
 
@@ -30,7 +33,9 @@ export default async function SettingsPage() {
     return (
         <div className="card w-full" style={{ maxWidth: '600px', margin: '0 auto' }}>
             <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8">Configurações</h2>
-            <SettingsForm user={user} />
+            <Suspense fallback={<div className="h-[400px] animate-pulse bg-slate-50 rounded-3xl" />}>
+                <SettingsForm user={user} />
+            </Suspense>
             <div className="mt-6">
                 <PushSubscribe />
             </div>

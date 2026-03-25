@@ -23,6 +23,10 @@ model User {
   phone             String?
   bio               String?
   website           String?
+  googleAccessToken String?
+  googleRefreshToken String?
+  googleTokenExpiry DateTime?
+  googleCalendarEnabled Boolean                @default(false)
   minLeadTime       Int                    @default(2)
   maxFutureDays     Int                    @default(30)
   appointments      Appointment[]
@@ -57,6 +61,11 @@ model Subscription {
   updatedAt            DateTime  @updatedAt
   stripeSubscriptionId String?   @unique
   stripePriceId        String?
+  maxAppointmentsOverride Int?
+  emailRemindersOverride  Boolean?
+  customBrandingOverride Boolean?
+  multipleEventTypesOverride Boolean?
+  bufferTimeOverride Boolean?
   plan                 Plan?     @relation(fields: [planId], references: [id])
   user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -71,6 +80,8 @@ model EventType {
   price        Decimal?
   bufferTime   Int           @default(0)
   color        String        @default("#3b82f6")
+  locationType String        @default("IN_PERSON") // "IN_PERSON" or "GOOGLE_MEET"
+  locationAddress String?
   isActive     Boolean       @default(true)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -147,6 +158,8 @@ model Appointment {
   createdAt       DateTime                 @default(now())
   updatedAt       DateTime                 @updatedAt
   attended        Boolean                  @default(false)
+  googleEventId   String?
+  googleMeetLink  String?
   clientId        String?
   client          Client?                  @relation(fields: [clientId], references: [id])
   eventType       EventType?               @relation(fields: [eventTypeId], references: [id])

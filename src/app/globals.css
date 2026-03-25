@@ -41,7 +41,7 @@
   --radius-xl: 24px;
   --radius-md: 16px;
   --radius-sm: 12px;
-  --header-height: 72px;
+  --header-height: 110px;
 
   /* Landing Tokens (Utopai Inspired) */
   --landing-container: 1140px;
@@ -515,7 +515,7 @@ select:focus-visible {
 }
 
 .top-nav {
-  min-height: 72px;
+  min-height: var(--header-height);
   background: white;
   border-bottom: 1px solid var(--border);
   display: flex;

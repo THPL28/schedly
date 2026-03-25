@@ -36,16 +36,38 @@ export const PLANS: Record<PlanType, PlanDetails> = {
     }
 };
 
-export function getPlanLimit(status: string | null | undefined, priceIdOrName: string | null | undefined): PlanDetails {
-    if (status === 'TRIAL') return PLANS.FREE;
+export function getPlanLimit(subscription: any): PlanDetails {
+    const status = subscription?.status;
+    const priceIdOrName = subscription?.stripePriceId || subscription?.planId;
 
-    // Check against Price IDs from environment
-    if (priceIdOrName === process.env.STRIPE_PRICE_PRO || priceIdOrName === 'Pro' || priceIdOrName === 'PRO') {
-        return PLANS.PRO;
-    }
-    if (priceIdOrName === process.env.STRIPE_PRICE_BASIC || priceIdOrName === 'Basic' || priceIdOrName === 'BASIC') {
-        return PLANS.BASIC;
+    let plan: PlanDetails = PLANS.FREE;
+
+    if (status === 'TRIAL') {
+        plan = { ...PLANS.FREE };
+    } else if (priceIdOrName === process.env.STRIPE_PRICE_PRO || priceIdOrName === 'Pro' || priceIdOrName === 'PRO') {
+        plan = { ...PLANS.PRO };
+    } else if (priceIdOrName === process.env.STRIPE_PRICE_BASIC || priceIdOrName === 'Basic' || priceIdOrName === 'BASIC') {
+        plan = { ...PLANS.BASIC };
     }
 
-    return PLANS.FREE;
+    // Apply Overrides if they exist
+    if (subscription) {
+        if (subscription.maxAppointmentsOverride !== null && subscription.maxAppointmentsOverride !== undefined) {
+            plan.maxAppointmentsPerMonth = subscription.maxAppointmentsOverride;
+        }
+        if (subscription.emailRemindersOverride !== null && subscription.emailRemindersOverride !== undefined) {
+            plan.emailReminders = subscription.emailRemindersOverride;
+        }
+        if (subscription.customBrandingOverride !== null && subscription.customBrandingOverride !== undefined) {
+            plan.customBranding = subscription.customBrandingOverride;
+        }
+        if (subscription.multipleEventTypesOverride !== null && subscription.multipleEventTypesOverride !== undefined) {
+            plan.multipleEventTypes = subscription.multipleEventTypesOverride;
+        }
+        if (subscription.bufferTimeOverride !== null && subscription.bufferTimeOverride !== undefined) {
+            plan.bufferTime = subscription.bufferTimeOverride;
+        }
+    }
+
+    return plan;
 }

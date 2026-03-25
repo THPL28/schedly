@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { X, LayoutDashboard, Settings, ExternalLink, LogOut, Calendar, Clock, CreditCard } from 'lucide-react'
+import { X, LayoutDashboard, Settings, ExternalLink, LogOut, Calendar, Clock, CreditCard, MessageCircle, Phone } from 'lucide-react'
 import Logo from './logo'
 import Image from 'next/image'
 
@@ -168,72 +168,98 @@ export default function MobileSidebar({ isOpen, onClose, slug, user, onLogout }:
           )}
         </nav>
 
-        {/* User Profile Footer */}
-        <div style={{ borderTop: '1px solid var(--sidebar-border)', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <Link href="/settings" onClick={onClose} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}>
-            {user?.avatarUrl ? (
-              <div style={{ position: 'relative', width: 40, height: 40, borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--primary)', flexShrink: 0 }}>
-                {user.avatarUrl.startsWith('data:') ? (
-                  <img
-                    src={user.avatarUrl}
-                    alt={user.name || 'Perfil'}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                ) : (
-                  <Image
-                    src={user.avatarUrl}
-                    alt={user.name || 'Perfil'}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    unoptimized={user.avatarUrl.startsWith('/uploads/')}
-                  />
-                )}
+        {mounted && (
+          <div style={{ borderTop: '1px solid var(--sidebar-border)', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <Link href="/settings" onClick={onClose} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}>
+              {user?.avatarUrl ? (
+                <div style={{ position: 'relative', width: 40, height: 40, borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--primary)', flexShrink: 0 }}>
+                  {user.avatarUrl.startsWith('data:') ? (
+                    <img
+                      src={user.avatarUrl}
+                      alt={user.name || 'Perfil'}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    <Image
+                      src={user.avatarUrl}
+                      alt={user.name || 'Perfil'}
+                      fill
+                      style={{ objectFit: 'cover' }}
+                      unoptimized={user.avatarUrl.startsWith('/uploads/')}
+                    />
+                  )}
+                </div>
+              ) : (
+                <div style={{
+                  width: 40,
+                  height: 40,
+                  background: 'linear-gradient(135deg, var(--primary), #8b5cf6)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 700,
+                  color: 'white',
+                  fontSize: '0.9rem',
+                  flexShrink: 0
+                }}>
+                  {getInitials(user?.name)}
+                </div>
+              )}
+              <div style={{ overflow: 'hidden', minWidth: 0, flex: 1 }}>
+                <p style={{ fontSize: '0.875rem', fontWeight: 600, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--foreground)' }}>{user?.name || 'Usuário'}</p>
+                <p style={{ fontSize: '0.7rem', color: 'var(--muted)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.email}</p>
               </div>
-            ) : (
-              <div style={{
-                width: 40,
-                height: 40,
-                background: 'linear-gradient(135deg, var(--primary), #8b5cf6)',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 700,
-                color: 'white',
-                fontSize: '0.9rem',
-                flexShrink: 0
-              }}>
-                {getInitials(user?.name)}
-              </div>
-            )}
-            <div style={{ overflow: 'hidden', minWidth: 0, flex: 1 }}>
-              <p style={{ fontSize: '0.875rem', fontWeight: 600, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--foreground)' }}>{user?.name || 'Usuário'}</p>
-              <p style={{ fontSize: '0.7rem', color: 'var(--muted)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.email}</p>
-            </div>
-          </Link>
-          <form action="/api/logout" method="POST" onSubmit={onClose}>
-            <button
-              type="submit"
+            </Link>
+
+            <a 
+              href={`https://wa.me/5511999999999?text=${encodeURIComponent('Olá, equipe Schedlyfy! Preciso de uma ajudinha com minha conta.')}`}
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.75rem',
                 padding: '0.875rem 1.25rem',
                 borderRadius: '1rem',
-                background: 'rgba(239, 68, 68, 0.1)',
-                border: '1px solid rgba(239, 68, 68, 0.2)',
-                color: '#ef4444',
-                cursor: 'pointer',
+                background: 'rgba(16, 185, 129, 0.05)',
+                border: '1px solid rgba(16, 185, 129, 0.1)',
+                color: '#10b981',
+                textDecoration: 'none',
                 fontWeight: 600,
                 fontSize: '0.875rem',
-                width: '100%'
+                width: '100%',
+                marginBottom: '0.5rem'
               }}
             >
-              <LogOut size={18} />
-              <span>Sair</span>
-            </button>
-          </form>
-        </div>
+              <MessageCircle size={18} />
+              <span>Suporte Prioritário</span>
+            </a>
+
+            <form action="/api/logout" method="POST" onSubmit={onClose}>
+              <button
+                type="submit"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  padding: '0.875rem 1.25rem',
+                  borderRadius: '1rem',
+                  background: 'rgba(239, 68, 68, 0.1)',
+                  border: '1px solid rgba(239, 68, 68, 0.2)',
+                  color: '#ef4444',
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                  fontSize: '0.875rem',
+                  width: '100%'
+                }}
+              >
+                <LogOut size={18} />
+                <span>Sair</span>
+              </button>
+            </form>
+          </div>
+        )}
       </aside>
     </>
   )

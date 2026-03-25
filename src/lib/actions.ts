@@ -64,7 +64,7 @@ export async function login(formData: FormData) {
         'thpldevweb@gmail.com',
         'flahwagner19@gmail.com'
     ]
-    const isWhitelisted = WHITELIST_EMAILS.includes(user.email)
+    const isWhitelisted = WHITELIST_EMAILS.includes(user.email) || user.role === 'ADMIN'
 
     // Check subscription
     if (user.subscription && !isWhitelisted) {
@@ -114,6 +114,15 @@ export async function register(formData: FormData) {
             name,
             slug: slug,
             passwordHash: await hashPassword(password),
+            availability: {
+                createMany: {
+                    data: [1, 2, 3, 4, 5].map(day => ({
+                        dayOfWeek: day,
+                        startTime: '09:00',
+                        endTime: '18:00'
+                    }))
+                }
+            },
             subscription: {
                 create: {
                     status: 'TRIAL',
@@ -152,11 +161,14 @@ export async function createAppointment(formData: FormData) {
         include: { subscription: true }
     })
 
-    if (user?.subscription) {
-        const plan = getPlanLimit(
-            user.subscription.status,
-            user.subscription.stripePriceId || (user.subscription as any).planId
-        )
+    const isWhitelisted = [
+        'tiago.looze28@gmail.com',
+        'thpldevweb@gmail.com',
+        'flahwagner19@gmail.com'
+    ].includes(user?.email || '') || user?.role === 'ADMIN'
+
+    if (user?.subscription && !isWhitelisted) {
+        const plan = getPlanLimit(user.subscription)
         const startOfMonth = new Date()
         startOfMonth.setDate(1)
         startOfMonth.setHours(0, 0, 0, 0)
@@ -256,11 +268,14 @@ export async function bookAppointmentPublic(formData: FormData) {
     const eventType = await prisma.eventType.findUnique({ where: { id: eventTypeId } })
     if (!provider || !eventType) return { error: 'Prestador ou serviço não encontrado' }
 
-    if (provider.subscription) {
-        const plan = getPlanLimit(
-            provider.subscription.status,
-            provider.subscription.stripePriceId || (provider.subscription as any).planId
-        )
+    const isWhitelisted = [
+        'tiago.looze28@gmail.com',
+        'thpldevweb@gmail.com',
+        'flahwagner19@gmail.com'
+    ].includes(provider.email) || provider.role === 'ADMIN'
+
+    if (provider.subscription && !isWhitelisted) {
+        const plan = getPlanLimit(provider.subscription)
         const startOfMonth = new Date()
         startOfMonth.setDate(1)
         startOfMonth.setHours(0, 0, 0, 0)
@@ -308,6 +323,20 @@ export async function bookAppointmentPublic(formData: FormData) {
         }
     })
 
+    // If it's a Google Meet or the user has Google Calendar enabled
+    let googleMeetLink: string | null = null;
+    if (provider.googleCalendarEnabled) {
+        try {
+            const { createGoogleEvent } = await import('./google-calendar');
+            const googleRes = await createGoogleEvent(appt.id);
+            if (googleRes?.googleMeetLink) {
+                googleMeetLink = googleRes.googleMeetLink;
+            }
+        } catch (e) {
+            console.error('Failed to create google event:', e);
+        }
+    }
+
     if (rescheduleToken) {
         await prisma.appointment.update({
             where: { cancelToken: rescheduleToken },
@@ -335,7 +364,11 @@ export async function bookAppointmentPublic(formData: FormData) {
             eventType.name,
             date,
             startTime,
-            appt.cancelToken
+            appt.cancelToken,
+            eventType.duration,
+            googleMeetLink,
+            eventType.locationType,
+            eventType.locationAddress
         );
     } catch (e) { /* ignore */ }
 
@@ -457,6 +490,29 @@ export async function setUserRole(targetUserId: string, role: string) {
     revalidatePath('/admin')
 }
 
+export async function updateSubscriptionOverrides(targetUserId: string, overrides: {
+    maxAppointmentsOverride?: number | null,
+    multipleEventTypesOverride?: boolean | null,
+    bufferTimeOverride?: boolean | null,
+    emailRemindersOverride?: boolean | null,
+    customBrandingOverride?: boolean | null
+}) {
+    const session = await verifySession()
+    if (!session || !session.userId) return { error: 'Unauthorized' }
+    const admin = await prisma.user.findUnique({ where: { id: session.userId as string } })
+    if (admin?.role !== 'ADMIN') {
+        logEvent('ACCESS_DENIED', { attempt: 'updateSubscriptionOverrides', userId: session.userId })
+        return { error: 'Forbidden' }
+    }
+
+    await prisma.subscription.update({
+        where: { userId: targetUserId },
+        data: overrides
+    })
+    logEvent('SUBSCRIPTION_OVERRIDES_UPDATED', { targetUserId, overrides, adminId: session.userId })
+    revalidatePath('/admin')
+}
+
 export async function updateSettings(formData: FormData) {
     const session = await verifySession()
     if (!session || !session.userId) return { error: 'Unauthorized' }
@@ -510,11 +566,14 @@ export async function createEventType(formData: FormData) {
         include: { subscription: true, _count: { select: { eventTypes: true } } }
     })
 
-    if (user?.subscription) {
-        const plan = getPlanLimit(
-            user.subscription.status,
-            user.subscription.stripePriceId || (user.subscription as any).planId
-        )
+    const isWhitelisted = [
+        'tiago.looze28@gmail.com',
+        'thpldevweb@gmail.com',
+        'flahwagner19@gmail.com'
+    ].includes(user?.email || '') || user?.role === 'ADMIN'
+
+    if (user?.subscription && !isWhitelisted) {
+        const plan = getPlanLimit(user.subscription)
         if (!plan.multipleEventTypes && user._count.eventTypes >= 1) {
             return { error: `Seu plano (${plan.name}) permite apenas 1 tipo de serviço. Faça o upgrade para criar mais.` }
         }
@@ -526,6 +585,8 @@ export async function createEventType(formData: FormData) {
     const price = formData.get('price') ? parseFloat(formData.get('price') as string) : null
     const bufferTime = parseInt(formData.get('bufferTime') as string) || 0
     const color = formData.get('color') as string || '#3b82f6'
+    const locationType = formData.get('locationType') as string || 'IN_PERSON'
+    const locationAddress = formData.get('locationAddress') as string || null
 
     const slug = name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
 
@@ -540,6 +601,8 @@ export async function createEventType(formData: FormData) {
                 price: price as any,
                 bufferTime,
                 color,
+                locationType,
+                locationAddress,
             }
         })
         revalidatePath('/settings/event-types')
@@ -580,6 +643,8 @@ export async function updateEventType(formData: FormData) {
     const price = formData.get('price') ? parseFloat(formData.get('price') as string) : null
     const bufferTime = parseInt(formData.get('bufferTime') as string) || 0
     const color = formData.get('color') as string || '#3b82f6'
+    const locationType = formData.get('locationType') as string || 'IN_PERSON'
+    const locationAddress = formData.get('locationAddress') as string || null
     const isActive = formData.get('isActive') === 'true'
 
     const slug = name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
@@ -595,6 +660,8 @@ export async function updateEventType(formData: FormData) {
                 price: price as any,
                 bufferTime,
                 color,
+                locationType,
+                locationAddress,
                 isActive
             }
         })

@@ -34,6 +34,11 @@ export async function getAvailableSlots(
         where: { userId, dayOfWeek }
     });
 
+    console.log(`[DEBUG] Availability check for User: ${userId}, Day: ${dayOfWeek}`, {
+        count: availability.length,
+        slots: availability.map(a => `${a.startTime}-${a.endTime}`)
+    });
+
     // 3. Get specifically disabled/override for this date
     const override = await prisma.availabilityOverride.findFirst({
         where: {

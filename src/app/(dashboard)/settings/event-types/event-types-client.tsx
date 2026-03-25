@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { createEventType, updateEventType, deleteEventType } from '@/lib/actions';
-import { Plus, Clock, Tag, MoreVertical, Copy, SquareArrowOutUpRight, AlertCircle, CheckCircle2, Pencil, Trash2, X } from 'lucide-react';
+import { Plus, Clock, Tag, MoreVertical, Copy, SquareArrowOutUpRight, AlertCircle, CheckCircle2, Pencil, Trash2, X, Video, MapPin } from 'lucide-react';
 
-export default function EventTypesClient({ initialEventTypes, userSlug }: { initialEventTypes: any[], userSlug: string }) {
+export default function EventTypesClient({ initialEventTypes, userSlug, googleCalendarEnabled }: { initialEventTypes: any[], userSlug: string, googleCalendarEnabled: boolean }) {
     const [isCreating, setIsCreating] = useState(false);
     const [editingType, setEditingType] = useState<any | null>(null);
     const [isCustomDuration, setIsCustomDuration] = useState(false);
@@ -157,6 +157,40 @@ export default function EventTypesClient({ initialEventTypes, userSlug }: { init
                                 </div>
                             </div>
 
+                            <div className="col-span-full grid grid-cols-1 md:grid-cols-2 gap-8 p-6 bg-white border border-slate-100 rounded-3xl shadow-sm">
+                                <div>
+                                    <label className="label">Local do Atendimento</label>
+                                    <select 
+                                        name="locationType" 
+                                        className="input h-12" 
+                                        defaultValue={editingType?.locationType || 'IN_PERSON'}
+                                        onChange={(e) => {
+                                            if (e.target.value === 'GOOGLE_MEET' && !googleCalendarEnabled) {
+                                                alert('Você precisa conectar o Google Agenda nas Configurações antes de usar o Google Meet.');
+                                                e.target.value = 'IN_PERSON';
+                                            }
+                                        }}
+                                    >
+                                        <option value="IN_PERSON">🏠 Atendimento Presencial</option>
+                                        <option value="GOOGLE_MEET" disabled={!googleCalendarEnabled}>🎥 Google Meet (Automático)</option>
+                                    </select>
+                                    {!googleCalendarEnabled && (
+                                        <p className="text-[10px] text-amber-600 font-bold mt-2">⚠️ Conecte o Google Agenda para usar reuniões online.</p>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="label">Endereço / Link de Acesso</label>
+                                    <input
+                                        name="locationAddress"
+                                        className="input h-12"
+                                        placeholder="Ex: Av. Paulista, 1000 ou Link do Zoom"
+                                        defaultValue={editingType?.locationAddress || ''}
+                                    />
+                                    <p className="text-[10px] text-muted mt-2">Para Google Meet, o link será gerado automaticamente.</p>
+                                </div>
+                            </div>
+
                             <div className="col-span-full">
                                 <label className="label">Descrição do Atendimento</label>
                                 <textarea
@@ -239,6 +273,17 @@ export default function EventTypesClient({ initialEventTypes, userSlug }: { init
                                                 </button>
                                                 <div className="h-px bg-slate-50 my-2" />
                                                 <button
+                                                    onClick={() => {
+                                                        const pUrl = `${window.location.protocol}//${window.location.host}${publicPath}`;
+                                                        const pText = `🔥 OFERTA IMPERDÍVEL: Aproveite o serviço "${type.name}"${type.price ? ` por apenas R$ ${Number(type.price).toFixed(2)}` : ''}! Garanta seu horário agora: ${pUrl}`;
+                                                        window.open(`https://wa.me/?text=${encodeURIComponent(pText)}`, '_blank');
+                                                        setShowOptions(null);
+                                                    }}
+                                                    className="w-full text-left px-4 py-3 text-sm font-bold text-indigo-600 hover:bg-indigo-50 flex items-center gap-2"
+                                                >
+                                                    <Megaphone size={16} className="text-indigo-600" /> Promover Serviço
+                                                </button>
+                                                <button
                                                     onClick={() => { handleDelete(type.id); setShowOptions(null); }}
                                                     className="w-full text-left px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 flex items-center gap-2"
                                                 >
@@ -258,6 +303,17 @@ export default function EventTypesClient({ initialEventTypes, userSlug }: { init
                                         <div className="flex items-center gap-1.5 bg-green-50 px-3 py-1.5 rounded-xl border border-green-100 text-xs font-black text-green-700">
                                             <Tag size={14} />
                                             R$ {Number(type.price).toFixed(2)}
+                                        </div>
+                                    )}
+                                    {type.locationType === 'GOOGLE_MEET' ? (
+                                        <div className="flex items-center gap-1.5 bg-indigo-50 px-3 py-1.5 rounded-xl border border-indigo-100 text-[10px] font-black text-indigo-700">
+                                            <Video size={14} />
+                                            GOOGLE MEET
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 text-[10px] font-black text-slate-400">
+                                            <MapPin size={14} />
+                                            PRESENCIAL
                                         </div>
                                     )}
                                     {type.bufferTime > 0 && (

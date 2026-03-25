@@ -10,7 +10,9 @@ export default function LoginPage() {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
 
-    async function handleSubmit(formData: FormData) {
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault()
+        const formData = new FormData(e.currentTarget)
         setLoading(true)
         setError('')
 
@@ -30,13 +32,13 @@ export default function LoginPage() {
             <div className="card max-w-[440px] w-full p-6 sm:p-8">
                 <div className="text-center mb-10">
                     <Link href="/" className="inline-flex items-center gap-2 mb-6 no-underline">
-                        <Logo size={28} />
+                        <Logo size={40} />
                     </Link>
                     <h1 className="text-3xl font-extrabold m-0 mb-2">Bem-vindo de volta</h1>
                     <p className="text-muted text-base m-0">Acesse sua conta para gerenciar sua agenda.</p>
                 </div>
 
-                <form action={handleSubmit} className="flex flex-col gap-5">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                     <div>
                         <label className="label" htmlFor="email">E-mail</label>
                         <input id="email" name="email" type="email" required className="input" placeholder="seu@email.com" />
