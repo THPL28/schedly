@@ -115,14 +115,14 @@ export default function SettingsForm({ user }: { user: any }) {
     }
 
     return (
-        <form action={handleSubmit} className="flex flex-col gap-8">
+        <form action={handleSubmit} className="flex flex-col gap-5 md:gap-8">
             {/* Perfil & Identidade Visual */}
-            <div className="card p-8 bg-white border-border/50">
-                <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-2">
+            <div className="card p-5 md:p-8 bg-white border-border/50">
+                <h3 className="text-lg md:text-xl font-black text-slate-900 mb-6 md:mb-8 flex items-center gap-2">
                     <User size={20} className="text-primary" /> Identidade Visual
                 </h3>
 
-                <div className="flex flex-col sm:flex-row items-center gap-10">
+                <div className="flex flex-col sm:flex-row items-center gap-6 md:gap-10">
                     <div className="relative group">
                         <div className="w-32 h-32 rounded-[2rem] overflow-hidden border-4 border-white shadow-xl relative transition-transform group-hover:scale-[1.02]">
                             {avatarPreview ? (
@@ -165,8 +165,8 @@ export default function SettingsForm({ user }: { user: any }) {
             </div>
 
             {/* Informações Profissionais */}
-            <div className="card p-8 flex flex-col gap-6 border-border/50">
-                <h3 className="text-xl font-black text-slate-900 mb-2 flex items-center gap-2">
+            <div className="card p-5 md:p-8 flex flex-col gap-5 md:gap-6 border-border/50">
+                <h3 className="text-lg md:text-xl font-black text-slate-900 mb-1 flex items-center gap-2">
                     <FileText size={20} className="text-primary" /> Perfil Profissional
                 </h3>
 
@@ -196,8 +196,8 @@ export default function SettingsForm({ user }: { user: any }) {
             </div>
 
             {/* Configurações de Agendamento */}
-            <div className="card p-8 flex flex-col gap-6 border-border/50 bg-slate-50/30">
-                <h3 className="text-xl font-black text-slate-900 mb-2 flex items-center gap-2">
+            <div className="card p-5 md:p-8 flex flex-col gap-5 md:gap-6 border-border/50 bg-slate-50/30">
+                <h3 className="text-lg md:text-xl font-black text-slate-900 mb-1 flex items-center gap-2">
                     <Clock size={20} className="text-primary" /> Regras de Agendamento
                 </h3>
 
@@ -237,10 +237,10 @@ export default function SettingsForm({ user }: { user: any }) {
             </div>
 
             {/* Integração & Automatização - Google Meet */}
-            <div className="card p-10 bg-white border-border/50 relative overflow-hidden group">
+            <div className="card p-5 md:p-10 bg-white border-border/50 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-primary/10 transition-colors duration-700"></div>
 
-                <div className="flex flex-col md:flex-row items-start gap-8 relative z-10">
+                <div className="flex flex-col gap-6 md:gap-8 relative z-10">
                     {/* Icon & Info */}
                     <div className="flex items-start gap-6 flex-1">
                         <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#4285F4]/10 to-[#34A853]/10 flex items-center justify-center shadow-lg border border-[#4285F4]/20 flex-shrink-0">
@@ -252,9 +252,9 @@ export default function SettingsForm({ user }: { user: any }) {
                             </svg>
                         </div>
 
-                        <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-3">
-                                <h3 className="text-2xl font-black text-slate-900">Google Meet & Agenda</h3>
+                        <div className="flex-1 min-w-0">
+                            <div className="flex flex-wrap items-center gap-2 mb-3">
+                                <h3 className="text-lg md:text-2xl font-black text-slate-900">Google Meet & Agenda</h3>
                                 {user?.googleCalendarEnabled ? (
                                     <span className="flex items-center gap-1.5 bg-green-50 text-green-700 text-[9px] font-black px-3 py-1 rounded-full border border-green-200 uppercase tracking-widest">
                                         <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse inline-block"></span>
@@ -270,7 +270,7 @@ export default function SettingsForm({ user }: { user: any }) {
                             <p className="text-sm text-muted font-medium leading-relaxed mb-6 max-w-lg">
                                 Conecte sua conta Google para criar links do Google Meet automaticamente em cada agendamento e sincronizar tudo com sua agenda pessoal.
                             </p>
-                            <div className="flex flex-wrap gap-2.5">
+                            <div className="flex flex-wrap gap-2">
                                 {['Link Meet automático', 'Sinc. com Google Agenda', 'E-mail com link da reunião', 'Gestão de eventos'].map((feat) => (
                                     <span key={feat} className="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 bg-slate-50 border border-slate-100 rounded-full px-3 py-1.5">
                                         <CheckCircle size={11} className="text-green-500 flex-shrink-0" /> {feat}
@@ -281,17 +281,15 @@ export default function SettingsForm({ user }: { user: any }) {
                     </div>
 
                     {/* Google-style button */}
-                    <div className="flex-shrink-0 flex flex-col items-center gap-3 md:self-center">
+                    <div className="flex flex-col items-stretch md:items-center gap-3 md:self-center md:flex-shrink-0">
                         <a
                             href="/api/auth/google"
-                            className="flex items-center gap-3 rounded-2xl font-semibold text-sm transition-all duration-200 hover:shadow-lg active:scale-95"
+                            className="flex items-center justify-center gap-3 rounded-2xl font-semibold text-sm transition-all duration-200 hover:shadow-lg active:scale-95 w-full md:w-auto"
                             style={{
                                 backgroundColor: 'white',
                                 border: '1.5px solid #dadce0',
                                 color: '#3c4043',
-                                padding: '12px 24px',
-                                minWidth: '230px',
-                                justifyContent: 'center',
+                                padding: '14px 24px',
                                 boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
                                 textDecoration: 'none',
                             }}
@@ -319,8 +317,8 @@ export default function SettingsForm({ user }: { user: any }) {
                 </div>
             )}
 
-            <div className="sticky bottom-8 z-20 flex justify-end">
-                <button type="submit" disabled={loading} className="btn btn-primary h-14 px-12 text-lg shadow-2xl shadow-primary/30">
+            <div className="sticky bottom-4 md:bottom-8 z-20 flex justify-stretch md:justify-end">
+                <button type="submit" disabled={loading} className="btn btn-primary h-14 w-full md:w-auto md:px-12 text-lg shadow-2xl shadow-primary/30">
                     {loading ? 'Salvando...' : 'Salvar Todas as Alterações'}
                 </button>
             </div>
