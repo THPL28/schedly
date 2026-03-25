@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { createEventType, updateEventType, deleteEventType } from '@/lib/actions';
-import { Plus, Clock, Tag, MoreVertical, Copy, SquareArrowOutUpRight, AlertCircle, CheckCircle2, Pencil, Trash2, X, Video, MapPin } from 'lucide-react';
+import { Plus, Clock, Tag, MoreVertical, Copy, SquareArrowOutUpRight, AlertCircle, CheckCircle2, Pencil, Trash2, X, Video, MapPin, Megaphone } from 'lucide-react';
 
 export default function EventTypesClient({ initialEventTypes, userSlug, googleCalendarEnabled }: { initialEventTypes: any[], userSlug: string, googleCalendarEnabled: boolean }) {
     const [isCreating, setIsCreating] = useState(false);
