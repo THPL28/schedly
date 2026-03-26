@@ -33,10 +33,10 @@ export default function QuickActions({ userSlug, isSmall }: { userSlug: string, 
             ></div>
             
             {/* Modal Body */}
-            <div className="relative w-full max-w-lg bg-white rounded-[3.5rem] p-8 sm:p-12 shadow-[0_40px_120px_-20px_rgba(0,0,0,0.5)] animate-in slide-in-from-bottom-20 zoom-in-95 duration-500 border border-slate-100/50">
-                <div className="flex justify-between items-center mb-10">
+            <div className="relative w-full max-w-lg bg-white rounded-[2rem] sm:rounded-[3.5rem] p-6 sm:p-12 shadow-[0_40px_120px_-20px_rgba(0,0,0,0.5)] animate-in slide-in-from-bottom-20 zoom-in-95 duration-500 border border-slate-100/50 max-h-[90vh] overflow-y-auto">
+                <div className="flex justify-between items-center mb-6 sm:mb-10">
                     <div>
-                        <h3 className="text-4xl font-black text-slate-900 tracking-tighter leading-none mb-3">Ações Rápidas</h3>
+                        <h3 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tighter leading-none mb-1 sm:mb-3">Ações Rápidas</h3>
                         <p className="text-[11px] font-black text-primary uppercase tracking-[0.3em]">Comandos de Gerenciamento</p>
                     </div>
                     <button 
@@ -47,9 +47,9 @@ export default function QuickActions({ userSlug, isSmall }: { userSlug: string, 
                     </button>
                 </div>
 
-                <div className="grid gap-8">
+                <div className="grid gap-5 sm:gap-8">
                     {/* Copy Link Action - High Contrast UI */}
-                    <div className="bg-primary/5 p-8 rounded-[3rem] border border-primary/10 relative overflow-hidden group">
+                    <div className="bg-primary/5 p-5 sm:p-8 rounded-[2rem] sm:rounded-[3rem] border border-primary/10 relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-primary/10 transition-colors"></div>
                         
                         <div className="flex items-center justify-between mb-6 relative z-10">
@@ -64,9 +64,9 @@ export default function QuickActions({ userSlug, isSmall }: { userSlug: string, 
                             </div>
                         </div>
 
-                        <div className="flex gap-3 relative z-10">
-                            <div className="flex-1 bg-white/80 backdrop-blur-md p-4 rounded-2xl border border-slate-200/60 text-[12px] text-slate-600 font-bold truncate flex items-center">
-                                {bookingUrl}
+                        <div className="flex gap-2 relative z-10">
+                            <div className="flex-1 bg-white/80 backdrop-blur-md p-3 sm:p-4 rounded-2xl border border-slate-200/60 text-[11px] text-slate-600 font-bold truncate flex items-center min-w-0">
+                                <span className="truncate">{bookingUrl}</span>
                             </div>
                             <button 
                                 onClick={handleCopy}
@@ -78,11 +78,11 @@ export default function QuickActions({ userSlug, isSmall }: { userSlug: string, 
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-6">
+                    <div className="grid grid-cols-2 gap-3 sm:gap-6">
                         <Link 
                             href="/schedule?new=true"
                             onClick={() => setIsOpen(false)}
-                            className="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 group hover:bg-primary hover:border-primary/20 transition-all duration-500 no-underline shadow-sm hover:shadow-2xl hover:shadow-primary/20"
+                            className="p-5 sm:p-8 bg-slate-50 rounded-[1.5rem] sm:rounded-[2.5rem] border border-slate-100 group hover:bg-primary hover:border-primary/20 transition-all duration-500 no-underline shadow-sm hover:shadow-2xl hover:shadow-primary/20"
                         >
                             <div className="w-12 h-12 rounded-2xl bg-white shadow-md flex items-center justify-center text-primary group-hover:scale-110 transition-all mb-5">
                                 <Plus size={24} />
@@ -96,7 +96,7 @@ export default function QuickActions({ userSlug, isSmall }: { userSlug: string, 
                                 window.open(`https://wa.me/?text=${encodeURIComponent('Olá! Gostaria de confirmar nosso agendamento para hoje. Podemos confirmar?')}`, '_blank');
                                 setIsOpen(false);
                             }}
-                            className="p-8 bg-emerald-50 rounded-[2.5rem] border border-emerald-100 group hover:bg-[#25D366] hover:border-[#25D366]/20 transition-all duration-500 shadow-sm hover:shadow-2xl hover:shadow-[#25D366]/20 text-left"
+                            className="p-5 sm:p-8 bg-emerald-50 rounded-[1.5rem] sm:rounded-[2.5rem] border border-emerald-100 group hover:bg-[#25D366] hover:border-[#25D366]/20 transition-all duration-500 shadow-sm hover:shadow-2xl hover:shadow-[#25D366]/20 text-left"
                         >
                             <div className="w-12 h-12 rounded-2xl bg-white shadow-md flex items-center justify-center text-[#25D366] group-hover:scale-110 transition-all mb-5">
                                 <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="32" height="32" viewBox="0 0 48 48">
@@ -114,7 +114,7 @@ export default function QuickActions({ userSlug, isSmall }: { userSlug: string, 
                         <Link 
                             href="/settings/availability"
                             onClick={() => setIsOpen(false)}
-                            className="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 group hover:bg-primary hover:border-primary/20 transition-all duration-500 no-underline shadow-sm hover:shadow-2xl hover:shadow-primary/20"
+                            className="p-5 sm:p-8 bg-slate-50 rounded-[1.5rem] sm:rounded-[2.5rem] border border-slate-100 group hover:bg-primary hover:border-primary/20 transition-all duration-500 no-underline shadow-sm hover:shadow-2xl hover:shadow-primary/20"
                         >
                             <div className="w-12 h-12 rounded-2xl bg-white shadow-md flex items-center justify-center text-amber-500 group-hover:scale-110 transition-all mb-5">
                                 <Clock size={24} />
@@ -129,7 +129,7 @@ export default function QuickActions({ userSlug, isSmall }: { userSlug: string, 
                                 window.open(`https://wa.me/?text=${encodeURIComponent(promoText)}`, '_blank');
                                 setIsOpen(false);
                             }}
-                            className="p-8 bg-indigo-50 border border-indigo-100 rounded-[2.5rem] group hover:bg-indigo-600 hover:border-indigo-500 transition-all duration-500 text-left active:scale-95"
+                            className="p-5 sm:p-8 bg-indigo-50 border border-indigo-100 rounded-[1.5rem] sm:rounded-[2.5rem] group hover:bg-indigo-600 hover:border-indigo-500 transition-all duration-500 text-left active:scale-95"
                         >
                             <div className="w-12 h-12 rounded-2xl bg-white shadow-md flex items-center justify-center text-indigo-600 group-hover:scale-110 transition-all mb-5">
                                 <Megaphone size={20} />
