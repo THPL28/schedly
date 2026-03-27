@@ -25,7 +25,7 @@ const footerGroups = [
     title: 'Empresa',
     links: [
       { label: 'Página inicial', href: '/' },
-      { label: 'Privacidade', href: '/privacy' },
+      { label: 'Política de Privacidade', href: '/privacy' },
       { label: 'Termos de Serviço', href: '/terms' },
     ],
   },
@@ -83,7 +83,7 @@ export function Footer() {
               Página inicial
             </Link>
             <Link href="/privacy" className={styles.footerLink}>
-              Privacidade
+            Política de Privacidade
             </Link>
             <Link href="/terms" className={styles.footerLink}>
               Termos
