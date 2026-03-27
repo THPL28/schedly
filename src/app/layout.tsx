@@ -55,6 +55,9 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
+      <head>
+        <meta name="google-site-verification" content="vUiLhiZbEgMeLItBAwVX6CUrD8MYAwmJTz6B8s05ntE" />
+      </head>
       <body className={`${dmSans.variable} ${inter.variable}`}>
         <PWARegister />
         {children}
