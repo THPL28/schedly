@@ -37,6 +37,9 @@ export const metadata: Metadata = {
       { url: "/icon-152x152.png", sizes: "152x152", type: "image/png" },
     ],
   },
+  verification: {
+    google: "vUiLhiZbEgMeLItBAwVX6CUrD8MYAwmJTz6B8s05ntE",
+  },
 };
 
 export const viewport: Viewport = {
