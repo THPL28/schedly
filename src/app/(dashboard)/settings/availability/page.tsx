@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { verifySession } from '@/lib/auth';
-import AvailabilityForm from './availability-form';
+import AvailabilityForm from '@/app/(dashboard)/settings/availability/availability-form';
 
 export default async function AvailabilityPage() {
     const session = await verifySession();

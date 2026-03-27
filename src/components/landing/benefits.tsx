@@ -12,18 +12,18 @@ const trustBrands = ['QUANTUM', 'VERTEX', 'PRISMART', 'AXIUM', 'NEXUS']
 const featureListA = [
   {
     title: 'Agendamento de Equipe',
-    text: 'Visualize a disponibilidade coletiva e direcione reunioes para os membros certos.',
+    text: 'Visualize a disponibilidade coletiva e direcione reuniões para os membros certos.',
     icon: '/landing/icons/Icon-20-coletive.svg',
   },
   {
-    title: 'Lembretes Automaticos',
-    text: 'Reduza faltas com lembretes automaticos por e-mail e SMS personalizados.',
+    title: 'Lembretes Automáticos',
+    text: 'Reduza faltas com lembretes automáticos por e-mail e SMS personalizados.',
     icon: '/landing/icons/Icon-19.-notificacao.svg',
   },
 ]
 
 const featureListB = [
-  'Notificacoes push instantaneas',
+  'Notificações push instantâneas',
   'Reagendamento com um toque',
   'Acesso offline a sua agenda',
 ]
@@ -58,11 +58,11 @@ export function Benefits() {
         <div className={styles.simplicityContainer}>
           <h2 className={styles.simplicityTitle}>Agendamento simplificado</h2>
           <p className={styles.simplicityText}>
-            O Schedly elimina o atrito do seu dia para que voce possa focar no
+            O Schedly elimina o atrito do seu dia para que você possa focar no
             trabalho que realmente importa.
           </p>
           <Link href="/register" className={styles.simplicityButton}>
-            Comecar Hoje
+            Começar Hoje
           </Link>
         </div>
       </section>
@@ -73,9 +73,9 @@ export function Benefits() {
             <div className={styles.featureCopy}>
               <p className={styles.featurePill}>
                 <Rocket size={14} />
-                Automacao de Fluxo de Trabalho
+                Automação de Fluxo de Trabalho
               </p>
-              <h3 className={styles.featureTitle}>Coordene sua equipe sem esforco</h3>
+              <h3 className={styles.featureTitle}>Coordene sua equipe sem esforço</h3>
               <div className={styles.featureItemList}>
                 {featureListA.map(item => (
                   <div key={item.title} className={styles.featureItem}>
@@ -116,8 +116,8 @@ export function Benefits() {
                 Sua agenda profissional sempre no bolso
               </h3>
               <p className={styles.featureBodyCompact}>
-                Nosso aplicativo movel permite que voce compartilhe disponibilidade,
-                gerencie reunioes e receba notificacoes instantaneas, mesmo longe da
+                Nosso aplicativo móvel permite que você compartilhe disponibilidade,
+                gerencie reuniões e receba notificações instantâneas, mesmo longe da
                 sua mesa.
               </p>
               <ul className={styles.featureCheckList}>
@@ -136,12 +136,12 @@ export function Benefits() {
       <section className={styles.integrationSection}>
         <div className={`${styles.container} ${styles.integrationLayout}`}>
           <div className={styles.integrationCopy}>
-            <h2 className={styles.integrationTitle}>Conecte-se com as ferramentas que voce ama hoje</h2>
+            <h2 className={styles.integrationTitle}>Conecte-se com as ferramentas que você ama hoje</h2>
             <p className={styles.integrationText}>
-              O Schedly se integra aos aplicativos que voce ja usa todos os dias para manter tudo em sincronia.
+              O Schedly se integra aos aplicativos que você já usa todos os dias para manter tudo em sincronia.
             </p>
-            <Link href="/pricing" className={styles.integrationLink} aria-label="Ver integracoes">
-              Ver integracoes
+            <Link href="/pricing" className={styles.integrationLink} aria-label="Ver integrações">
+              Ver integrações
               <ArrowUpRight size={14} />
             </Link>
           </div>

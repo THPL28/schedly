@@ -7,15 +7,15 @@ const footerGroups = [
   {
     title: 'Produto',
     links: [
-      { label: 'Recursos', href: '#benefits' },
-      { label: 'Preços', href: '#pricing' },
+      { label: 'Recursos', href: '/#benefits' },
+      { label: 'Preços', href: '/#pricing' },
       { label: 'Corporativo', href: '/pricing' },
-      { label: 'Soluções', href: '#cta' },
+      { label: 'Soluções', href: '/#cta' },
     ],
   },
   {
     title: 'Integrações',
-    links: [{ label: 'Google Calendar', href: '#benefits' }],
+    links: [{ label: 'Google Calendar', href: '/#benefits' }],
   },
   {
     title: 'Suporte',
@@ -24,9 +24,9 @@ const footerGroups = [
   {
     title: 'Empresa',
     links: [
-      { label: 'Sobre Nós', href: '#' },
-      { label: 'Privacidade', href: '#' },
-      { label: 'Termos de Uso', href: '#' },
+      { label: 'Página inicial', href: '/' },
+      { label: 'Privacidade', href: '/privacy' },
+      { label: 'Termos de Serviço', href: '/terms' },
     ],
   },
 ]
@@ -37,7 +37,7 @@ export function Footer() {
       <div className={styles.container}>
         <div className={styles.footerTop}>
           <div>
-            <Link href="/" className={styles.brand} aria-label="Schedly home">
+            <Link href="/" className={styles.brand} aria-label="Página inicial do Schedly">
               <Logo size={28} />
             </Link>
             <p className={styles.footerBrandText}>
@@ -79,14 +79,14 @@ export function Footer() {
             &copy; 2024 Schedly Inc. Todos os direitos reservados.
           </p>
           <div className={styles.footerBottomLinks}>
-            <Link href="#" className={styles.footerLink}>
-              Status
+            <Link href="/" className={styles.footerLink}>
+              Página inicial
             </Link>
-            <Link href="#" className={styles.footerLink}>
-              Segurança
+            <Link href="/privacy" className={styles.footerLink}>
+              Privacidade
             </Link>
-            <Link href="#" className={styles.footerLink}>
-              Cookies
+            <Link href="/terms" className={styles.footerLink}>
+              Termos
             </Link>
           </div>
         </div>

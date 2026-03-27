@@ -175,7 +175,7 @@ export default async function ReportsPage() {
                     
                     <div className="p-8 bg-gradient-to-br from-indigo-950 to-indigo-900 rounded-[3rem] text-white relative overflow-hidden shadow-2xl border border-white/5">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-3xl -mr-16 -mt-16"></div>
-                        <h4 className="text-lg font-black mb-1">Status Schedlyfy</h4>
+                        <h4 className="text-lg font-black mb-1">Status Schedly</h4>
                         <p className="text-slate-400 text-xs font-medium leading-relaxed mb-6">Seus dados estão sendo processados em tempo real com segurança.</p>
                         <button className="text-[10px] font-black uppercase tracking-widest text-primary hover:text-white transition-colors">
                             Ver detalhes <ArrowUpRight size={12} className="inline ml-1" />

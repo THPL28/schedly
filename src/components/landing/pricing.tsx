@@ -6,22 +6,22 @@ const plans = [
   {
     name: 'Basic',
     price: 'R$ 29,90',
-    period: '/mes',
+    period: '/mês',
     cta: 'Ativar Plano Basic',
     featured: false,
-    description: 'Ideal para autonomos em fase de crescimento.',
+    description: 'Ideal para autônomos em fase de crescimento.',
     items: [
-      '100 agendamentos por mes',
-      'Multiplos servicos (Event Types)',
-      'Buffer Time automatico',
-      'Pagina profissional basica',
-      'Notificacoes Push',
+      '100 agendamentos por mês',
+      'Múltiplos serviços (Event Types)',
+      'Buffer Time automático',
+      'Página profissional básica',
+      'Notificações Push',
     ],
   },
   {
     name: 'Pro',
     price: 'R$ 49,90',
-    period: '/mes',
+    period: '/mês',
     cta: 'Ativar Plano Pro',
     featured: true,
     badge: 'Mais Popular',
@@ -29,23 +29,23 @@ const plans = [
     items: [
       'Agendamentos ILIMITADOS',
       'Lembretes por E-mail (24h/1h)',
-      'Pagina publica premium',
-      'Suporte prioritario',
+      'Página pública premium',
+      'Suporte prioritário',
       'Custom Branding',
     ],
   },
   {
     name: 'Enterprise',
     price: 'R$ 89,90',
-    period: '/mes',
+    period: '/mês',
     cta: 'Ativar Plano Enterprise',
     featured: false,
-    description: 'Operacao avancada para equipes, processos e governanca.',
+    description: 'Operação avançada para equipes, processos e governança.',
     items: [
-      'Multiplas equipes e roteamento avancado',
-      'Integracoes premium e API',
-      'Relatorios avancados',
-      'Permissoes e auditoria',
+      'Múltiplas equipes e roteamento avançado',
+      'Integrações premium e API',
+      'Relatórios avançados',
+      'Permissões e auditoria',
       'Suporte dedicado',
     ],
   },
@@ -58,7 +58,7 @@ export function Pricing() {
         <div className={styles.centerPill}>Faturamento Seguro</div>
         <h2 className={styles.sectionHeading}>Escolha o seu plano</h2>
         <p className={styles.sectionSubheading}>
-          Potencialize seu negocio com as ferramentas de agendamento mais modernas do mercado.
+          Potencialize seu negócio com as ferramentas de agendamento mais modernas do mercado.
         </p>
 
         <div className={styles.plansGrid}>

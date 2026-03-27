@@ -141,7 +141,7 @@ export default async function PublicPage({ params }: { params: Promise<{ slug: s
 
                         <div className="mt-12 text-center">
                             <p className="text-[10px] text-slate-300 uppercase tracking-[0.2em] font-black">
-                                Powered by <span className="text-slate-400">Schedlyfy</span>
+                                Powered by <span className="text-slate-400">Schedly</span>
                             </p>
                         </div>
                     </div>

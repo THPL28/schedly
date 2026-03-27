@@ -1,6 +1,6 @@
 import { verifySession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import CalendarView from './calendar-view'
+import CalendarView from '@/app/(dashboard)/calendar/calendar-view'
 import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'

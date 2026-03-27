@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { verifySession } from '@/lib/auth';
-import EventTypesClient from './event-types-client';
+import EventTypesClient from '@/app/(dashboard)/settings/event-types/event-types-client';
 
 export default async function EventTypesPage() {
     const session = await verifySession();

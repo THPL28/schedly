@@ -11,7 +11,7 @@ export default function AdminActions({ userId, subscription, userRole }: any) {
 
     const currentStatus = subscription?.status
 
-    const handleAction = async (action: Function, ...args: any[]) => {
+    const handleAction = async (action: (...args: any[]) => any, ...args: any[]) => {
         setLoading(true)
         try {
             await action(userId, ...args)

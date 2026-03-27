@@ -1,4 +1,4 @@
-import { getCalendarClient, setCredentials } from './google-auth';
+import { getCalendarClient } from './google-auth';
 import { prisma } from './prisma';
 
 export async function createGoogleEvent(appointmentId: string) {
@@ -33,7 +33,7 @@ export async function createGoogleEvent(appointmentId: string) {
 
   const event: any = {
     summary: `${appointment.eventType?.name || 'Agendamento'} - ${appointment.clientName}`,
-    description: `Agendamento via Schedlyfy.\nCliente: ${appointment.clientName}\nEmail: ${appointment.clientEmail}\nNotas: ${appointment.notes || ''}`,
+    description: `Agendamento via Schedly.\nCliente: ${appointment.clientName}\nE-mail: ${appointment.clientEmail}\nNotas: ${appointment.notes || ''}`,
     start: {
       dateTime: startDateTime.toISOString(),
     },

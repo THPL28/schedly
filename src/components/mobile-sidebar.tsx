@@ -213,7 +213,7 @@ export default function MobileSidebar({ isOpen, onClose, slug, user, onLogout }:
             </Link>
 
             <a 
-              href={`https://wa.me/5511999999999?text=${encodeURIComponent('Olá, equipe Schedlyfy! Preciso de uma ajudinha com minha conta.')}`}
+              href={`https://wa.me/5511999999999?text=${encodeURIComponent('Olá, equipe Schedly! Preciso de uma ajudinha com minha conta.')}`}
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -264,4 +264,3 @@ export default function MobileSidebar({ isOpen, onClose, slug, user, onLogout }:
     </>
   )
 }
-

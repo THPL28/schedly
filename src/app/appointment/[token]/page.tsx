@@ -111,7 +111,7 @@ export default async function AppointmentManagementPage({ params }: { params: Pr
                 </div>
 
                 <div className="mt-8 text-center">
-                    <p className="text-[11px] text-muted font-medium">Schedlyfy — Agendamento Profissional Simplificado</p>
+                    <p className="text-[11px] text-muted font-medium">Schedly - Agendamento Profissional Simplificado</p>
                 </div>
             </div>
         </div>

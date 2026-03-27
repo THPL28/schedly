@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { cancelAppointment } from '@/lib/actions'
-import BookingModal from './booking-modal'
+import BookingModal from '@/app/(dashboard)/schedule/booking-modal'
+import FeedbackBanner from '@/components/feedback-banner'
 import {
     ChevronLeft,
     ChevronRight,
@@ -18,10 +19,19 @@ import {
     MessageCircle
 } from 'lucide-react'
 
+type FeedbackState = {
+    variant: 'success' | 'error' | 'info'
+    title: string
+    message: string
+} | null
+
 export default function Timeline({ date, appointments }: { date: string, appointments: any[] }) {
     const router = useRouter()
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedSlot, setSelectedSlot] = useState<string>('09:00')
+    const [feedback, setFeedback] = useState<FeedbackState>(null)
+    const [pendingCancelId, setPendingCancelId] = useState<string | null>(null)
+    const [isCancellingId, setIsCancellingId] = useState<string | null>(null)
 
     const d = new Date(date + 'T12:00:00')
     const displayMonth = d.toLocaleString('pt-BR', { month: 'long', year: 'numeric' })
@@ -50,10 +60,54 @@ export default function Timeline({ date, appointments }: { date: string, appoint
         setIsModalOpen(true)
     }
 
+    const showFeedback = (
+        variant: NonNullable<FeedbackState>['variant'],
+        title: string,
+        message: string
+    ) => {
+        setFeedback({ variant, title, message })
+    }
+
+    const handleCancelClick = async (appointmentId: string) => {
+        if (pendingCancelId !== appointmentId) {
+            setPendingCancelId(appointmentId)
+            showFeedback(
+                'info',
+                'Confirme o cancelamento',
+                'Clique novamente no ícone vermelho para cancelar este agendamento.'
+            )
+            return
+        }
+
+        setIsCancellingId(appointmentId)
+        setFeedback(null)
+
+        const result = await cancelAppointment(appointmentId)
+
+        setIsCancellingId(null)
+        if (result?.error) {
+            showFeedback('error', 'Não foi possível cancelar', result.error)
+            return
+        }
+
+        setPendingCancelId(null)
+        showFeedback('success', 'Agendamento cancelado', 'O horário foi cancelado com sucesso.')
+        router.refresh()
+    }
+
     const hours = Array.from({ length: 14 }, (_, i) => i + 7) // 7 to 20
 
     return (
         <div className="animate-in fade-in duration-700">
+            {feedback && (
+                <FeedbackBanner
+                    variant={feedback.variant}
+                    title={feedback.title}
+                    message={feedback.message}
+                    className="mb-6 animate-in fade-in slide-in-from-top-2"
+                />
+            )}
+
             {/* Control Header */}
             <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-8 mb-12">
                 <div className="flex items-center gap-4">
@@ -139,7 +193,7 @@ export default function Timeline({ date, appointments }: { date: string, appoint
                                                 <div className="flex items-center gap-2 shrink-0">
                                                     {a.clientPhone && (
                                                         <a 
-                                                            href={`https://wa.me/${a.clientPhone.replace(/\D/g, '')}?text=${encodeURIComponent(`Olá ${a.clientName}, aqui é da equipe do Schedlyfy. Gostaria de confirmar seu agendamento de ${a.eventType?.name || 'serviço'} para hoje às ${a.startTime}. Nos vemos lá!`)}`}
+                                                            href={`https://wa.me/${a.clientPhone.replace(/\D/g, '')}?text=${encodeURIComponent(`Olá ${a.clientName}, aqui é da equipe do Schedly. Gostaria de confirmar seu agendamento de ${a.eventType?.name || 'serviço'} para hoje às ${a.startTime}. Nos vemos lá!`)}`}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
                                                             className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all flex items-center justify-center shadow-sm"
@@ -149,8 +203,14 @@ export default function Timeline({ date, appointments }: { date: string, appoint
                                                         </a>
                                                     )}
                                                     <button 
-                                                        onClick={async () => { if (confirm('Tem certeza que deseja cancelar?')) await cancelAppointment(a.id); }} 
-                                                        className="w-10 h-10 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center border-none"
+                                                        onClick={() => handleCancelClick(a.id)}
+                                                        disabled={isCancellingId === a.id}
+                                                        className={`w-10 h-10 rounded-xl transition-all flex items-center justify-center border-none ${
+                                                            pendingCancelId === a.id
+                                                                ? 'bg-red-500 text-white shadow-lg shadow-red-500/20'
+                                                                : 'bg-red-50 text-red-500 hover:bg-red-500 hover:text-white'
+                                                        } disabled:cursor-not-allowed disabled:opacity-70`}
+                                                        title={pendingCancelId === a.id ? 'Confirmar cancelamento' : 'Cancelar agendamento'}
                                                     >
                                                         <X size={18} />
                                                     </button>

@@ -409,6 +409,7 @@ export async function cancelAppointment(appointmentId: string) {
     revalidatePath('/schedule')
     revalidatePath('/calendar')
     revalidatePath('/dashboard')
+    return { success: true }
 }
 
 export async function activateSubscription(targetUserId: string) {

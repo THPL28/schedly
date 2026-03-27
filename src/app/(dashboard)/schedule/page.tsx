@@ -1,6 +1,6 @@
 import { verifySession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import Timeline from './timeline'
+import Timeline from '@/app/(dashboard)/schedule/timeline'
 import { redirect } from 'next/navigation'
 
 export default async function SchedulePage({ searchParams }: { searchParams: Promise<{ date?: string }> }) {

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { updateAvailability } from '@/lib/actions';
+import FeedbackBanner from '@/components/feedback-banner';
 import { Plus, Trash2, Clock, AlertCircle } from 'lucide-react';
 
 const DAYS = [
@@ -14,6 +15,12 @@ interface AvailabilityItem {
     endTime: string;
 }
 
+type FeedbackState = {
+    variant: 'success' | 'error' | 'info';
+    title: string;
+    message: string;
+} | null;
+
 export default function AvailabilityForm({ initialAvailability }: { initialAvailability: any[] }) {
     const [availability, setAvailability] = useState<AvailabilityItem[]>(
         initialAvailability.map(a => ({
@@ -23,6 +30,15 @@ export default function AvailabilityForm({ initialAvailability }: { initialAvail
         }))
     );
     const [loading, setLoading] = useState(false);
+    const [feedback, setFeedback] = useState<FeedbackState>(null);
+
+    const showFeedback = (
+        variant: NonNullable<FeedbackState>['variant'],
+        title: string,
+        message: string
+    ) => {
+        setFeedback({ variant, title, message });
+    };
 
     const toggleDay = (dayIndex: number) => {
         const isActive = availability.some(a => a.dayOfWeek === dayIndex);
@@ -47,17 +63,37 @@ export default function AvailabilityForm({ initialAvailability }: { initialAvail
 
     const handleSave = async () => {
         setLoading(true);
+        setFeedback(null);
+
         const res = await updateAvailability(availability);
         if (res.success) {
-            window.alert('Disponibilidade salva com sucesso!');
+            showFeedback(
+                'success',
+                'Disponibilidade atualizada',
+                'Seus horários foram salvos com sucesso e já estão valendo para novos agendamentos.'
+            );
         } else {
-            window.alert('Erro ao salvar disponibilidade.');
+            showFeedback(
+                'error',
+                'Não foi possível salvar',
+                res.error || 'Tivemos um problema ao atualizar sua disponibilidade. Tente novamente.'
+            );
         }
+
         setLoading(false);
     };
 
     return (
         <div className="flex flex-col gap-6">
+            {feedback && (
+                <FeedbackBanner
+                    variant={feedback.variant}
+                    title={feedback.title}
+                    message={feedback.message}
+                    className="animate-in fade-in slide-in-from-top-2"
+                />
+            )}
+
             <div className="card p-0 overflow-hidden border-border">
                 {DAYS.map((day, dayIndex) => {
                     const dayBlocks = availability.map((a, i) => ({ ...a, originalIndex: i })).filter(a => a.dayOfWeek === dayIndex);

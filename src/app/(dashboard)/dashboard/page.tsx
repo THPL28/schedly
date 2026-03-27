@@ -5,13 +5,9 @@ import {
     Clock,
     Users,
     CalendarCheck,
-    Plus,
-    Filter,
-    ChevronRight,
-    ArrowUpRight
 } from 'lucide-react'
 import Link from 'next/link'
-import DashboardViewSwitcher from './dashboard-view-switcher'
+import DashboardViewSwitcher from '@/app/(dashboard)/dashboard/dashboard-view-switcher'
 
 export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ date?: string, status?: string }> }) {
     const session = await verifySession()
@@ -20,7 +16,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     const resolvedParams = await searchParams
     const user = await prisma.user.findUnique({
         where: { id: session.userId as string },
-        include: { 
+        include: {
             subscription: true,
             _count: { select: { availability: true, eventTypes: true } }
         }
@@ -90,7 +86,6 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
     return (
         <div className="p-4 sm:p-8 max-w-[1400px] mx-auto animate-in fade-in duration-700">
-            {/* Setup Warning for New Users */}
             {user._count.availability === 0 && (
                 <div className="bg-amber-50 border border-amber-200 rounded-[2rem] p-8 mb-12 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm shadow-amber-200/20 animate-in slide-in-from-top-4 duration-1000">
                     <div className="flex items-center gap-6">
@@ -98,24 +93,24 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                             <Clock size={32} strokeWidth={2.5} />
                         </div>
                         <div>
-                            <h3 className="text-xl font-black text-slate-900 mb-1 tracking-tight">Sua agenda está inativa! ⚠️</h3>
+                            <h3 className="text-xl font-black text-slate-900 mb-1 tracking-tight">Sua agenda está inativa!</h3>
                             <p className="text-slate-500 font-medium text-sm max-w-lg leading-relaxed">
-                                Notamos que você ainda não configurou seus **Horários de Trabalho**. Sem isso, seus clientes não conseguirão agendar serviços com você.
+                                Notamos que você ainda não configurou seus horários de trabalho. Sem isso, seus clientes não conseguirão agendar serviços com você.
                             </p>
                         </div>
                     </div>
-                    <Link 
-                        href="/settings/availability" 
+                    <Link
+                        href="/settings/availability"
                         className="bg-slate-900 text-white h-14 px-10 rounded-2xl flex items-center justify-center font-black uppercase tracking-widest text-xs hover:bg-amber-600 transition-all shadow-xl shadow-slate-900/10 active:scale-95 shrink-0"
                     >
-                        Configurar Agora
+                        Configurar agora
                     </Link>
                 </div>
             )}
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-12">
                 <div>
                     <h2 className="text-4xl font-black text-slate-900 tracking-tight leading-none mb-3">
-                        Olá, {user?.name?.split(' ')[0]}! 👋
+                        Olá, {user?.name?.split(' ')[0]}!
                     </h2>
                     <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] sm:text-xs">
                         {isToday ? 'Estes são seus compromissos para hoje.' : `Visualizando agenda para ${new Date(dateStr + 'T12:00:00').toLocaleDateString('pt-BR', { dateStyle: 'long' })}`}
@@ -138,7 +133,6 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                 </div>
             </div>
 
-            {/* Premium KPIs */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
                 {kpis.map((kpi, i) => (
                     <div key={i} className="bg-white p-8 rounded-[2rem] border border-slate-100 flex flex-col items-center gap-4 hover:border-primary/20 transition-all hover:translate-y-[-4px] shadow-sm hover:shadow-xl shadow-slate-200/50">
@@ -155,17 +149,16 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                 ))}
             </div>
 
-            {/* Gemini Insight */}
             {geminiInsight && (
                 <div className="mb-12 relative group">
                     <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-indigo-500/30 rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
                     <div className="relative bg-white border border-border/50 rounded-[2.5rem] p-6 sm:p-10 flex flex-col md:flex-row items-center gap-8 shadow-sm">
                         <div className="w-16 h-16 rounded-[1.5rem] bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center shrink-0 shadow-xl shadow-primary/20 animate-pulse">
-                            <span className="text-2xl">✨</span>
+                            <span className="text-2xl">AI</span>
                         </div>
                         <div className="flex-1 text-center md:text-left">
                             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary text-[9px] font-black px-3 py-1 rounded-full mb-3 uppercase tracking-widest border border-primary/10">
-                                Schedlyfy Intelligence
+                                Schedly Intelligence
                             </div>
                             <p className="text-lg sm:text-xl font-medium text-slate-700 leading-relaxed italic">
                                 "{geminiInsight.trim()}"
@@ -178,7 +171,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                 </div>
             )}
 
-            <DashboardViewSwitcher 
+            <DashboardViewSwitcher
                 user={user}
                 dateStr={dateStr}
                 status={status}

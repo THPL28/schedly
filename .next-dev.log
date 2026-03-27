@@ -1,40 +1,138 @@
 
 > schedlyfy@0.1.0 dev
-> next dev --webpack --hostname 127.0.0.1 --port 3000
+> next dev
 
-▲ Next.js 16.1.6 (webpack)
-- Local:         http://127.0.0.1:3000
-- Network:       http://127.0.0.1:3000
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.3.127:3000
 - Environments: .env.local, .env
 
 ✓ Starting...
-✓ Ready in 21.5s
-○ Compiling / ...
- GET / 200 in 28.6s (compile: 26.3s, render: 2.3s)
- GET / 200 in 482ms (compile: 39ms, render: 443ms)
-○ Compiling /offline ...
- GET /offline 200 in 6.3s (compile: 5.0s, render: 1238ms)
- GET / 200 in 365ms (compile: 65ms, render: 300ms)
-○ Compiling /register ...
- GET /register 200 in 12.4s (compile: 11.7s, render: 757ms)
- GET / 200 in 6.0s (compile: 5.2s, render: 828ms)
- GET /login 200 in 4.8s (compile: 4.2s, render: 551ms)
-○ Compiling /_error ...
- GET / 500 in 12.1s (compile: 11.7s, render: 480ms)
- GET / 500 in 47ms (compile: 12ms, render: 34ms)
- GET / 500 in 32ms (compile: 11ms, render: 21ms)
- GET / 200 in 1329ms (compile: 1006ms, render: 324ms)
- GET / 200 in 2.1s (compile: 637ms, render: 1466ms)
- GET / 200 in 2.1s (compile: 592ms, render: 1503ms)
- GET / 200 in 1874ms (compile: 12ms, render: 1861ms)
-○ Compiling /offline ...
- GET /offline 200 in 6.1s (compile: 4.8s, render: 1263ms)
- GET / 200 in 759ms (compile: 119ms, render: 640ms)
- GET /register 200 in 76ms (compile: 29ms, render: 47ms)
- GET / 200 in 262ms (compile: 8ms, render: 253ms)
-○ Compiling /pricing ...
- GET /pricing 200 in 9.6s (compile: 9.1s, render: 478ms)
- GET /login 200 in 133ms (compile: 64ms, render: 69ms)
- GET / 200 in 1178ms (compile: 38ms, render: 1139ms)
- GET / 200 in 959ms (compile: 9ms, render: 950ms)
- GET / 200 in 1013ms (compile: 9ms, render: 1005ms)
+Creating turbopack project {
+  dir: 'C:\\Users\\THPL\\Desktop\\Desenvolvimento\\schedlyfy',
+  testMode: true
+}
+○ Compiling proxy ...
+✓ Ready in 57.1s
+○ Compiling /settings ...
+✓ Finished writing to filesystem cache in 21.2s
+ GET /pricing 200 in 20.8s (compile: 19.8s, render: 977ms)
+ GET /login 200 in 44s (compile: 43s, render: 1320ms)
+ GET /settings 200 in 3.1min (compile: 2.9min, render: 12.0s)
+ GET /settings 200 in 3.5min (compile: 3.2min, render: 16.3s)
+ GET /settings 200 in 3.1min (compile: 2.9min, render: 12.9s)
+ GET /settings 200 in 3.1min (compile: 2.9min, render: 12.0s)
+ GET /settings 200 in 3.1min (compile: 3.0min, render: 11.1s)
+Persisting failed: Unable to write SST file 00000042.sst
+
+Caused by:
+    Espaço insuficiente no disco. (os error 112)
+ GET /settings 200 in 1779ms (compile: 74ms, render: 1706ms)
+ GET /settings 200 in 3.0s (compile: 39ms, render: 2.9s)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+○ Compiling /api/push/publicKey ...
+ GET /api/push/publicKey 404 in 5.8s (compile: 5.8s, render: 64ms)
+ GET /api/push/publicKey 404 in 33ms (compile: 10ms, render: 22ms)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET / 200 in 904ms (compile: 67ms, render: 837ms)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+○ Compiling /dashboard ...
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /dashboard 200 in 21.2s (compile: 10.6s, render: 10.6s)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /dashboard?tab=servicos 200 in 5.0s (compile: 61ms, render: 4.9s)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /dashboard?tab=servicos 200 in 4.8s (compile: 50ms, render: 4.8s)
+ GET / 200 in 13.6s (compile: 63ms, render: 13.5s)
+ GET /login 200 in 1195ms (compile: 64ms, render: 1130ms)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+[LOG] 2026-03-27T00:01:52.936Z | EVENT: LOGIN_SUCCESS | DETAILS: {"userId":"cmm0574780000123c0wkp0vne","email":"tiago.looze28@gmail.com"}
+ GET /dashboard 200 in 4.8s (compile: 53ms, render: 4.7s)
+ POST /login 303 in 7.0s (compile: 26ms, render: 7.0s)
+ GET /dashboard 200 in 7.4s (compile: 37ms, render: 7.4s)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /dashboard?tab=agenda 200 in 3.5s (compile: 46ms, render: 3.5s)
+○ Compiling /clients ...
+ GET /clients 200 in 14.9s (compile: 10.7s, render: 4.2s)
+ GET /reports 200 in 13.9s (compile: 9.0s, render: 4.9s)
+ GET /settings/event-types 200 in 21.2s (compile: 19.9s, render: 1308ms)
+ GET /clients 200 in 3.3s (compile: 35ms, render: 3.3s)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /reports 200 in 3.8s (compile: 439ms, render: 3.4s)
+ GET /dashboard 200 in 4.2s (compile: 35ms, render: 4.2s)
+✓ Compiled in 1551ms
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /settings 200 in 4.8s (compile: 36ms, render: 4.8s)
+ GET /dashboard 200 in 12.0s (compile: 1236ms, render: 10.8s)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /dashboard?tab=agenda 200 in 5.5s (compile: 49ms, render: 5.5s)
+ GET /clients 200 in 2.6s (compile: 51ms, render: 2.6s)
+ GET /reports 200 in 5.5s (compile: 39ms, render: 5.4s)
+ GET /settings/event-types 200 in 1043ms (compile: 30ms, render: 1013ms)
+ GET /clients 200 in 2.6s (compile: 31ms, render: 2.6s)
+ GET /settings 200 in 1260ms (compile: 26ms, render: 1234ms)
+○ Compiling /api/auth/google ...
+ GET /api/auth/google 307 in 39.2s (compile: 39.1s, render: 170ms)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /settings 200 in 5.6s (compile: 68ms, render: 5.5s)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+✓ Compiled in 3.1s
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+✓ Compiled in 2.2s
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+✓ Compiled in 1751ms
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /settings 200 in 11.0s (compile: 2.7s, render: 8.3s)
+ GET /settings 200 in 2.2s (compile: 33ms, render: 2.1s)
+ GET /api/push/publicKey 404 in 1739ms (compile: 1451ms, render: 287ms)
+ GET /api/push/publicKey 404 in 20ms (compile: 5ms, render: 15ms)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+○ Compiling /api/auth/google/callback ...
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /api/auth/google/callback?iss=https://accounts.google.com&code=4/0Aci98E8F0vfLRlsQEfYshOlSJfwgyeKZ8yWGEIN5HwJRduOMOSih0p6ttySmLHtzYgoM7A&scope=email%20profile%20https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/userinfo.email%20openid&authuser=0&prompt=consent 307 in 91s (compile: 77s, render: 14.0s)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /settings?error=token_exchange_failed 200 in 4.0s (compile: 102ms, render: 3.9s)
+ GET /api/push/publicKey 404 in 127ms (compile: 45ms, render: 82ms)
+ GET /api/push/publicKey 404 in 34ms (compile: 23ms, render: 10ms)
+ GET /api/auth/google 307 in 1452ms (compile: 1386ms, render: 66ms)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /api/auth/google/callback?iss=https://accounts.google.com&code=4/0Aci98E-5h05NBF05b2IOuMCRYytpG7OMWGia01JNtVuRPoFdNyNbp16GD_YTct17pwXbUA&scope=email%20profile%20https://www.googleapis.com/auth/calendar.events%20https://www.googleapis.com/auth/calendar%20https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/userinfo.email%20openid&authuser=0&prompt=consent 307 in 4.1s (compile: 60ms, render: 4.0s)
+ GET /settings?success=google_connected 200 in 2.1s (compile: 47ms, render: 2.0s)
+ GET /api/push/publicKey 404 in 25ms (compile: 11ms, render: 14ms)
+ GET /api/push/publicKey 404 in 22ms (compile: 8ms, render: 13ms)
+○ Compiling /terms ...
+ GET /terms 200 in 11.9s (compile: 10.3s, render: 1638ms)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /terms 200 in 2.8s (compile: 23ms, render: 2.7s)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+✓ Compiled in 1234ms
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /terms 200 in 2.8s (compile: 666ms, render: 2.1s)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /terms 200 in 1933ms (compile: 12ms, render: 1921ms)
+ GET /terms 200 in 1756ms (compile: 6ms, render: 1750ms)
+ GET /terms 200 in 2.4s (compile: 9ms, render: 2.4s)
+[?25h

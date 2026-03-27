@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Check, ShieldCheck, Zap, Star } from 'lucide-react';
+import FeedbackBanner from '@/components/feedback-banner';
 
 const PLANS = [
     {
@@ -24,11 +25,28 @@ const PLANS = [
     },
 ];
 
+type FeedbackState = {
+    variant: 'success' | 'error' | 'info';
+    title: string;
+    message: string;
+} | null;
+
 export default function BillingPage() {
     const [loading, setLoading] = useState<string | null>(null);
+    const [feedback, setFeedback] = useState<FeedbackState>(null);
+
+    const showFeedback = (
+        variant: NonNullable<FeedbackState>['variant'],
+        title: string,
+        message: string
+    ) => {
+        setFeedback({ variant, title, message });
+    };
 
     const handleCheckout = async (planId: string) => {
         setLoading(planId);
+        setFeedback(null);
+
         try {
             const res = await fetch('/api/stripe/checkout', {
                 method: 'POST',
@@ -36,14 +54,22 @@ export default function BillingPage() {
                 body: JSON.stringify({ planId }),
             });
             const data = await res.json();
+
             if (data.url) {
                 window.location.href = data.url;
-            } else if (data.error) {
-                window.alert(`Erro: ${data.error}`);
+                return;
+            }
+
+            if (data.error) {
+                showFeedback('error', 'Checkout indisponível', data.error);
             }
         } catch (error) {
             console.error('Checkout error:', error);
-            window.alert('Erro ao processar checkout. Tente novamente.');
+            showFeedback(
+                'error',
+                'Falha ao iniciar checkout',
+                'Não foi possível processar o checkout agora. Tente novamente em alguns instantes.'
+            );
         } finally {
             setLoading(null);
         }
@@ -51,44 +77,58 @@ export default function BillingPage() {
 
     return (
         <div className="max-w-6xl mx-auto p-4 sm:p-8">
-            <div className="text-center mb-16 space-y-4">
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 text-primary text-[10px] font-black uppercase tracking-widest border border-primary/10">
+            <div className="mb-16 space-y-4 text-center">
+                <div className="inline-flex items-center gap-2 rounded-full border border-primary/10 bg-primary/5 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-primary">
                     <ShieldCheck size={14} /> Faturamento Seguro
                 </div>
-                <h1 className="text-4xl md:text-5xl font-black text-slate-900 leading-tight">Escolha o seu plano</h1>
-                <p className="text-slate-500 max-w-xl mx-auto font-medium">Potencialize seu negócio com as ferramentas de agendamento mais modernas do mercado.</p>
+                <h1 className="text-4xl font-black leading-tight text-slate-900 md:text-5xl">Escolha o seu plano</h1>
+                <p className="mx-auto max-w-xl font-medium text-slate-500">
+                    Potencialize seu negócio com as ferramentas de agendamento mais modernas do mercado.
+                </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            {feedback && (
+                <FeedbackBanner
+                    variant={feedback.variant}
+                    title={feedback.title}
+                    message={feedback.message}
+                    className="mb-8 animate-in fade-in slide-in-from-top-2"
+                />
+            )}
+
+            <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
                 {PLANS.map((plan) => (
                     <div
                         key={plan.name}
-                        className={`card relative p-8 md:p-12 flex flex-col transition-all duration-300 hover:translate-y-[-4px] ${plan.recommended ? 'border-primary shadow-2xl shadow-primary/10 bg-primary/[0.01]' : 'border-border shadow-xl shadow-slate-200/50'}`}
+                        className={`card relative flex flex-col p-8 transition-all duration-300 hover:translate-y-[-4px] md:p-12 ${plan.recommended ? 'border-primary bg-primary/[0.01] shadow-2xl shadow-primary/10' : 'border-border shadow-xl shadow-slate-200/50'}`}
                     >
                         {plan.recommended && (
-                            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black uppercase tracking-[0.2em] px-6 py-2 rounded-full shadow-lg shadow-primary/20">
+                            <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-primary px-6 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-white shadow-lg shadow-primary/20">
                                 Mais Popular
                             </div>
                         )}
 
-                        <div className="flex items-center justify-between mb-8">
-                            <div className={`p-4 rounded-3xl ${plan.recommended ? 'bg-primary text-white' : 'bg-slate-100 text-slate-400'}`}>
+                        <div className="mb-8 flex items-center justify-between">
+                            <div className={`rounded-3xl p-4 ${plan.recommended ? 'bg-primary text-white' : 'bg-slate-100 text-slate-400'}`}>
                                 <plan.icon size={28} />
                             </div>
                             <div className="text-right">
-                                <p className="text-sm font-black text-slate-400 uppercase tracking-widest m-0">{plan.name}</p>
+                                <p className="m-0 text-sm font-black uppercase tracking-widest text-slate-400">{plan.name}</p>
                             </div>
                         </div>
 
                         <div className="mb-10">
-                            <h3 className="text-3xl font-black text-slate-900 mb-2">{plan.price}<span className="text-sm text-slate-400 font-bold">/mês</span></h3>
-                            <p className="text-slate-500 font-medium text-sm leading-relaxed">{plan.description}</p>
+                            <h3 className="mb-2 text-3xl font-black text-slate-900">
+                                {plan.price}
+                                <span className="text-sm font-bold text-slate-400">/mês</span>
+                            </h3>
+                            <p className="text-sm font-medium leading-relaxed text-slate-500">{plan.description}</p>
                         </div>
 
-                        <div className="space-y-4 mb-12 flex-1">
+                        <div className="mb-12 flex-1 space-y-4">
                             {plan.features.map((feature) => (
                                 <div key={feature} className="flex items-start gap-4">
-                                    <div className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${plan.recommended ? 'bg-primary/10 text-primary' : 'bg-success/10 text-success'}`}>
+                                    <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${plan.recommended ? 'bg-primary/10 text-primary' : 'bg-success/10 text-success'}`}>
                                         <Check size={12} />
                                     </div>
                                     <span className="text-sm font-bold text-slate-700">{feature}</span>
@@ -108,7 +148,7 @@ export default function BillingPage() {
             </div>
 
             <div className="mt-20 text-center">
-                <p className="text-slate-400 text-xs font-medium flex items-center justify-center gap-2">
+                <p className="flex items-center justify-center gap-2 text-xs font-medium text-slate-400">
                     <ShieldCheck size={14} /> Pagamentos processados via Stripe. Cancele a qualquer momento.
                 </p>
             </div>

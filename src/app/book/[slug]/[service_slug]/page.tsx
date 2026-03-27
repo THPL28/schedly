@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import ServiceBookingFlow from './booking-flow';
+import ServiceBookingFlow from '@/app/book/[slug]/[service_slug]/booking-flow';
 import { ChevronLeft, Clock, Tag, Globe, User } from 'lucide-react';
 import { Suspense } from 'react';
 import { getPlanLimit } from '@/lib/plans';
@@ -56,7 +56,6 @@ export default async function BookingServicePage({ params }: { params: Promise<{
     return (
         <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-4 py-8 md:py-20 font-sans">
             <div className="w-full max-w-[1020px] bg-white rounded-[2.5rem] shadow-[0_25px_70px_rgba(0,0,0,0.06)] overflow-hidden border border-slate-100 flex flex-col md:flex-row min-h-[640px]">
-                {/* Visual Sidebar Info */}
                 <div className="w-full md:w-[380px] p-10 bg-[#fafafa] border-b md:border-b-0 md:border-r border-slate-100 flex flex-col shrink-0">
                     <Link
                         href={`/book/${user.slug}`}
@@ -72,8 +71,8 @@ export default async function BookingServicePage({ params }: { params: Promise<{
                                     'tiago.looze28@gmail.com',
                                     'thpldevweb@gmail.com',
                                     'flahwagner19@gmail.com'
-                                ]
-                                const isWhitelisted = whitelist.includes(user.email) || user.role === 'ADMIN'
+                                ];
+                                const isWhitelisted = whitelist.includes(user.email) || user.role === 'ADMIN';
                                 const plan = getPlanLimit(user.subscription);
                                 const canShowLogo = isWhitelisted || plan.customBranding;
 
@@ -127,11 +126,10 @@ export default async function BookingServicePage({ params }: { params: Promise<{
                     </div>
 
                     <div className="mt-auto hidden md:block pt-12">
-                        <p className="text-[10px] text-slate-300 font-black uppercase tracking-[0.2em]">Schedlyfy Premium</p>
+                        <p className="text-[10px] text-slate-300 font-black uppercase tracking-[0.2em]">Schedly Premium</p>
                     </div>
                 </div>
 
-                {/* Main Booking Flow Area */}
                 <div className="flex-1 overflow-auto bg-white">
                     <Suspense fallback={<div className="p-10 text-center">Carregando...</div>}>
                         <ServiceBookingFlow

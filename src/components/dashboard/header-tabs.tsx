@@ -1,21 +1,22 @@
 'use client'
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { Calendar, Users, TrendingUp, Settings, Clock } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { usePathname, useSearchParams } from 'next/navigation'
+import { Calendar, Users, TrendingUp, Settings } from 'lucide-react'
 import QuickActions from './quick-actions'
 import Link from 'next/link'
 
 export default function HeaderTabs({ userSlug }: { userSlug?: string | null }) {
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const [isMounted, setIsMounted] = (require('react')).useState(false)
-    
-    ;(require('react')).useEffect(() => {
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
         setIsMounted(true)
     }, [])
 
     if (pathname === '/login' || pathname === '/register' || pathname.startsWith('/book/')) return null
-    if (!isMounted) return <div className="h-16 w-full" /> // Placeholder stable
+    if (!isMounted) return <div className="h-16 w-full" />
 
     const activeTabByPath = () => {
         if (pathname === '/dashboard') return searchParams.get('tab') || 'agenda'
@@ -36,46 +37,38 @@ export default function HeaderTabs({ userSlug }: { userSlug?: string | null }) {
     ]
 
     return (
-        <div className="flex justify-center w-full pointer-events-none sticky top-4 z-[100] animate-in fade-in slide-in-from-top-4 duration-1000">
-            <nav className="flex items-center bg-white/90 backdrop-blur-2xl border border-slate-200/50 p-1.5 rounded-full shadow-[0_25px_80px_-15px_rgba(0,0,0,0.15)] pointer-events-auto h-16">
-                <div className="flex items-center gap-1">
+        <div className="header-tabs-shell animate-in fade-in slide-in-from-top-4 duration-1000">
+            <nav className="header-tabs-nav" aria-label="Navegação principal do dashboard">
+                <div className="header-tabs-scroll">
                     {tabs.map((tab) => {
                         const isActive = activeId === tab.id
                         return (
                             <Link
                                 key={tab.id}
                                 href={tab.path}
-                                className={`
-                                    relative flex items-center gap-3 px-6 h-12 rounded-full transition-all duration-500 no-underline group
-                                    ${isActive ? 'text-white' : 'text-slate-400 hover:text-slate-900 hover:bg-slate-50/50'}
-                                `}
+                                className={`header-tab-link group ${isActive ? 'is-active' : ''}`}
+                                aria-current={isActive ? 'page' : undefined}
                             >
                                 {isActive && (
-                                    <div 
-                                        className="absolute inset-0 rounded-full shadow-lg shadow-primary/20 animate-in fade-in zoom-in-95 duration-500"
-                                        style={{ backgroundColor: tab.color, zIndex: -1 }}
+                                    <div
+                                        className="header-tab-bg animate-in fade-in zoom-in-95 duration-500"
+                                        style={{ backgroundColor: tab.color }}
                                     />
                                 )}
-                                <tab.icon 
-                                    size={18} 
-                                    className={`transition-all duration-500 ${isActive ? 'scale-110' : 'group-hover:scale-110 group-hover:rotate-6'}`}
+                                <tab.icon
+                                    size={18}
+                                    className={`header-tab-icon ${isActive ? 'scale-110' : 'group-hover:scale-110 group-hover:rotate-6'}`}
                                 />
-                                <span 
-                                    className={`text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] transition-all
-                                        ${isActive ? 'opacity-100' : 'opacity-60 group-hover:opacity-100 hidden sm:inline'}
-                                    `}
-                                >
-                                    {tab.label}
-                                </span>
+                                <span className="header-tab-label">{tab.label}</span>
                             </Link>
                         )
                     })}
                 </div>
 
-                <div className="w-px h-8 bg-slate-200/40 mx-4 hidden sm:block"></div>
-                
-                <div className="flex items-center px-2">
-                    <QuickActions userSlug={userSlug || ""} isSmall />
+                <div className="header-tabs-divider"></div>
+
+                <div className="header-tabs-action">
+                    <QuickActions userSlug={userSlug || ''} isSmall />
                 </div>
             </nav>
         </div>

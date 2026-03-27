@@ -6,6 +6,13 @@ import { ptBR } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight, Clock, CheckCircle2, AlertCircle, CalendarDays } from 'lucide-react';
 import { bookAppointmentPublic } from '@/lib/actions';
 import { useSearchParams } from 'next/navigation';
+import FeedbackBanner from '@/components/feedback-banner';
+
+type FeedbackState = {
+    variant: 'success' | 'error' | 'info';
+    title: string;
+    message: string;
+} | null;
 
 export default function ServiceBookingFlow({ user, eventType }: { user: any, eventType: any }) {
     const searchParams = useSearchParams();
@@ -18,6 +25,7 @@ export default function ServiceBookingFlow({ user, eventType }: { user: any, eve
     const [step, setStep] = useState(1); // 1: Date/Time, 2: Form, 3: Success
     const [loadingSlots, setLoadingSlots] = useState(false);
     const [isBooking, setIsBooking] = useState(false);
+    const [feedback, setFeedback] = useState<FeedbackState>(null);
 
     // Form state
     const [formData, setFormData] = useState({
@@ -33,6 +41,14 @@ export default function ServiceBookingFlow({ user, eventType }: { user: any, eve
             // For now, we'll just keep the token to pass it along
         }
     }, [rescheduleToken]);
+
+    const showFeedback = (
+        variant: NonNullable<FeedbackState>['variant'],
+        title: string,
+        message: string
+    ) => {
+        setFeedback({ variant, title, message });
+    };
 
     // Calendar logic
     const daysInMonth = eachDayOfInterval({
@@ -53,6 +69,7 @@ export default function ServiceBookingFlow({ user, eventType }: { user: any, eve
     async function fetchSlots(date: Date) {
         setLoadingSlots(true);
         setSelectedSlot(null);
+        setFeedback(null);
         try {
             const dateStr = format(date, 'yyyy-MM-dd');
             const res = await fetch(`/api/availability/${user.id}?date=${dateStr}&duration=${eventType.duration}&buffer=${eventType.bufferTime}`);
@@ -60,6 +77,11 @@ export default function ServiceBookingFlow({ user, eventType }: { user: any, eve
             setAvailableSlots(data.slots || []);
         } catch (error) {
             console.error('Error fetching slots:', error);
+            showFeedback(
+                'error',
+                'Não foi possível carregar os horários',
+                'Tivemos um problema ao buscar os horários disponíveis. Tente novamente em alguns instantes.'
+            );
         } finally {
             setLoadingSlots(false);
         }
@@ -70,6 +92,7 @@ export default function ServiceBookingFlow({ user, eventType }: { user: any, eve
         if (!selectedDate || !selectedSlot) return;
 
         setIsBooking(true);
+        setFeedback(null);
         const form = new FormData();
         form.append('providerId', user.id);
         form.append('eventTypeId', eventType.id);
@@ -88,7 +111,11 @@ export default function ServiceBookingFlow({ user, eventType }: { user: any, eve
         if (res.success) {
             setStep(3);
         } else {
-            window.alert(res.error || 'Erro ao agendar.');
+            showFeedback(
+                'error',
+                'Não foi possível concluir o agendamento',
+                res.error || 'Tivemos um problema ao finalizar o agendamento. Tente novamente.'
+            );
         }
         setIsBooking(false);
     }
@@ -149,9 +176,19 @@ export default function ServiceBookingFlow({ user, eventType }: { user: any, eve
     }
 
     return (
-        <div className="flex flex-col md:flex-row h-full">
-            {step === 1 ? (
-                <>
+        <div className="flex flex-col gap-6">
+            {feedback && (
+                <FeedbackBanner
+                    variant={feedback.variant}
+                    title={feedback.title}
+                    message={feedback.message}
+                    className="animate-in fade-in slide-in-from-top-2"
+                />
+            )}
+
+            <div className="flex flex-col md:flex-row h-full">
+                {step === 1 ? (
+                    <>
                     {/* Calendar Selection */}
                     <div className="flex-1 p-10 border-r border-slate-50">
                         {rescheduleToken && (
@@ -240,10 +277,10 @@ export default function ServiceBookingFlow({ user, eventType }: { user: any, eve
                             </div>
                         )}
                     </div>
-                </>
-            ) : (
-                <div className="flex-1 p-10 md:p-14 animate-in slide-in-from-right-8 duration-500">
-                    <button onClick={() => setStep(1)} className="text-slate-400 hover:text-primary mb-12 flex items-center gap-2 text-xs font-black uppercase tracking-widest transition-all no-underline hover:translate-x-[-4px]">
+                    </>
+                ) : (
+                    <div className="flex-1 p-10 md:p-14 animate-in slide-in-from-right-8 duration-500">
+                        <button onClick={() => setStep(1)} className="text-slate-400 hover:text-primary mb-12 flex items-center gap-2 text-xs font-black uppercase tracking-widest transition-all no-underline hover:translate-x-[-4px]">
                         ← Alterar Horário
                     </button>
 
@@ -312,8 +349,9 @@ export default function ServiceBookingFlow({ user, eventType }: { user: any, eve
                             </button>
                         </div>
                     </form>
-                </div>
-            )}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

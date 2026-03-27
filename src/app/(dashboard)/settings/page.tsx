@@ -1,9 +1,9 @@
+import { Suspense } from 'react'
+import { redirect } from 'next/navigation'
 import { verifySession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { redirect } from 'next/navigation'
-import SettingsForm from './settings-form'
 import PushSubscribe from '@/components/push-subscribe'
-import { Suspense } from 'react'
+import SettingsForm from '@/app/(dashboard)/settings/settings-form'
 
 export default async function SettingsPage() {
     const session = await verifySession()
@@ -22,8 +22,10 @@ export default async function SettingsPage() {
             slug: true,
             language: true,
             googleCalendarEnabled: true,
-            googleAccessToken: true
-        }
+            googleAccessToken: true,
+            minLeadTime: true,
+            maxFutureDays: true,
+        },
     })
 
     if (!user) {
@@ -31,14 +33,19 @@ export default async function SettingsPage() {
     }
 
     return (
-        <div className="card w-full" style={{ maxWidth: '600px', margin: '0 auto' }}>
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8">Configurações</h2>
-            <Suspense fallback={<div className="h-[400px] animate-pulse bg-slate-50 rounded-3xl" />}>
+        <div className="w-full space-y-6" style={{ maxWidth: '1000px', margin: '0px auto' }}>
+            <div className="space-y-2">
+                <h2 className="text-2xl font-black tracking-tight text-slate-900 md:text-4xl">Configurações</h2>
+                <p className="max-w-2xl text-sm font-medium text-muted md:text-base">
+                    Ajuste sua identidade visual, regras da agenda, integrações e preferências de comunicação em um só lugar.
+                </p>
+            </div>
+
+            <Suspense fallback={<div className="h-[400px] animate-pulse rounded-3xl bg-slate-50" />}>
                 <SettingsForm user={user} />
             </Suspense>
-            <div className="mt-6">
-                <PushSubscribe />
-            </div>
+
+            <PushSubscribe />
         </div>
     )
 }
