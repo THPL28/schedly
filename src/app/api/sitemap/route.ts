@@ -39,6 +39,10 @@ export async function GET() {
   }
 
   for (const u of users) {
+    // Runtime guard: although we filter slug != null in the query,
+    // TypeScript still types slug as possibly null. Skip if missing.
+    if (!u.slug) continue
+
     const safeSlug = encodeURIComponent(u.slug)
     const updated = u.updatedAt ? formatDate(u.updatedAt) : formatDate(new Date())
 
@@ -47,6 +51,7 @@ export async function GET() {
 
     // event types (services) - only active ones (selected above)
     for (const et of u.eventTypes || []) {
+      if (!et.slug) continue
       const etUpdated = et.updatedAt ? formatDate(et.updatedAt) : updated
       const safeEt = encodeURIComponent(et.slug)
       xml += `  <url>\n    <loc>${SITE_URL}/book/${safeSlug}/${safeEt}</loc>\n    <lastmod>${etUpdated}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`
