@@ -9,13 +9,26 @@ import {
 import Link from 'next/link'
 import DashboardViewSwitcher from '@/app/(dashboard)/dashboard/dashboard-view-switcher'
 
+const VALID_STATUSES = ['SCHEDULED', 'CANCELED'] as const
+type AppointmentStatus = typeof VALID_STATUSES[number]
+
+function getTodayDateString() {
+    return new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/Sao_Paulo',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+    }).format(new Date())
+}
+
 export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ date?: string, status?: string }> }) {
     const session = await verifySession()
-    if (!session) redirect('/login')
+    if (!session || typeof session.userId !== 'string') redirect('/login')
 
+    const userId = session.userId
     const resolvedParams = await searchParams
     const user = await prisma.user.findUnique({
-        where: { id: session.userId as string },
+        where: { id: userId },
         include: {
             subscription: true,
             _count: { select: { availability: true, eventTypes: true } }
@@ -26,17 +39,22 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         redirect('/login')
     }
 
-    const dateStr = resolvedParams.date || new Date().toISOString().split('T')[0]
-    const status = resolvedParams.status || 'SCHEDULED'
-    const targetDate = new Date(dateStr + 'T00:00:00.000Z')
-    const targetEnd = new Date(dateStr + 'T23:59:59.999Z')
+    const todayDateStr = getTodayDateString()
+    const requestedDate = resolvedParams.date || todayDateStr
+    const dateStr = /^\d{4}-\d{2}-\d{2}$/.test(requestedDate) ? requestedDate : todayDateStr
+    const status: AppointmentStatus = VALID_STATUSES.includes(resolvedParams.status as AppointmentStatus)
+        ? resolvedParams.status as AppointmentStatus
+        : 'SCHEDULED'
+
+    const targetDate = new Date(`${dateStr}T00:00:00.000Z`)
+    const targetEnd = new Date(`${dateStr}T23:59:59.999Z`)
 
     const [todayAppts, totalCount, uniqueClients] = await prisma.$transaction([
         prisma.appointment.findMany({
             where: {
-                userId: session.userId as string,
+                userId,
                 date: { gte: targetDate, lte: targetEnd },
-                status: status as any
+                status
             },
             include: {
                 eventType: true
@@ -45,18 +63,17 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         }),
         prisma.appointment.count({
             where: {
-                userId: session.userId as string,
+                userId,
                 status: 'SCHEDULED'
             }
         }),
-        prisma.appointment.findMany({
-            where: { userId: session.userId as string },
-            distinct: ['clientName'],
-            select: { clientName: true }
+        prisma.appointment.groupBy({
+            by: ['clientName'],
+            where: { userId },
         }),
     ])
 
-    const isToday = dateStr === new Date().toISOString().split('T')[0]
+    const isToday = dateStr === todayDateStr
 
     const serializedAppts = todayAppts.map(app => ({
         ...app,
@@ -81,7 +98,9 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         try {
             const { getDashboardInsight } = await import('@/lib/gemini');
             return await getDashboardInsight(user.name || 'Profissional', todayAppts);
-        } catch (e) { return null; }
+        } catch {
+            return null;
+        }
     })() : null;
 
     return (
@@ -110,10 +129,10 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-12">
                 <div>
                     <h2 className="text-4xl font-black text-slate-900 tracking-tight leading-none mb-3">
-                        Olá, {user?.name?.split(' ')[0]}!
+                        Olá, {user.name?.split(' ')[0]}!
                     </h2>
                     <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] sm:text-xs">
-                        {isToday ? 'Estes são seus compromissos para hoje.' : `Visualizando agenda para ${new Date(dateStr + 'T12:00:00').toLocaleDateString('pt-BR', { dateStyle: 'long' })}`}
+                        {isToday ? 'Estes são seus compromissos para hoje.' : `Visualizando agenda para ${new Date(`${dateStr}T12:00:00Z`).toLocaleDateString('pt-BR', { dateStyle: 'long', timeZone: 'America/Sao_Paulo' })}`}
                     </p>
                 </div>
 
@@ -136,9 +155,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
                 {kpis.map((kpi, i) => (
                     <div key={i} className="bg-white p-8 rounded-[2rem] border border-slate-100 flex flex-col items-center gap-4 hover:border-primary/20 transition-all hover:translate-y-[-4px] shadow-sm hover:shadow-xl shadow-slate-200/50">
-                        <div
-                            className={`flex items-center justify-center rounded-2xl flex-shrink-0 w-14 h-14 ${kpi.bg} ${kpi.color} shadow-inner`}
-                        >
+                        <div className={`flex items-center justify-center rounded-2xl flex-shrink-0 w-14 h-14 ${kpi.bg} ${kpi.color} shadow-inner`}>
                             <kpi.icon size={26} />
                         </div>
                         <div className="text-center">
@@ -165,7 +182,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                             </p>
                         </div>
                         <div className="hidden lg:block shrink-0 px-8 py-4 bg-slate-50 border border-slate-100 rounded-3xl text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                            Powered by Gemini 1.5
+                            Powered by Gemini
                         </div>
                     </div>
                 </div>
