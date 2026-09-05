@@ -68,11 +68,11 @@ export default function DashboardViewSwitcher({ dateStr, status, serializedAppts
                         <Settings size={15} className="text-slate-600" /><span className="text-xs font-semibold text-slate-700">Serviços</span><ArrowRight size={13} className="ml-auto text-slate-300 transition group-hover:text-indigo-500" />
                     </Link>
                     <Link href="/reports" className="group flex items-center gap-3 rounded-lg border border-slate-100 bg-slate-50/70 px-3 py-2.5 transition hover:border-indigo-100 hover:bg-indigo-50/50">
-                        <Sparkles size={15} className="text-violet-600" /><span className="text-xs font-semibold text-slate-700">Relatórios</span><ArrowRight size={13} className="ml-auto text-slate-300 transition group-hover:text-indigo-500" />
+                        <Sparkles size={15} className="text-violet-600" /><span className="text-xs font-semibold text-slate-700">Relatórios</span><ArrowRight size={13} className="ml-auto text-violet-500" />
                     </Link>
                 </div>
             </div>
-            <div className="p-3 sm:p-5"><Timeline date={dateStr} appointments={serializedAppts} showPrimaryAction={false} /></div>
+            <div className="p-3 sm:p-5"><Timeline date={dateStr} appointments={serializedAppts} /></div>
         </section>
     )
 }
