@@ -34,10 +34,10 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     const targetDate = new Date(`${dateStr}T00:00:00.000Z`)
     const targetEnd = new Date(`${dateStr}T23:59:59.999Z`)
 
-    const [todayAppts, totalCount, uniqueClients] = await prisma.$transaction([
+    const [todayAppts, totalCount, clientCount] = await prisma.$transaction([
         prisma.appointment.findMany({ where: { userId, date: { gte: targetDate, lte: targetEnd }, status }, include: { eventType: true }, orderBy: { startTime: 'asc' } }),
         prisma.appointment.count({ where: { userId, status: 'SCHEDULED' } }),
-        prisma.appointment.groupBy({ by: ['clientName'], where: { userId } }),
+        prisma.client.count({ where: { userId } }),
     ])
 
     const isToday = dateStr === todayDateStr
@@ -49,7 +49,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     const kpis = [
         { label: isToday ? 'Hoje' : 'No dia', value: todayAppts.length, icon: Clock, tone: 'text-indigo-600 bg-indigo-50' },
         { label: 'Agendados', value: totalCount, icon: CalendarCheck, tone: 'text-emerald-600 bg-emerald-50' },
-        { label: 'Clientes', value: uniqueClients.length, icon: Users, tone: 'text-slate-700 bg-slate-100' },
+        { label: 'Clientes', value: clientCount, icon: Users, tone: 'text-slate-700 bg-slate-100' },
         { label: 'Serviços', value: user._count.eventTypes, icon: BriefcaseBusiness, tone: 'text-violet-600 bg-violet-50' },
     ]
 
