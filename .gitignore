@@ -26,13 +26,17 @@ test-stripe.js
 .DS_Store
 *.pem
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
+# debug and local runtime logs
+*.log
+.next-dev.err.log
+.next-dev.log
+.next-start.err.log
+.next-start.log
+build_output.txt
 
-# env files (can opt-in for committing if needed)
+debug.log
+
+# env files
 .env*
 
 # vercel
