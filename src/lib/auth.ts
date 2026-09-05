@@ -2,16 +2,25 @@ import { SignJWT, jwtVerify } from 'jose'
 import { cookies } from 'next/headers'
 import bcrypt from 'bcryptjs'
 
-const SECRET_KEY = process.env.SESSION_SECRET || 'schedly-super-secret-key-change-me-in-prod'
-const key = new TextEncoder().encode(SECRET_KEY)
+const DEV_SECRET = 'schedly-development-only-secret-change-me'
+
+function getSessionKey() {
+    const secret = process.env.SESSION_SECRET
+
+    if (!secret && process.env.NODE_ENV === 'production') {
+        throw new Error('SESSION_SECRET must be configured in production')
+    }
+
+    return new TextEncoder().encode(secret || DEV_SECRET)
+}
 
 export async function createSession(userId: string) {
-    const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+    const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     const session = await new SignJWT({ userId })
-        .setProtectedHeader({ alg: 'HS256' })
+        .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
         .setIssuedAt()
         .setExpirationTime('7d')
-        .sign(key)
+        .sign(getSessionKey())
 
     const cookieStore = await cookies()
     cookieStore.set('session', session, {
@@ -34,11 +43,16 @@ export async function verifySession() {
     if (!cookie) return null
 
     try {
-        const { payload } = await jwtVerify(cookie, key, {
+        const { payload } = await jwtVerify(cookie, getSessionKey(), {
             algorithms: ['HS256'],
         })
+
+        if (typeof payload.userId !== 'string' || !payload.userId) {
+            return null
+        }
+
         return payload
-    } catch (error) {
+    } catch {
         return null
     }
 }
