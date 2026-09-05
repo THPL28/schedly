@@ -6,11 +6,12 @@ export async function POST(request: Request) {
   const session = await verifySession()
   if (!session || typeof session.userId !== 'string') return NextResponse.redirect(new URL('/login', request.url))
 
+  const userId = session.userId
   const form = await request.formData()
   const clientId = String(form.get('clientId') || '')
   if (!clientId) return NextResponse.json({ error: 'Paciente inválido.' }, { status: 400 })
 
-  const client = await prisma.client.findFirst({ where: { id: clientId, userId: session.userId }, select: { id: true } })
+  const client = await prisma.client.findFirst({ where: { id: clientId, userId }, select: { id: true } })
   if (!client) return NextResponse.json({ error: 'Paciente não encontrado.' }, { status: 404 })
 
   const birthDateRaw = String(form.get('birthDate') || '')
@@ -22,7 +23,7 @@ export async function POST(request: Request) {
       where: { clientId },
       create: {
         clientId,
-        userId: session.userId,
+        userId,
         birthDate,
         sex: String(form.get('sex') || '').trim() || null,
         cpf: String(form.get('cpf') || '').trim() || null,
@@ -43,7 +44,7 @@ export async function POST(request: Request) {
     })
 
     await tx.clinicalAuditLog.create({
-      data: { userId: session.userId, clientId, action: 'UPDATE_PATIENT_PROFILE' },
+      data: { userId, clientId, action: 'UPDATE_PATIENT_PROFILE' },
     })
   })
 
