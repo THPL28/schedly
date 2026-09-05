@@ -3,7 +3,7 @@
 import { useSearchParams } from 'next/navigation'
 import Timeline from '../schedule/timeline'
 import PerformanceChart from '@/components/dashboard/performance-chart'
-import { Calendar, Clock, Settings, ArrowRight } from 'lucide-react'
+import { Calendar, Clock, Settings, ArrowRight, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 
 type ViewProps = {
@@ -52,11 +52,27 @@ export default function DashboardViewSwitcher({ dateStr, status, serializedAppts
 
     return (
         <section className="section-card overflow-hidden">
-            <div className="flex flex-col gap-3 border-b border-slate-100 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
-                <div className="flex items-center gap-3"><div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600"><Calendar size={18} /></div><div><h2 className="text-sm font-bold text-slate-900">Agenda</h2><p className="text-xs text-slate-500">{status === 'SCHEDULED' ? 'Compromissos confirmados' : 'Compromissos cancelados'}</p></div></div>
-                <Link href="/calendar" className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-700">Calendário completo <ArrowRight size={14} /></Link>
+            <div className="border-b border-slate-100 p-4 sm:p-5">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600"><Calendar size={18} /></div>
+                        <div><h2 className="text-sm font-bold text-slate-900">Agenda de hoje</h2><p className="text-xs text-slate-500">{status === 'SCHEDULED' ? 'Acompanhe seus próximos compromissos.' : 'Visualizando compromissos cancelados.'}</p></div>
+                    </div>
+                    <Link href="/calendar" className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-700">Abrir calendário completo <ArrowRight size={14} /></Link>
+                </div>
+                <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
+                    <Link href="/settings/availability" className="group flex items-center gap-3 rounded-lg border border-slate-100 bg-slate-50/70 px-3 py-2.5 transition hover:border-indigo-100 hover:bg-indigo-50/50">
+                        <Clock size={15} className="text-indigo-600" /><span className="text-xs font-semibold text-slate-700">Horários</span><ArrowRight size={13} className="ml-auto text-slate-300 transition group-hover:text-indigo-500" />
+                    </Link>
+                    <Link href="/settings/event-types" className="group flex items-center gap-3 rounded-lg border border-slate-100 bg-slate-50/70 px-3 py-2.5 transition hover:border-indigo-100 hover:bg-indigo-50/50">
+                        <Settings size={15} className="text-slate-600" /><span className="text-xs font-semibold text-slate-700">Serviços</span><ArrowRight size={13} className="ml-auto text-slate-300 transition group-hover:text-indigo-500" />
+                    </Link>
+                    <Link href="/reports" className="group flex items-center gap-3 rounded-lg border border-slate-100 bg-slate-50/70 px-3 py-2.5 transition hover:border-indigo-100 hover:bg-indigo-50/50">
+                        <Sparkles size={15} className="text-violet-600" /><span className="text-xs font-semibold text-slate-700">Relatórios</span><ArrowRight size={13} className="ml-auto text-slate-300 transition group-hover:text-indigo-500" />
+                    </Link>
+                </div>
             </div>
-            <div className="p-4 sm:p-5"><Timeline date={dateStr} appointments={serializedAppts} /></div>
+            <div className="p-3 sm:p-5"><Timeline date={dateStr} appointments={serializedAppts} showPrimaryAction={false} /></div>
         </section>
     )
 }
