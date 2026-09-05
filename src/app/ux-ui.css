@@ -1,0 +1,111 @@
+/* Schedly UX/UI layer — shared, low-noise product surface */
+:root {
+  --ui-page: #f8fafc;
+  --ui-surface: #ffffff;
+  --ui-border: #e5e7eb;
+  --ui-border-strong: #d1d5db;
+  --ui-text: #111827;
+  --ui-muted: #6b7280;
+  --ui-primary: #4f46e5;
+  --ui-primary-hover: #4338ca;
+  --ui-success: #059669;
+  --ui-warning: #d97706;
+  --ui-danger: #dc2626;
+  --ui-radius: 14px;
+  --ui-radius-sm: 10px;
+  --ui-shadow: 0 1px 2px rgba(15, 23, 42, .04), 0 8px 24px rgba(15, 23, 42, .04);
+}
+
+html { scroll-behavior: smooth; }
+body { background: var(--ui-page); color: var(--ui-text); }
+
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid rgba(79, 70, 229, .18);
+  outline-offset: 2px;
+}
+
+/* Keep cards useful instead of decorative: no lift/scale on every hover. */
+.ui-card, .card {
+  border-radius: var(--ui-radius);
+  border-color: var(--ui-border);
+  box-shadow: var(--ui-shadow);
+}
+.ui-card:hover, .card:hover { transform: none; }
+
+.ui-btn, .btn {
+  min-height: 40px;
+  border-radius: 10px;
+  font-weight: 650;
+}
+
+.ui-btn-primary, .btn-primary {
+  background: var(--ui-primary);
+  box-shadow: none;
+}
+.ui-btn-primary:hover, .btn-primary:hover {
+  background: var(--ui-primary-hover);
+  box-shadow: none;
+  transform: none;
+}
+
+.ui-btn-secondary, .btn-outline {
+  box-shadow: none;
+}
+.ui-btn-secondary:hover, .btn-outline:hover { transform: none; }
+
+/* Shared page rhythm */
+.page-shell {
+  width: min(100%, 1280px);
+  margin: 0 auto;
+  padding: 28px 32px 48px;
+}
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.page-title { margin: 0; font-size: clamp(1.5rem, 2.5vw, 2rem); line-height: 1.15; font-weight: 750; letter-spacing: -.025em; }
+.page-description { margin: 6px 0 0; color: var(--ui-muted); font-size: .9rem; }
+.page-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.section-card { background: var(--ui-surface); border: 1px solid var(--ui-border); border-radius: var(--ui-radius); box-shadow: var(--ui-shadow); }
+.section-card-header { padding: 18px 20px; border-bottom: 1px solid var(--ui-border); }
+.section-card-body { padding: 20px; }
+
+/* Form UX */
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.form-grid-full { grid-column: 1 / -1; }
+.form-actions { display: flex; justify-content: flex-end; gap: 8px; padding-top: 8px; }
+.field-label { display: block; margin-bottom: 6px; font-size: .82rem; font-weight: 650; color: #374151; }
+.field-help { margin-top: 5px; font-size: .76rem; color: var(--ui-muted); }
+
+/* Tables become cards on narrow screens. */
+.table-wrap { overflow-x: auto; border: 1px solid var(--ui-border); border-radius: var(--ui-radius-sm); background: #fff; }
+.table-wrap table { width: 100%; border-collapse: collapse; }
+.table-wrap th { background: #f9fafb; color: #6b7280; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+.table-wrap th, .table-wrap td { padding: 12px 14px; border-bottom: 1px solid #f1f5f9; text-align: left; }
+.table-wrap tr:last-child td { border-bottom: 0; }
+
+@media (max-width: 900px) {
+  .page-shell { padding: 22px 20px 40px; }
+  .page-header { align-items: stretch; flex-direction: column; }
+  .page-actions { width: 100%; }
+  .page-actions > * { flex: 1 1 auto; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-grid-full { grid-column: auto; }
+}
+
+@media (max-width: 640px) {
+  .page-shell { padding: 18px 14px 32px; }
+  .page-title { font-size: 1.4rem; }
+  .page-actions { display: grid; grid-template-columns: 1fr; }
+  .section-card-header, .section-card-body { padding: 16px; }
+  .table-wrap { border-left: 0; border-right: 0; border-radius: 0; margin-inline: -14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+}
