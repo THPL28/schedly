@@ -15,7 +15,7 @@ export default function SidebarNav({ slug }: { slug?: string | null }) {
     { href: '/reports', label: 'Relatórios', icon: BarChart3 },
   ]
   const secondaryItems = [
-    { href: '/settings/medical', label: 'Modo Médico', icon: Stethoscope },
+    { href: '/settings/professional', label: 'Perfil profissional', icon: Stethoscope },
     { href: '/billing', label: 'Assinatura', icon: CreditCard },
     { href: '/settings', label: 'Configurações', icon: Settings },
   ]
