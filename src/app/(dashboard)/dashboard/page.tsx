@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { verifySession } from '@/lib/auth'
 import { redirect } from 'next/navigation'
-import { Clock, Users, CalendarCheck, Plus } from 'lucide-react'
+import { Clock, Users, CalendarCheck, BriefcaseBusiness, Plus } from 'lucide-react'
 import Link from 'next/link'
 import DashboardViewSwitcher from '@/app/(dashboard)/dashboard/dashboard-view-switcher'
 
@@ -48,11 +48,12 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
     const kpis = [
         { label: isToday ? 'Hoje' : 'No dia', value: todayAppts.length, icon: Clock, tone: 'text-indigo-600 bg-indigo-50' },
-        { label: 'Confirmados', value: totalCount, icon: CalendarCheck, tone: 'text-emerald-600 bg-emerald-50' },
+        { label: 'Agendados', value: totalCount, icon: CalendarCheck, tone: 'text-emerald-600 bg-emerald-50' },
         { label: 'Clientes', value: uniqueClients.length, icon: Users, tone: 'text-slate-700 bg-slate-100' },
+        { label: 'Serviços', value: user._count.eventTypes, icon: BriefcaseBusiness, tone: 'text-violet-600 bg-violet-50' },
     ]
 
-    const geminiInsight = isToday ? await (async () => {
+    const geminiInsight = isToday && todayAppts.length > 0 ? await (async () => {
         try {
             const { getDashboardInsight } = await import('@/lib/gemini')
             return await getDashboardInsight(user.name || 'Profissional', todayAppts)
@@ -81,22 +82,22 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                 </div>
             </header>
 
-            <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
                 {kpis.map(({ label, value, icon: Icon, tone }) => (
-                    <div key={label} className="section-card flex items-center gap-3 p-4">
+                    <div key={label} className="section-card flex items-center gap-3 p-4 sm:p-5">
                         <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${tone}`}><Icon size={19} /></div>
-                        <div><p className="text-xs font-medium text-slate-500">{label}</p><p className="text-xl font-bold tracking-tight text-slate-900">{value}</p></div>
+                        <div className="min-w-0"><p className="text-xs font-medium text-slate-500">{label}</p><p className="text-xl font-bold tracking-tight text-slate-900">{value}</p></div>
                     </div>
                 ))}
             </div>
 
+            <DashboardViewSwitcher user={user} dateStr={dateStr} status={status} serializedAppts={serializedAppts} isToday={isToday} />
+
             {geminiInsight && (
-                <section className="mb-6 rounded-[14px] border border-indigo-100 bg-indigo-50/60 p-4 sm:p-5" aria-label="Insight da agenda">
+                <section className="mt-6 rounded-[14px] border border-indigo-100 bg-indigo-50/60 p-4 sm:p-5" aria-label="Insight da agenda">
                     <div className="flex items-start gap-3"><div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-xs font-bold text-indigo-700">AI</div><div><p className="text-xs font-bold uppercase tracking-wide text-indigo-700">Insight da agenda</p><p className="mt-1 text-sm leading-6 text-slate-700">{geminiInsight.trim()}</p></div></div>
                 </section>
             )}
-
-            <DashboardViewSwitcher user={user} dateStr={dateStr} status={status} serializedAppts={serializedAppts} isToday={isToday} />
         </div>
     )
 }
