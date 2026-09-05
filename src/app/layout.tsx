@@ -1,13 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Inter } from "next/font/google";
 import "./globals.css";
+import "./ux-ui.css";
 import { cookies } from "next/headers";
 import PWARegister from "@/components/pwa-register";
 import OfflineBanner from '@/components/offline-banner'
 import PWAInstallCTA from '@/components/pwa-install-cta'
 import PWAUpdateToast from '@/components/pwa-update-toast'
 import { SpeedInsights } from "@vercel/speed-insights/next";
-// import { Analytics } from "@vercel/analytics/react";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#6366f1",
+  themeColor: "#4f46e5",
 };
 
 export default async function RootLayout({
@@ -61,15 +61,11 @@ export default async function RootLayout({
       <body className={`${dmSans.variable} ${inter.variable}`}>
         <PWARegister />
         {children}
-
-        {/* PWA UX helpers */}
         <div id="pwa-ui-root" />
         <OfflineBanner />
         <PWAInstallCTA />
         <PWAUpdateToast />
-
         <SpeedInsights />
-        {/* <Analytics /> */}
       </body>
     </html>
   );
