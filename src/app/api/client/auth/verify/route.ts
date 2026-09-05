@@ -18,12 +18,13 @@ export async function GET(req: Request) {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
+            path: '/portal',
             maxAge: 15 * 60 // 15 minutes
         });
 
         // Redirect to the portal dashboard
         return NextResponse.redirect(new URL(`/portal/${payload.providerSlug}`, req.url));
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: 'Link inválido ou expirado' }, { status: 401 });
     }
 }
