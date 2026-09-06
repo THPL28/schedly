@@ -8,20 +8,20 @@ export interface ClientFilters {
 
 export class ClientService {
     /**
-     * List clients with pagination and search
+     * List only clients owned by the authenticated provider.
      */
     static async listClients(userId: string, filters: ClientFilters = {}) {
         const { query, page = 1, pageSize = 10 } = filters;
-        const skip = (page - 1) * pageSize;
+        const safePage = Number.isFinite(page) && page > 0 ? Math.floor(page) : 1;
+        const safePageSize = Number.isFinite(pageSize) && pageSize > 0 ? Math.min(Math.floor(pageSize), 100) : 10;
+        const skip = (safePage - 1) * safePageSize;
 
         const where = {
-            appointments: {
-                some: { userId }
-            },
+            userId,
             ...(query ? {
                 OR: [
-                    { name: { contains: query, mode: 'insensitive' as const } },
-                    { email: { contains: query, mode: 'insensitive' as const } }
+                    { name: { contains: query.trim(), mode: 'insensitive' as const } },
+                    { email: { contains: query.trim(), mode: 'insensitive' as const } }
                 ]
             } : {})
         };
@@ -44,7 +44,7 @@ export class ClientService {
                     }
                 },
                 skip,
-                take: pageSize,
+                take: safePageSize,
                 orderBy: { name: 'asc' }
             }),
             prisma.client.count({ where })
@@ -54,7 +54,6 @@ export class ClientService {
             const appointments = client.appointments;
             const cancelledApps = appointments.filter(a => a.status === 'CANCELED').length;
             const totalApps = appointments.length;
-
             const cancelRate = totalApps > 0 ? (cancelledApps / totalApps) * 100 : 0;
 
             const totalRevenue = appointments.reduce((acc, app) => {
@@ -80,24 +79,19 @@ export class ClientService {
             clients: enrichedClients,
             pagination: {
                 total,
-                page,
-                pageSize,
-                totalPages: Math.ceil(total / pageSize)
+                page: safePage,
+                pageSize: safePageSize,
+                totalPages: Math.ceil(total / safePageSize)
             }
         };
     }
 
     /**
-     * Get full client history for a provider
+     * Get full client history for a provider.
      */
     static async getClientDetails(clientId: string, userId: string) {
-        const client = await prisma.client.findFirst({
-            where: {
-                id: clientId,
-                appointments: {
-                    some: { userId }
-                }
-            },
+        return prisma.client.findFirst({
+            where: { id: clientId, userId },
             include: {
                 appointments: {
                     where: { userId },
@@ -113,19 +107,31 @@ export class ClientService {
                 }
             }
         });
-
-        return client;
     }
 
     /**
-     * Manage client notes
+     * Add a note only when both the client and note belong to the provider.
      */
     static async addNote(clientId: string, userId: string, content: string) {
+        const normalizedContent = content.trim();
+        if (!normalizedContent) {
+            throw new Error('O conteúdo da nota é obrigatório.');
+        }
+
+        const client = await prisma.client.findFirst({
+            where: { id: clientId, userId },
+            select: { id: true }
+        });
+
+        if (!client) {
+            throw new Error('Cliente não encontrado.');
+        }
+
         return prisma.clientNote.create({
             data: {
-                clientId,
+                clientId: client.id,
                 userId,
-                content
+                content: normalizedContent
             }
         });
     }

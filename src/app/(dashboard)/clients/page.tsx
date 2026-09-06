@@ -1,203 +1,39 @@
-import { verifySession } from '@/lib/auth';
-import { ClientService } from '@/services/clientService';
-import { redirect } from 'next/navigation';
-import { Search, UserPlus, Filter, MoreHorizontal, Users, UserCheck, TrendingUp, MessageCircle, Mail, MapPin } from 'lucide-react';
-import Link from 'next/link';
-import { prisma } from '@/lib/prisma';
+import { verifySession } from '@/lib/auth'
+import { ClientService } from '@/services/clientService'
+import { redirect } from 'next/navigation'
+import { Search, UserPlus, MoreHorizontal, Users, UserCheck, TrendingUp, MessageCircle, Mail, ChevronRight } from 'lucide-react'
+import Link from 'next/link'
+import { prisma } from '@/lib/prisma'
 
 export default async function ClientsPage({ searchParams }: { searchParams: Promise<{ q?: string, page?: string }> }) {
-    const session = await verifySession();
-    if (!session) redirect('/login');
+  const session = await verifySession()
+  if (!session) redirect('/login')
+  const params = await searchParams
+  const query = params.q || ''
+  const page = Math.max(1, parseInt(params.page || '1') || 1)
+  const userId = session.userId as string
+  const { clients, pagination } = await ClientService.listClients(userId, { query, page, pageSize: 10 })
+  const thirtyDaysAgo = new Date(); thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+  const [activeClientsCount, allAppts, profile] = await prisma.$transaction([
+    prisma.client.count({ where: { appointments: { some: { userId, date: { gte: thirtyDaysAgo }, status: 'SCHEDULED' } } } }),
+    prisma.appointment.findMany({ where: { userId, status: 'SCHEDULED' }, select: { eventType: { select: { price: true } } } }),
+    prisma.user.findUnique({ where: { id: userId }, select: { name: true } })
+  ])
+  const totalRevenue = allAppts.reduce((acc, app) => acc + (Number(app.eventType?.price) || 0), 0)
+  const avgTicket = pagination.total > 0 ? totalRevenue / pagination.total : 0
+  const stats = [
+    { label: 'Clientes', value: pagination.total, icon: Users, tone: 'bg-indigo-50 text-indigo-600' },
+    { label: 'Ativos · 30 dias', value: activeClientsCount, icon: UserCheck, tone: 'bg-emerald-50 text-emerald-600' },
+    { label: 'Ticket médio', value: `R$ ${avgTicket.toFixed(2)}`, icon: TrendingUp, tone: 'bg-amber-50 text-amber-600' },
+  ]
 
-    const resolvedParams = await searchParams;
-    const query = resolvedParams.q || '';
-    const page = parseInt(resolvedParams.page || '1');
-
-    const { clients, pagination } = await ClientService.listClients(session.userId as string, {
-        query,
-        page,
-        pageSize: 10
-    });
-
-    // Real Metrics
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-    const [activeClientsCount, allAppts] = await prisma.$transaction([
-        prisma.client.count({
-            where: {
-                appointments: {
-                    some: {
-                        userId: session.userId as string,
-                        date: { gte: thirtyDaysAgo },
-                        status: 'SCHEDULED'
-                    }
-                }
-            }
-        }),
-        prisma.appointment.findMany({
-            where: { userId: session.userId as string, status: 'SCHEDULED' },
-            select: { eventType: { select: { price: true } } }
-        })
-    ]);
-
-    const totalRevenue = allAppts.reduce((acc, app) => acc + (Number(app.eventType?.price) || 0), 0);
-    const avgTicket = pagination.total > 0 ? totalRevenue / pagination.total : 0;
-
-    const stats = [
-        { label: 'Total de Clientes', value: pagination.total, icon: Users, color: 'text-primary', bg: 'bg-indigo-50' },
-        { label: 'Ativos (30 dias)', value: activeClientsCount, icon: UserCheck, color: 'text-emerald-500', bg: 'bg-emerald-50' },
-        { label: 'Ticket Médio', value: `R$ ${avgTicket.toFixed(2)}`, icon: TrendingUp, color: 'text-amber-500', bg: 'bg-amber-50' },
-    ];
-
-    return (
-        <div className="p-6 sm:p-10 max-w-7xl mx-auto animate-in fade-in duration-1000">
-            {/* Page Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
-                <div>
-                    <div className="flex items-center gap-3 mb-3">
-                        <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
-                            <Users size={20} />
-                        </div>
-                        <span className="text-[11px] font-black text-primary uppercase tracking-[0.25em]">Gestão de Audiência</span>
-                    </div>
-                    <h1 className="text-5xl font-black text-slate-900 tracking-tighter leading-none">Meus Clientes</h1>
-                    <p className="text-slate-400 font-medium text-lg mt-3">Visualize o histórico e gerencie o relacionamento com seus clientes.</p>
-                </div>
-                
-                <button className="h-14 px-10 rounded-[1.5rem] bg-primary text-white font-black uppercase tracking-widest text-[11px] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/20 flex items-center gap-3">
-                    <UserPlus size={18} />
-                    Novo Cliente
-                </button>
-            </div>
-
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                {stats.map((stat, i) => (
-                    <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm flex items-center gap-6 group hover:shadow-xl transition-all">
-                        <div className={`w-14 h-14 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                            <stat.icon size={24} />
-                        </div>
-                        <div>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">{stat.label}</p>
-                            <p className="text-3xl font-black text-slate-900 m-0 leading-none tracking-tighter">{stat.value}</p>
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-            {/* Main Content Card */}
-            <div className="bg-white rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-hidden mb-10">
-                <div className="p-8 border-b border-slate-50 flex flex-col sm:flex-row gap-6 bg-slate-50/30">
-                    <form className="relative flex-1 group">
-                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors" size={20} />
-                        <input
-                            name="q"
-                            defaultValue={query}
-                            placeholder="Buscar por nome, e-mail ou telefone..."
-                            className="w-full h-14 pl-14 pr-6 rounded-2xl bg-white border border-slate-200 font-bold text-sm focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-slate-300"
-                        />
-                    </form>
-                    <button className="h-14 px-8 rounded-2xl bg-white border border-slate-200 text-slate-600 font-black uppercase tracking-widest text-[11px] hover:bg-slate-50 transition-all shadow-sm flex items-center gap-3">
-                        <Filter size={18} />
-                        Filtrar
-                    </button>
-                </div>
-
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead>
-                            <tr className="bg-slate-50/50">
-                                <th className="p-6 text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">Cliente</th>
-                                <th className="p-6 text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] text-center">Agendamentos</th>
-                                <th className="p-6 text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] text-center">Status</th>
-                                <th className="p-6 text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] text-right">Faturamento</th>
-                                <th className="p-6"></th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-50">
-                            {clients.length === 0 ? (
-                                <tr>
-                                    <td colSpan={5} className="p-20 text-center">
-                                        <Users size={40} className="mx-auto mb-4 text-slate-200" />
-                                        <p className="text-slate-400 font-bold uppercase tracking-widest text-[11px]">Nenhum cliente cadastrado ainda</p>
-                                    </td>
-                                </tr>
-                            ) : (
-                                clients.map(client => (
-                                    <tr key={client.id} className="group hover:bg-primary/[0.02] transition-colors">
-                                        <td className="p-6">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center font-black text-slate-400 text-lg group-hover:bg-primary group-hover:text-white transition-all">
-                                                    {client.name[0].toUpperCase()}
-                                                </div>
-                                                <div>
-                                                    <div className="font-black text-slate-900 leading-none mb-1 text-base">{client.name}</div>
-                                                    <div className="flex items-center gap-3 text-[11px] text-slate-400 font-bold uppercase tracking-tighter leading-none">
-                                                        <span className="flex items-center gap-1"><Mail size={10} /> {client.email}</span>
-                                                        {client.phone && <span className="flex items-center gap-1"><MessageCircle size={10} /> {client.phone}</span>}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="p-6 text-center">
-                                            <span className="text-lg font-black text-slate-700">{client.totalAppointments}</span>
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest -mt-1">Sessões</p>
-                                        </td>
-                                        <td className="p-6 text-center">
-                                            <span className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${client.cancelRate > 20 ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'}`}>
-                                                <span className={`w-1.5 h-1.5 rounded-full ${client.cancelRate > 20 ? 'bg-red-500' : 'bg-emerald-500'}`}></span>
-                                                {client.cancelRate > 20 ? 'Risco Churn' : 'Fiel'}
-                                            </span>
-                                        </td>
-                                        <td className="p-6 text-right">
-                                            <div className="font-black text-primary text-xl tracking-tighter">R$ {client.totalRevenue.toFixed(2)}</div>
-                                            <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest -mt-1">Valor Vitalício</p>
-                                        </td>
-                                        <td className="p-6 text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                {client.phone && (
-                                                    <a 
-                                                        href={`https://wa.me/${client.phone.replace(/\D/g, '')}`}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all shadow-sm"
-                                                        title="WhatsApp"
-                                                    >
-                                                        <MessageCircle size={18} />
-                                                    </a>
-                                                )}
-                                                <button className="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-primary hover:text-white transition-all shadow-sm">
-                                                    <MoreHorizontal size={18} />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            {/* Pagination UI */}
-            {pagination.totalPages > 1 && (
-                <div className="flex justify-center items-center gap-4">
-                    <div className="h-[1px] w-20 bg-slate-100"></div>
-                    <div className="flex gap-2">
-                        {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(p => (
-                            <Link
-                                key={p}
-                                href={`?q=${query}&page=${p}`}
-                                className={`w-12 h-12 flex items-center justify-center rounded-2xl font-black text-xs transition-all border ${p === page ? 'bg-primary text-white border-primary shadow-xl shadow-primary/20 scale-110' : 'bg-white text-slate-400 border-slate-100 hover:border-primary/20 hover:text-primary shadow-sm'}`}
-                            >
-                                {p}
-                            </Link>
-                        ))}
-                    </div>
-                    <div className="h-[1px] w-20 bg-slate-100"></div>
-                </div>
-            )}
-        </div>
-    );
+  return <div className="page-shell">
+    <header className="page-header"><div><h1 className="page-title">{profile?.name ? `Clientes de ${profile.name.split(' ')[0]}` : 'Clientes'}</h1><p className="page-description">Abra um perfil para consultar agendamentos e, no modo Médico, o histórico clínico.</p></div><div className="page-actions"><Link href="/appointment" className="ui-btn ui-btn-primary"><UserPlus size={17} /> Novo agendamento</Link></div></header>
+    <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">{stats.map(({ label, value, icon: Icon, tone }) => <div key={label} className="section-card flex items-center gap-3 p-4"><div className={`flex h-10 w-10 items-center justify-center rounded-lg ${tone}`}><Icon size={19} /></div><div><p className="text-xs text-slate-500">{label}</p><p className="text-xl font-bold text-slate-900">{value}</p></div></div>)}</div>
+    <section className="section-card overflow-hidden">
+      <div className="flex flex-col gap-3 border-b border-slate-100 p-4 sm:flex-row sm:items-center sm:p-5"><form className="relative flex-1" role="search"><Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={17} /><input name="q" defaultValue={query} placeholder="Buscar por nome, e-mail ou telefone" aria-label="Buscar clientes" className="h-10 w-full rounded-lg border border-slate-200 bg-white pl-10 pr-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-3 focus:ring-indigo-500/10" /></form></div>
+      {clients.length === 0 ? <div className="p-12 text-center sm:p-16"><Users className="mx-auto mb-3 text-slate-300" size={36} /><h2 className="text-sm font-bold text-slate-900">{query ? 'Nenhum cliente encontrado' : 'Você ainda não tem clientes'}</h2><p className="mx-auto mt-1 max-w-sm text-xs leading-5 text-slate-500">{query ? 'Tente buscar por outro nome, e-mail ou telefone.' : 'Seus clientes aparecerão aqui conforme novos agendamentos forem realizados.'}</p></div> : <div className="table-wrap border-0 rounded-none"><table><thead><tr><th>Cliente</th><th>Agendamentos</th><th>Status</th><th>Faturamento</th><th aria-label="Ações" /></tr></thead><tbody>{clients.map(client => <tr key={client.id}><td><Link href={`/clients/${client.id}`} className="group flex min-w-[230px] items-center gap-3"><div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-600">{client.name[0].toUpperCase()}</div><div className="min-w-0"><div className="truncate text-sm font-semibold text-slate-900 group-hover:text-indigo-600">{client.name}</div><div className="mt-0.5 flex max-w-[360px] items-center gap-2 truncate text-xs text-slate-500"><span className="flex items-center gap-1 truncate"><Mail size={11} />{client.email}</span>{client.phone && <span className="hidden items-center gap-1 sm:flex"><MessageCircle size={11} />{client.phone}</span>}</div></div><ChevronRight size={15} className="ml-auto shrink-0 text-slate-300 group-hover:text-indigo-500" /></Link></td><td><span className="font-semibold text-slate-700">{client.totalAppointments}</span></td><td><span className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold ${client.cancelRate > 20 ? 'bg-red-50 text-red-700' : 'bg-emerald-50 text-emerald-700'}`}>{client.cancelRate > 20 ? 'Atenção' : 'Ativo'}</span></td><td><span className="font-semibold text-slate-900">R$ {client.totalRevenue.toFixed(2)}</span></td><td><div className="flex justify-end gap-1">{client.phone && <a href={`https://wa.me/${client.phone.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" aria-label={`WhatsApp de ${client.name}`} className="flex h-8 w-8 items-center justify-center rounded-lg text-emerald-600 hover:bg-emerald-50"><MessageCircle size={16} /></a>}<button type="button" aria-label={`Mais ações para ${client.name}`} className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700"><MoreHorizontal size={17} /></button></div></td></tr>)}</tbody></table></div>}
+    </section>
+    {pagination.totalPages > 1 && <nav aria-label="Paginação" className="mt-5 flex justify-center gap-1.5">{Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(p => <Link key={p} href={`?q=${encodeURIComponent(query)}&page=${p}`} aria-current={p === page ? 'page' : undefined} className={`flex h-9 min-w-9 items-center justify-center rounded-lg px-2 text-xs font-semibold ${p === page ? 'bg-indigo-600 text-white' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>{p}</Link>)}</nav>}
+  </div>
 }

@@ -2,30 +2,25 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { cancelAppointment } from '@/lib/actions'
 import BookingModal from '@/app/(dashboard)/schedule/booking-modal'
 import FeedbackBanner from '@/components/feedback-banner'
-import {
-    ChevronLeft,
-    ChevronRight,
-    X,
-    Plus,
-    Clock,
-    Pencil,
-    CalendarDays,
-    Calendar,
-    ArrowLeft,
-    ArrowRight,
-    MessageCircle
-} from 'lucide-react'
+import { ChevronLeft, ChevronRight, X, Plus, Clock, Calendar, ArrowLeft, ArrowRight, MessageCircle, Stethoscope } from 'lucide-react'
 
-type FeedbackState = {
-    variant: 'success' | 'error' | 'info'
-    title: string
-    message: string
-} | null
+type FeedbackState = { variant: 'success' | 'error' | 'info'; title: string; message: string } | null
 
-export default function Timeline({ date, appointments }: { date: string, appointments: any[] }) {
+type Appointment = {
+    id: string
+    clientId?: string | null
+    clientName: string
+    clientPhone?: string | null
+    startTime: string
+    endTime: string
+    eventType?: { name: string } | null
+}
+
+export default function Timeline({ date, appointments, showPrimaryAction = true, isMedical = false }: { date: string, appointments: Appointment[], showPrimaryAction?: boolean, isMedical?: boolean }) {
     const router = useRouter()
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedSlot, setSelectedSlot] = useState<string>('09:00')
@@ -33,212 +28,68 @@ export default function Timeline({ date, appointments }: { date: string, appoint
     const [pendingCancelId, setPendingCancelId] = useState<string | null>(null)
     const [isCancellingId, setIsCancellingId] = useState<string | null>(null)
 
-    const d = new Date(date + 'T12:00:00')
+    const d = new Date(`${date}T12:00:00`)
     const displayMonth = d.toLocaleString('pt-BR', { month: 'long', year: 'numeric' })
     const displayDay = d.toLocaleString('pt-BR', { weekday: 'long', day: 'numeric' })
 
-    const handlePrev = () => {
-        const prev = new Date(d)
-        prev.setDate(prev.getDate() - 1)
-        router.push(`?date=${prev.toISOString().split('T')[0]}`, { scroll: false })
-    }
-
-    const handleNext = () => {
-        const next = new Date(d)
-        next.setDate(next.getDate() + 1)
-        router.push(`?date=${next.toISOString().split('T')[0]}`, { scroll: false })
-    }
-
-    const handleMonthChange = (months: number) => {
-        const next = new Date(d)
-        next.setMonth(next.getMonth() + months)
-        router.push(`?date=${next.toISOString().split('T')[0]}`, { scroll: false })
-    }
-
-    const handleSlotClick = (h: number) => {
-        setSelectedSlot(`${h.toString().padStart(2, '0')}:00`)
-        setIsModalOpen(true)
-    }
-
-    const showFeedback = (
-        variant: NonNullable<FeedbackState>['variant'],
-        title: string,
-        message: string
-    ) => {
-        setFeedback({ variant, title, message })
-    }
+    const navigate = (offset: number) => { const next = new Date(d); next.setDate(next.getDate() + offset); router.push(`?date=${next.toISOString().split('T')[0]}`, { scroll: false }) }
+    const navigateMonth = (offset: number) => { const next = new Date(d); next.setMonth(next.getMonth() + offset); router.push(`?date=${next.toISOString().split('T')[0]}`, { scroll: false }) }
+    const openSlot = (hour: number) => { setSelectedSlot(`${hour.toString().padStart(2, '0')}:00`); setIsModalOpen(true) }
+    const showFeedback = (variant: NonNullable<FeedbackState>['variant'], title: string, message: string) => setFeedback({ variant, title, message })
 
     const handleCancelClick = async (appointmentId: string) => {
-        if (pendingCancelId !== appointmentId) {
-            setPendingCancelId(appointmentId)
-            showFeedback(
-                'info',
-                'Confirme o cancelamento',
-                'Clique novamente no ícone vermelho para cancelar este agendamento.'
-            )
-            return
-        }
-
-        setIsCancellingId(appointmentId)
-        setFeedback(null)
-
-        const result = await cancelAppointment(appointmentId)
-
-        setIsCancellingId(null)
-        if (result?.error) {
-            showFeedback('error', 'Não foi possível cancelar', result.error)
-            return
-        }
-
-        setPendingCancelId(null)
-        showFeedback('success', 'Agendamento cancelado', 'O horário foi cancelado com sucesso.')
-        router.refresh()
+        if (pendingCancelId !== appointmentId) { setPendingCancelId(appointmentId); showFeedback('info', 'Confirme o cancelamento', 'Clique novamente no ícone vermelho para confirmar.'); return }
+        setIsCancellingId(appointmentId); setFeedback(null)
+        const result = await cancelAppointment(appointmentId); setIsCancellingId(null)
+        if (result?.error) { showFeedback('error', 'Não foi possível cancelar', result.error); return }
+        setPendingCancelId(null); showFeedback('success', 'Agendamento cancelado', 'O horário foi liberado com sucesso.'); router.refresh()
     }
 
-    const hours = Array.from({ length: 14 }, (_, i) => i + 7) // 7 to 20
+    const hours = Array.from({ length: 14 }, (_, i) => i + 7)
 
     return (
-        <div className="animate-in fade-in duration-700">
-            {feedback && (
-                <FeedbackBanner
-                    variant={feedback.variant}
-                    title={feedback.title}
-                    message={feedback.message}
-                    className="mb-6 animate-in fade-in slide-in-from-top-2"
-                />
-            )}
-
-            {/* Control Header */}
-            <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-8 mb-12">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-white shadow-xl shadow-primary/20 rotate-3">
-                        <Calendar size={22} />
-                    </div>
-                    <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Agenda Diária</p>
-                        <h3 className="text-2xl font-black text-slate-900 capitalize leading-none">{displayDay}</h3>
-                    </div>
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-center gap-4 w-full xl:w-auto">
-                    {/* Month Navigator */}
-                    <div className="flex items-center bg-slate-100/50 p-1.5 rounded-2xl border border-slate-200/60 w-full sm:w-auto justify-between sm:justify-start">
-                        <button onClick={() => handleMonthChange(-1)} className="w-8 h-8 rounded-xl hover:bg-white flex items-center justify-center transition-all text-slate-400 hover:text-slate-900">
-                            <ArrowLeft size={16} />
-                        </button>
-                        <span className="text-[11px] font-black text-slate-600 uppercase tracking-widest px-6 min-w-[140px] text-center">{displayMonth}</span>
-                        <button onClick={() => handleMonthChange(1)} className="w-8 h-8 rounded-xl hover:bg-white flex items-center justify-center transition-all text-slate-400 hover:text-slate-900">
-                            <ArrowRight size={16} />
-                        </button>
-                    </div>
-
-                    {/* Day Navigator */}
-                    <div className="flex items-center bg-white border border-slate-200 p-1.5 rounded-2xl shadow-sm w-full sm:w-auto">
-                        <button onClick={handlePrev} className="w-10 h-10 rounded-xl hover:bg-slate-50 flex items-center justify-center transition-all text-slate-900">
-                            <ChevronLeft size={20} />
-                        </button>
-                        <div className="px-6 border-l border-r border-slate-100 min-w-[120px] text-center">
-                            <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Mudar Dia</span>
-                        </div>
-                        <button onClick={handleNext} className="w-10 h-10 rounded-xl hover:bg-slate-50 flex items-center justify-center transition-all text-slate-900">
-                            <ChevronRight size={20} />
-                        </button>
-                    </div>
-
-                    <button onClick={() => setIsModalOpen(true)} className="btn btn-primary h-12 px-8 rounded-2xl shadow-lg shadow-primary/20 w-full sm:w-auto font-black uppercase tracking-widest text-xs">
-                        <Plus size={16} />
-                        Novo Agendamento
-                    </button>
+        <div>
+            {feedback && <FeedbackBanner variant={feedback.variant} title={feedback.title} message={feedback.message} className="mb-4" />}
+            <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div><p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Agenda diária</p><h3 className="mt-1 text-xl font-bold capitalize tracking-tight text-slate-900">{displayDay}</h3></div>
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                    <div className="flex items-center justify-between rounded-lg border border-slate-200 bg-white p-1 shadow-sm"><button onClick={() => navigateMonth(-1)} aria-label="Mês anterior" className="flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-slate-50 hover:text-slate-900"><ArrowLeft size={15} /></button><span className="min-w-[125px] px-3 text-center text-xs font-semibold capitalize text-slate-600">{displayMonth}</span><button onClick={() => navigateMonth(1)} aria-label="Próximo mês" className="flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-slate-50 hover:text-slate-900"><ArrowRight size={15} /></button></div>
+                    <div className="flex items-center rounded-lg border border-slate-200 bg-white p-1 shadow-sm"><button onClick={() => navigate(-1)} aria-label="Dia anterior" className="flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-slate-50 hover:text-slate-900"><ChevronLeft size={17} /></button><span className="px-3 text-xs font-semibold text-slate-600">Dia</span><button onClick={() => navigate(1)} aria-label="Próximo dia" className="flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-slate-50 hover:text-slate-900"><ChevronRight size={17} /></button></div>
+                    {showPrimaryAction && <button onClick={() => setIsModalOpen(true)} className="ui-btn ui-btn-primary h-10 px-4 text-xs"><Plus size={16} /> Novo agendamento</button>}
                 </div>
             </div>
 
-            {/* Timeline Grid */}
-            <div className="bg-slate-50/50 rounded-[2.5rem] border border-slate-100 overflow-hidden shadow-inner">
-                {hours.map((h, i) => {
-                    const timeStr = `${h.toString().padStart(2, '0')}:00`
-                    const isLunch = h === 12
-                    const apptsInSlot = appointments.filter(a => {
-                        const [ah] = a.startTime.split(':').map(Number)
-                        return ah === h
-                    })
-
+            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                {hours.map((hour) => {
+                    const time = `${hour.toString().padStart(2, '0')}:00`
+                    const appointmentsInSlot = appointments.filter((appointment) => Number(appointment.startTime.split(':')[0]) === hour)
+                    const isLunch = hour === 12 && appointmentsInSlot.length === 0
                     return (
-                        <div key={h} className="group relative flex min-h-[90px] border-b border-white/40 last:border-b-0 hover:bg-white transition-all duration-500">
-                            <div className="w-[80px] sm:w-[100px] flex items-start justify-center pt-6 border-r border-white/60">
-                                <span className="text-xs font-black text-slate-900 opacity-30 group-hover:opacity-100 transition-opacity">{timeStr}</span>
-                            </div>
-
-                            <div className="flex-1 p-4 relative flex items-center">
-                                {isLunch && apptsInSlot.length === 0 ? (
-                                    <div className="w-full text-center text-[10px] font-black uppercase tracking-[0.3em] text-slate-300 italic">Pausa para Almoço</div>
-                                ) : apptsInSlot.length > 0 ? (
-                                    <div className="w-full flex flex-col gap-2">
-                                        {apptsInSlot.map(a => (
-                                            <div key={a.id} className="bg-white border border-slate-100 rounded-2xl p-4 flex justify-between items-center shadow-lg shadow-slate-200/40 gap-4 animate-in slide-in-from-left-4 duration-500">
-                                                <div className="flex items-center gap-4 flex-1 min-w-0">
-                                                    <div className="w-10 h-10 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
-                                                        <Clock size={18} />
-                                                    </div>
-                                                    <div className="min-w-0">
-                                                        <h4 className="m-0 text-sm font-black text-slate-900 truncate">{a.clientName}</h4>
-                                                        <div className="flex items-center gap-3 mt-1">
-                                                            {a.eventType && (
-                                                                <span className="text-[9px] text-primary font-black uppercase tracking-widest bg-primary/5 px-2 py-0.5 rounded-md">{a.eventType.name}</span>
-                                                            )}
-                                                            <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">{a.startTime} — {a.endTime}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className="flex items-center gap-2 shrink-0">
-                                                    {a.clientPhone && (
-                                                        <a 
-                                                            href={`https://wa.me/${a.clientPhone.replace(/\D/g, '')}?text=${encodeURIComponent(`Olá ${a.clientName}, aqui é da equipe do Schedly. Gostaria de confirmar seu agendamento de ${a.eventType?.name || 'serviço'} para hoje às ${a.startTime}. Nos vemos lá!`)}`}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all flex items-center justify-center shadow-sm"
-                                                            title="Lembrete WhatsApp"
-                                                        >
-                                                            <MessageCircle size={18} />
-                                                        </a>
-                                                    )}
-                                                    <button 
-                                                        onClick={() => handleCancelClick(a.id)}
-                                                        disabled={isCancellingId === a.id}
-                                                        className={`w-10 h-10 rounded-xl transition-all flex items-center justify-center border-none ${
-                                                            pendingCancelId === a.id
-                                                                ? 'bg-red-500 text-white shadow-lg shadow-red-500/20'
-                                                                : 'bg-red-50 text-red-500 hover:bg-red-500 hover:text-white'
-                                                        } disabled:cursor-not-allowed disabled:opacity-70`}
-                                                        title={pendingCancelId === a.id ? 'Confirmar cancelamento' : 'Cancelar agendamento'}
-                                                    >
-                                                        <X size={18} />
-                                                    </button>
+                        <div key={hour} className="group flex min-h-[76px] border-b border-slate-100 last:border-b-0">
+                            <div className="w-[68px] shrink-0 border-r border-slate-100 bg-slate-50/60 px-2 pt-4 text-center sm:w-[82px]"><span className="text-xs font-medium tabular-nums text-slate-400 group-hover:text-slate-600">{time}</span></div>
+                            <div className="relative flex min-w-0 flex-1 items-center p-2.5 sm:p-3">
+                                {isLunch ? <div className="w-full text-center text-[10px] font-medium uppercase tracking-wider text-slate-300">Pausa para almoço</div> : appointmentsInSlot.length > 0 ? (
+                                    <div className="flex w-full flex-col gap-2">
+                                        {appointmentsInSlot.map((appointment) => (
+                                            <div key={appointment.id} className="flex min-w-0 items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2.5 shadow-sm transition hover:border-slate-300 hover:shadow">
+                                                <div className="hidden h-8 w-1 shrink-0 rounded-full bg-indigo-500 sm:block" aria-hidden="true" />
+                                                <div className="flex min-w-0 flex-1 items-center gap-2.5"><div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600"><Clock size={16} /></div><div className="min-w-0"><p className="truncate text-sm font-semibold text-slate-900">{appointment.clientName}</p><div className="mt-0.5 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-500">{appointment.eventType?.name && <span className="truncate font-medium text-indigo-600">{appointment.eventType.name}</span>}<span className="tabular-nums">{appointment.startTime}–{appointment.endTime}</span></div></div></div>
+                                                <div className="flex shrink-0 items-center gap-1.5">
+                                                    {isMedical && appointment.clientId && <Link href={`/clients/${appointment.clientId}/encounters/new`} aria-label={`Atender ${appointment.clientName}`} title="Registrar atendimento" className="flex h-8 items-center gap-1.5 rounded-md bg-indigo-50 px-2.5 text-[11px] font-semibold text-indigo-700 transition hover:bg-indigo-100"><Stethoscope size={14} /> <span className="hidden sm:inline">Atender</span></Link>}
+                                                    {appointment.clientPhone && <a href={`https://wa.me/${appointment.clientPhone.replace(/\D/g, '')}?text=${encodeURIComponent(`Olá ${appointment.clientName}, aqui é da equipe do Schedly. Gostaria de confirmar seu agendamento de ${appointment.eventType?.name || 'serviço'} para hoje às ${appointment.startTime}. Nos vemos lá!` )}`} target="_blank" rel="noopener noreferrer" aria-label={`Enviar WhatsApp para ${appointment.clientName}`} className="flex h-8 w-8 items-center justify-center rounded-md bg-emerald-50 text-emerald-600 transition hover:bg-emerald-100" title="Enviar WhatsApp"><MessageCircle size={16} /></a>}
+                                                    <button onClick={() => handleCancelClick(appointment.id)} disabled={isCancellingId === appointment.id} aria-label={pendingCancelId === appointment.id ? `Confirmar cancelamento de ${appointment.clientName}` : `Cancelar agendamento de ${appointment.clientName}`} className={`flex h-8 w-8 items-center justify-center rounded-md transition disabled:cursor-not-allowed disabled:opacity-50 ${pendingCancelId === appointment.id ? 'bg-red-500 text-white' : 'bg-red-50 text-red-600 hover:bg-red-100'}`} title={pendingCancelId === appointment.id ? 'Confirmar cancelamento' : 'Cancelar agendamento'}><X size={15} /></button>
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
-                                ) : (
-                                    <button
-                                        onClick={() => handleSlotClick(h)}
-                                        className="w-full h-12 border-2 border-dashed border-slate-200 rounded-2xl bg-transparent opacity-0 group-hover:opacity-100 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] hover:border-primary hover:text-primary transition-all duration-300 active:scale-[0.98]"
-                                    >
-                                        + Abrir Horário
-                                    </button>
-                                )}
+                                ) : <button onClick={() => openSlot(hour)} className="flex h-10 w-full items-center justify-center rounded-lg border border-dashed border-slate-200 text-xs font-medium text-slate-400 opacity-0 transition group-hover:opacity-100 hover:border-indigo-300 hover:bg-indigo-50/40 hover:text-indigo-600 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"><Plus size={14} className="mr-1.5" /> Abrir horário</button>}
                             </div>
                         </div>
                     )
                 })}
             </div>
-
-            {isModalOpen && (
-                <BookingModal
-                    date={date}
-                    startTime={selectedSlot}
-                    onClose={() => setIsModalOpen(false)}
-                />
-            )}
+            {appointments.length === 0 && <div className="mt-3 flex items-center justify-center gap-2 text-xs text-slate-400"><Calendar size={14} /> Nenhum agendamento neste dia. Passe o mouse sobre um horário para adicionar.</div>}
+            {isModalOpen && <BookingModal date={date} startTime={selectedSlot} onClose={() => setIsModalOpen(false)} />}
         </div>
     )
 }

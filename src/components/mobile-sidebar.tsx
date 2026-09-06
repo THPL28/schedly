@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { X, LayoutDashboard, Settings, ExternalLink, LogOut, Calendar, Clock, CreditCard, MessageCircle, Phone } from 'lucide-react'
+import { X, LayoutDashboard, Settings, ExternalLink, LogOut, Calendar, Clock, CreditCard, Users, BarChart3, Stethoscope } from 'lucide-react'
 import Logo from './logo'
 import Image from 'next/image'
 
@@ -11,256 +11,38 @@ interface MobileSidebarProps {
   isOpen: boolean
   onClose: () => void
   slug?: string | null
-  user?: {
-    name?: string | null
-    email?: string
-    avatarUrl?: string | null
-  }
-  onLogout?: () => void
+  user?: { name?: string | null; email?: string; avatarUrl?: string | null }
 }
 
-export default function MobileSidebar({ isOpen, onClose, slug, user, onLogout }: MobileSidebarProps) {
+export default function MobileSidebar({ isOpen, onClose, slug, user }: MobileSidebarProps) {
   const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  // Fechar ao navegar
-  useEffect(() => {
-    if (isOpen) {
-      onClose()
-    }
-  }, [pathname])
-
-  // Prevenir scroll do body quando aberto
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [isOpen])
+  useEffect(() => setMounted(true), [])
+  useEffect(() => { if (!isOpen) return; const onKeyDown = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose() }; document.addEventListener('keydown', onKeyDown); document.body.style.overflow = 'hidden'; return () => { document.removeEventListener('keydown', onKeyDown); document.body.style.overflow = '' } }, [isOpen, onClose])
+  useEffect(() => { if (isOpen) onClose() }, [pathname])
 
   const navItems = [
-    { href: '/dashboard', label: 'Painel Diário', icon: LayoutDashboard },
-    { href: '/settings/event-types', label: 'Serviços', icon: Calendar },
+    { href: '/dashboard', label: 'Visão geral', icon: LayoutDashboard },
+    { href: '/calendar', label: 'Agenda', icon: Calendar },
+    { href: '/clients', label: 'Clientes', icon: Users },
+    { href: '/settings/event-types', label: 'Serviços', icon: Clock },
     { href: '/settings/availability', label: 'Disponibilidade', icon: Clock },
+    { href: '/reports', label: 'Relatórios', icon: BarChart3 },
+    { href: '/settings/professional', label: 'Perfil profissional', icon: Stethoscope },
     { href: '/billing', label: 'Assinatura', icon: CreditCard },
     { href: '/settings', label: 'Configurações', icon: Settings },
   ]
+  const getInitials = (name?: string | null) => name ? name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'U'
 
-  const getInitials = (name: string | null | undefined) => {
-    if (!name) return 'U'
-    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-  }
-
-  return (
-    <>
-      {/* Overlay */}
-      {isOpen && (
-        <div
-          className="mobile-sidebar-overlay"
-          onClick={onClose}
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0, 0, 0, 0.5)',
-            zIndex: 998,
-            animation: 'fadeIn 0.2s ease-out'
-          }}
-        />
-      )}
-
-      {/* Sidebar */}
-      <aside
-        className="mobile-sidebar"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          bottom: 0,
-          width: '280px',
-          maxWidth: '85vw',
-          background: 'var(--sidebar-bg)',
-          color: 'var(--foreground)',
-          zIndex: 999,
-          display: 'flex',
-          flexDirection: 'column',
-          transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
-          transition: 'transform 0.3s ease-in-out',
-          boxShadow: isOpen ? 'var(--shadow-lg)' : 'none',
-          borderRight: '1px solid var(--sidebar-border)'
-        }}
-      >
-        {/* Header */}
-        <div style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--sidebar-border)' }}>
-          <Link href="/dashboard" className="no-underline" onClick={onClose}>
-            <Logo size={28} />
-          </Link>
-          <button
-            onClick={onClose}
-            style={{
-              background: 'var(--muted-light)',
-              border: 'none',
-              borderRadius: '0.5rem',
-              padding: '0.5rem',
-              cursor: 'pointer',
-              color: 'var(--muted)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <X size={20} />
-          </button>
-        </div>
-
-        {/* Navigation */}
-        <nav style={{ flex: 1, padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', overflowY: 'auto' }}>
-          {navItems.map((item) => {
-            const isActive = mounted && pathname === item.href
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={onClose}
-                className={`nav-link ${isActive ? 'active' : ''}`}
-              >
-                <item.icon size={20} style={{ color: isActive ? 'var(--primary)' : 'inherit' }} />
-                <span>{item.label}</span>
-              </Link>
-            )
-          })}
-
-          {slug && (
-            <div style={{ marginTop: '2rem', padding: '0 1rem' }}>
-              <p style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1rem' }}>Link Público</p>
-              <Link
-                href={`/book/${slug}`}
-                target="_blank"
-                onClick={onClose}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '1rem',
-                  background: 'rgba(99, 102, 241, 0.05)',
-                  border: '1px solid rgba(99, 102, 241, 0.1)',
-                  borderRadius: '1rem',
-                  textDecoration: 'none',
-                  color: 'var(--primary)',
-                  fontSize: '0.8rem',
-                  fontWeight: 700
-                }}
-              >
-                <span>Seu Link de Agendamento</span>
-                <ExternalLink size={14} />
-              </Link>
-            </div>
-          )}
-        </nav>
-
-        {mounted && (
-          <div style={{ borderTop: '1px solid var(--sidebar-border)', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <Link href="/settings" onClick={onClose} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}>
-              {user?.avatarUrl ? (
-                <div style={{ position: 'relative', width: 40, height: 40, borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--primary)', flexShrink: 0 }}>
-                  {user.avatarUrl.startsWith('data:') ? (
-                    <img
-                      src={user.avatarUrl}
-                      alt={user.name || 'Perfil'}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    />
-                  ) : (
-                    <Image
-                      src={user.avatarUrl}
-                      alt={user.name || 'Perfil'}
-                      fill
-                      style={{ objectFit: 'cover' }}
-                      unoptimized={user.avatarUrl.startsWith('/uploads/')}
-                    />
-                  )}
-                </div>
-              ) : (
-                <div style={{
-                  width: 40,
-                  height: 40,
-                  background: 'linear-gradient(135deg, var(--primary), #8b5cf6)',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 700,
-                  color: 'white',
-                  fontSize: '0.9rem',
-                  flexShrink: 0
-                }}>
-                  {getInitials(user?.name)}
-                </div>
-              )}
-              <div style={{ overflow: 'hidden', minWidth: 0, flex: 1 }}>
-                <p style={{ fontSize: '0.875rem', fontWeight: 600, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--foreground)' }}>{user?.name || 'Usuário'}</p>
-                <p style={{ fontSize: '0.7rem', color: 'var(--muted)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.email}</p>
-              </div>
-            </Link>
-
-            <a 
-              href={`https://wa.me/5511999999999?text=${encodeURIComponent('Olá, equipe Schedly! Preciso de uma ajudinha com minha conta.')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem',
-                padding: '0.875rem 1.25rem',
-                borderRadius: '1rem',
-                background: 'rgba(16, 185, 129, 0.05)',
-                border: '1px solid rgba(16, 185, 129, 0.1)',
-                color: '#10b981',
-                textDecoration: 'none',
-                fontWeight: 600,
-                fontSize: '0.875rem',
-                width: '100%',
-                marginBottom: '0.5rem'
-              }}
-            >
-              <MessageCircle size={18} />
-              <span>Suporte Prioritário</span>
-            </a>
-
-            <form action="/api/logout" method="POST" onSubmit={onClose}>
-              <button
-                type="submit"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  padding: '0.875rem 1.25rem',
-                  borderRadius: '1rem',
-                  background: 'rgba(239, 68, 68, 0.1)',
-                  border: '1px solid rgba(239, 68, 68, 0.2)',
-                  color: '#ef4444',
-                  cursor: 'pointer',
-                  fontWeight: 600,
-                  fontSize: '0.875rem',
-                  width: '100%'
-                }}
-              >
-                <LogOut size={18} />
-                <span>Sair</span>
-              </button>
-            </form>
-          </div>
-        )}
-      </aside>
-    </>
-  )
+  return <>
+    {isOpen && <button type="button" className="mobile-sidebar-overlay" aria-label="Fechar menu" onClick={onClose} />}
+    <aside className={`mobile-sidebar ${isOpen ? 'is-open' : ''}`} aria-hidden={!isOpen} aria-label="Menu principal">
+      <div className="mobile-sidebar-head"><Link href="/dashboard" className="no-underline" onClick={onClose} aria-label="Ir para o dashboard"><Logo size={28} /></Link><button type="button" className="icon-btn" onClick={onClose} aria-label="Fechar menu"><X size={20} /></button></div>
+      <nav className="mobile-sidebar-nav" aria-label="Navegação principal">
+        {navItems.map(({ href, label, icon: Icon }) => { const active = mounted && (pathname === href || (href !== '/dashboard' && pathname.startsWith(`${href}/`))); return <Link key={href} href={href} onClick={onClose} className={`nav-link ${active ? 'active' : ''}`} aria-current={active ? 'page' : undefined}><Icon size={19} aria-hidden="true" /><span>{label}</span></Link> })}
+        {slug && <div className="sidebar-public-block"><p className="sidebar-public-label">Seu espaço público</p><Link href={`/book/${slug}`} target="_blank" rel="noreferrer" onClick={onClose} className="sidebar-public-link"><span><strong>Agendamento público</strong><small>Ver como seu cliente</small></span><ExternalLink size={15} aria-hidden="true" /></Link></div>}
+      </nav>
+      {mounted && <div className="mobile-sidebar-footer"><Link href="/settings" onClick={onClose} className="profile-link"><div className="profile-avatar">{user?.avatarUrl ? (user.avatarUrl.startsWith('data:') ? <img src={user.avatarUrl} alt={user.name || 'Perfil'} className="profile-avatar-image" /> : <Image src={user.avatarUrl} alt={user.name || 'Perfil'} fill className="profile-avatar-image" unoptimized={user.avatarUrl.startsWith('/uploads/')} />) : <span className="profile-avatar-fallback">{getInitials(user?.name)}</span>}</div><div className="profile-meta"><p className="profile-name">{user?.name || 'Usuário'}</p><p className="profile-email">{user?.email}</p></div></Link><form action="/api/logout" method="POST" onSubmit={onClose}><button type="submit" className="mobile-logout-btn" aria-label="Sair da conta"><LogOut size={18} /><span>Sair</span></button></form></div>}
+    </aside>
+  </>
 }
