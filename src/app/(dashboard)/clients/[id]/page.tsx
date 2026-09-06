@@ -16,9 +16,10 @@ function formatDateTime(value: Date | string) {
 export default async function ClientDetailPage({ params, searchParams }: { params: Promise<{ id: string }>, searchParams: Promise<{ saved?: string }> }) {
   const session = await verifySession()
   if (!session || typeof session.userId !== 'string') redirect('/login')
+  const userId = session.userId
   const { id } = await params
   const query = await searchParams
-  const data = await getClinicalPatient(session.userId, id)
+  const data = await getClinicalPatient(userId, id)
   if (!data) notFound()
 
   const { patient, appointments, encounters } = data
