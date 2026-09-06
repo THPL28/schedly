@@ -18,8 +18,9 @@ const verticals = [
 export default async function ProfessionalSettingsPage({ searchParams }: { searchParams: Promise<{ saved?: string }> }) {
   const session = await verifySession()
   if (!session || typeof session.userId !== 'string') redirect('/login')
+  const userId = session.userId
   const params = await searchParams
-  const user = await prisma.user.findUnique({ where: { id: session.userId }, include: { medicalProfile: true } })
+  const user = await prisma.user.findUnique({ where: { id: userId }, include: { medicalProfile: true } })
   if (!user) redirect('/login')
 
   return (
