@@ -1,9 +1,8 @@
 -- Make Client tenant-aware without losing existing appointment history.
--- Existing clients are assigned to the first provider found in their appointments.
--- If a client was shared by multiple providers, a provider-specific copy is
--- created and that provider's appointments are repointed to the copy.
+-- The base PostgreSQL migration now creates Client with userId, so all schema
+-- changes here are idempotent while the data backfill remains preserved.
 
-ALTER TABLE "Client" ADD COLUMN "userId" TEXT;
+ALTER TABLE "Client" ADD COLUMN IF NOT EXISTS "userId" TEXT;
 
 UPDATE "Client" c
 SET "userId" = owners."userId"
@@ -13,7 +12,8 @@ FROM (
   WHERE "clientId" IS NOT NULL
   GROUP BY "clientId"
 ) owners
-WHERE c."id" = owners."clientId";
+WHERE c."id" = owners."clientId"
+  AND c."userId" IS NULL;
 
 DROP INDEX IF EXISTS "Client_email_key";
 
@@ -46,11 +46,16 @@ BEGIN
   END LOOP;
 END $$;
 
-ALTER TABLE "Client"
-  ADD CONSTRAINT "Client_userId_fkey"
-  FOREIGN KEY ("userId") REFERENCES "User"("id")
-  ON DELETE CASCADE ON UPDATE CASCADE;
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'Client_userId_fkey') THEN
+    ALTER TABLE "Client"
+      ADD CONSTRAINT "Client_userId_fkey"
+      FOREIGN KEY ("userId") REFERENCES "User"("id")
+      ON DELETE CASCADE ON UPDATE CASCADE;
+  END IF;
+END $$;
 
-CREATE UNIQUE INDEX "Client_userId_email_key" ON "Client"("userId", "email");
-CREATE INDEX "Client_userId_idx" ON "Client"("userId");
-CREATE INDEX "Client_email_idx" ON "Client"("email");
+CREATE UNIQUE INDEX IF NOT EXISTS "Client_userId_email_key" ON "Client"("userId", "email");
+CREATE INDEX IF NOT EXISTS "Client_userId_idx" ON "Client"("userId");
+CREATE INDEX IF NOT EXISTS "Client_email_idx" ON "Client"("email");
