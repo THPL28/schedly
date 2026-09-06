@@ -6,6 +6,7 @@ export async function POST(request: Request) {
   const session = await verifySession()
   if (!session || typeof session.userId !== 'string') return NextResponse.redirect(new URL('/login', request.url))
 
+  const userId = session.userId
   const form = await request.formData()
   const vertical = String(form.get('vertical') || 'GENERAL')
   const specialty = String(form.get('specialty') || '').trim() || null
@@ -17,11 +18,11 @@ export async function POST(request: Request) {
   }
 
   await prisma.$transaction(async (tx) => {
-    await tx.user.update({ where: { id: session.userId }, data: { vertical } })
+    await tx.user.update({ where: { id: userId }, data: { vertical } })
     if (vertical === 'MEDICAL') {
       await tx.medicalProfile.upsert({
-        where: { userId: session.userId },
-        create: { userId: session.userId, specialty, crm, crmState },
+        where: { userId },
+        create: { userId, specialty, crm, crmState },
         update: { specialty, crm, crmState },
       })
     }
