@@ -8,13 +8,14 @@ export async function POST(request: Request) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
+  const userId = session.userId
   const form = await request.formData()
   const clientId = String(form.get('clientId') || '')
   if (!clientId) return NextResponse.json({ error: 'Paciente inválido.' }, { status: 400 })
 
   try {
     const id = await createClinicalEncounter({
-      userId: session.userId,
+      userId,
       clientId,
       appointmentId: String(form.get('appointmentId') || '') || undefined,
       occurredAt: String(form.get('occurredAt') || '') || undefined,
