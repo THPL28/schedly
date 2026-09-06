@@ -5,8 +5,8 @@ CREATE TABLE "User" (
     "passwordHash" TEXT NOT NULL,
     "name" TEXT,
     "role" TEXT NOT NULL DEFAULT 'USER',
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
     "language" TEXT NOT NULL DEFAULT 'pt-BR'
 );
 
@@ -27,11 +27,11 @@ CREATE TABLE "Subscription" (
     "userId" TEXT NOT NULL,
     "planId" TEXT,
     "status" TEXT NOT NULL,
-    "startDate" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "trialEndDate" DATETIME,
-    "currentPeriodEnd" DATETIME,
+    "startDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "trialEndDate" TIMESTAMP(3),
+    "currentPeriodEnd" TIMESTAMP(3),
     "cancelAtPeriodEnd" BOOLEAN NOT NULL DEFAULT false,
-    "updatedAt" DATETIME NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
     CONSTRAINT "Subscription_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "Subscription_planId_fkey" FOREIGN KEY ("planId") REFERENCES "Plan" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
@@ -41,13 +41,13 @@ CREATE TABLE "Appointment" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "userId" TEXT NOT NULL,
     "clientName" TEXT NOT NULL,
-    "date" DATETIME NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL,
     "startTime" TEXT NOT NULL,
     "endTime" TEXT NOT NULL,
     "status" TEXT NOT NULL DEFAULT 'SCHEDULED',
     "notes" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
     CONSTRAINT "Appointment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
