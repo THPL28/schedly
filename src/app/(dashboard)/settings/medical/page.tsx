@@ -6,7 +6,8 @@ import { Stethoscope, ShieldCheck } from 'lucide-react'
 export default async function MedicalSettingsPage() {
   const session = await verifySession()
   if (!session || typeof session.userId !== 'string') redirect('/login')
-  const rows = await prisma.$queryRaw<any[]>`SELECT id, name, vertical FROM "User" WHERE id = ${session.userId} LIMIT 1`
+  const userId = session.userId
+  const rows = await prisma.$queryRaw<any[]>`SELECT id, name, vertical FROM "User" WHERE id = ${userId} LIMIT 1`
   const user = rows[0]
   if (!user) redirect('/login')
   const active = user.vertical === 'MEDICAL'
