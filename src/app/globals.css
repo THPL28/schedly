@@ -1567,3 +1567,53 @@ select:focus-visible {
   .dashboard-setup-action { margin-left:3rem; }
   .dashboard-kpi-card { padding:1rem; }
 }
+
+
+/* Schedly Design Direction
+ * Taste: intentional hierarchy, restraint and product-specific character.
+ * Impeccable: reduce visual noise, improve rhythm, contrast and interaction states.
+ * Emil Kowalski: tactile micro-interactions with fast, natural easing.
+ */
+:root {
+  --ui-motion-fast: 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  --ui-motion-medium: 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  --ui-focus-ring: 0 0 0 3px rgba(99, 102, 241, 0.18);
+  --ui-shadow-card: 0 1px 2px rgba(15, 23, 42, 0.03), 0 10px 30px -20px rgba(15, 23, 42, 0.22);
+  --ui-shadow-lift: 0 18px 40px -22px rgba(15, 23, 42, 0.24);
+}
+
+.card:hover,
+.ui-card:hover {
+  transform: translateY(-3px);
+}
+
+.btn,
+.ui-btn,
+.nav-link,
+.icon-btn,
+.top-nav-notification,
+.mobile-menu-btn {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:active,
+.ui-btn:active,
+.icon-btn:active,
+.top-nav-notification:active,
+.mobile-menu-btn:active {
+  transform: translateY(1px) scale(0.985);
+}
+
+.nav-link:hover {
+  transform: translateX(2px);
+}
+
+.input:hover,
+.ui-input:hover {
+  border-color: #cbd5e1;
+}
+
+::selection {
+  background: rgba(99, 102, 241, 0.16);
+  color: var(--foreground);
+}
