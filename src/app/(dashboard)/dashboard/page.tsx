@@ -49,7 +49,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
             orderBy: { startTime: 'asc' }
         }),
         prisma.appointment.count({ where: { userId: session.userId, status: 'SCHEDULED' } }),
-        prisma.appointment.groupBy({ by: ['clientName'], where: { userId: session.userId } }),
+        prisma.appointment.findMany({ where: { userId: session.userId }, select: { clientName: true }, distinct: ['clientName'] }),
     ])
 
     const isToday = dateStr === todayDateStr
