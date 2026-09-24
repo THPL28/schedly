@@ -1617,3 +1617,234 @@ select:focus-visible {
   background: rgba(99, 102, 241, 0.16);
   color: var(--foreground);
 }
+
+
+/* ============================================================
+   SCHEDLY — PRODUCT-WIDE UI SYSTEM
+   Taste / Impeccable / Emil Kowalski-inspired principles
+   ============================================================ */
+
+:root {
+  --ui-page-max: 1240px;
+  --ui-page-gutter: clamp(1rem, 2.5vw, 2rem);
+  --ui-motion-instant: 120ms cubic-bezier(0.22, 1, 0.36, 1);
+  --ui-motion-fast: 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  --ui-motion: 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  --ui-motion-slow: 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  --ui-surface-raised: rgba(255,255,255,.94);
+  --ui-border-subtle: rgba(226,232,240,.82);
+  --ui-shadow-soft: 0 1px 2px rgba(15,23,42,.03), 0 12px 34px -24px rgba(15,23,42,.24);
+  --ui-shadow-hover: 0 20px 44px -28px rgba(15,23,42,.28);
+}
+
+/* Product pages: consistent canvas and rhythm */
+.dashboard-layout,
+.min-h-screen.bg-background,
+.min-h-screen.bg-slate-50 {
+  color: var(--foreground);
+}
+
+.dashboard-layout .scroll-area {
+  scroll-behavior: smooth;
+}
+
+.dashboard-layout .scroll-area > * {
+  animation: schedly-page-enter 420ms cubic-bezier(.22,1,.36,1) both;
+}
+
+@keyframes schedly-page-enter {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Dense Tailwind cards become quieter, more deliberate surfaces */
+.dashboard-layout .card,
+.dashboard-layout [class*="rounded-"][class*="bg-white"],
+.min-h-screen.bg-slate-50 .card {
+  border-color: var(--ui-border-subtle);
+  box-shadow: var(--ui-shadow-soft);
+  transition:
+    transform var(--ui-motion),
+    box-shadow var(--ui-motion),
+    border-color var(--ui-motion),
+    background-color var(--ui-motion);
+}
+
+.dashboard-layout .card:hover,
+.min-h-screen.bg-slate-50 .card:hover {
+  box-shadow: var(--ui-shadow-hover);
+}
+
+/* Headings: less shouty, stronger hierarchy */
+.dashboard-layout h1,
+.dashboard-layout h2,
+.dashboard-layout h3 {
+  letter-spacing: -.035em;
+}
+
+.dashboard-layout h1 {
+  font-weight: 800;
+}
+
+.dashboard-layout h2 {
+  font-weight: 750;
+}
+
+/* Buttons: tactile without exaggerated scaling */
+.dashboard-layout button,
+.min-h-screen.bg-slate-50 button,
+.min-h-screen.bg-background button {
+  transition:
+    transform var(--ui-motion-fast),
+    box-shadow var(--ui-motion-fast),
+    background-color var(--ui-motion-fast),
+    border-color var(--ui-motion-fast),
+    color var(--ui-motion-fast);
+}
+
+.dashboard-layout button:hover:not(:disabled),
+.min-h-screen.bg-slate-50 button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.dashboard-layout button:active:not(:disabled),
+.min-h-screen.bg-slate-50 button:active:not(:disabled) {
+  transform: translateY(1px) scale(.985);
+}
+
+.dashboard-layout button:disabled {
+  cursor: not-allowed;
+}
+
+/* Form controls */
+.dashboard-layout input,
+.dashboard-layout textarea,
+.dashboard-layout select,
+.min-h-screen.bg-slate-50 input,
+.min-h-screen.bg-slate-50 textarea,
+.min-h-screen.bg-slate-50 select {
+  transition:
+    border-color var(--ui-motion-fast),
+    box-shadow var(--ui-motion-fast),
+    background-color var(--ui-motion-fast);
+}
+
+.dashboard-layout input:hover,
+.dashboard-layout textarea:hover,
+.dashboard-layout select:hover {
+  border-color: #cbd5e1;
+}
+
+.dashboard-layout input:focus,
+.dashboard-layout textarea:focus,
+.dashboard-layout select:focus {
+  transform: none;
+}
+
+/* Calendar: quiet grid, clear selected state */
+.dashboard-layout .ui-table-wrap,
+.dashboard-layout table {
+  border-color: var(--ui-border-subtle);
+}
+
+.dashboard-layout table tbody tr {
+  transition: background-color var(--ui-motion-fast);
+}
+
+.dashboard-layout table tbody tr:hover {
+  background: rgba(99,102,241,.025);
+}
+
+/* Dialog / modal polish */
+.ui-modal,
+[role="dialog"] {
+  animation: schedly-dialog-in 260ms cubic-bezier(.22,1,.36,1) both;
+}
+
+@keyframes schedly-dialog-in {
+  from { opacity: 0; transform: translateY(8px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Public booking + client portal */
+.min-h-screen.bg-slate-50 {
+  background:
+    radial-gradient(circle at 80% 0%, rgba(99,102,241,.055), transparent 30rem),
+    #f8fafc;
+}
+
+.min-h-screen.bg-slate-50 > header {
+  background: rgba(255,255,255,.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.min-h-screen.bg-slate-50 .container {
+  max-width: var(--ui-page-max);
+  padding-left: var(--ui-page-gutter);
+  padding-right: var(--ui-page-gutter);
+}
+
+/* Auth screens: premium but restrained */
+.min-h-screen.bg-background > .card {
+  border-color: var(--ui-border-subtle);
+  box-shadow: 0 30px 80px -48px rgba(15,23,42,.35);
+  animation: schedly-auth-in 420ms cubic-bezier(.22,1,.36,1) both;
+}
+
+@keyframes schedly-auth-in {
+  from { opacity: 0; transform: translateY(10px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Public booking controls */
+.min-h-screen.bg-slate-50 a,
+.min-h-screen.bg-slate-50 button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.min-h-screen.bg-slate-50 .card:hover {
+  transform: translateY(-2px);
+}
+
+/* Status / feedback surfaces */
+[role="alert"] {
+  animation: schedly-feedback-in 240ms cubic-bezier(.22,1,.36,1) both;
+}
+
+@keyframes schedly-feedback-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Preserve accessibility and user preference */
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-layout .scroll-area > *,
+  .ui-modal,
+  [role="dialog"],
+  .min-h-screen.bg-background > .card,
+  [role="alert"] {
+    animation: none !important;
+  }
+
+  .dashboard-layout *,
+  .min-h-screen.bg-slate-50 *,
+  .min-h-screen.bg-background * {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-layout .scroll-area {
+    padding: 1rem;
+  }
+
+  .dashboard-layout h1 {
+    font-size: clamp(1.45rem, 7vw, 2rem);
+  }
+
+  .dashboard-layout .card {
+    border-radius: 14px;
+  }
+}
