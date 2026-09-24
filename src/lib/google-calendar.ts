@@ -88,8 +88,7 @@ export async function createGoogleEvent(appointmentId: string) {
     const status = errAny?.response?.status
     if (status === 401 && appointment.user.googleRefreshToken) {
       try {
-        const refreshRes = await oauth2Client.refreshToken(appointment.user.googleRefreshToken as string)
-        const refreshed = refreshRes?.credentials || refreshRes as any
+        const { credentials: refreshed } = await oauth2Client.refreshAccessToken()
 
         const newAccessToken = refreshed.access_token
         const newRefreshToken = refreshed.refresh_token || appointment.user.googleRefreshToken
